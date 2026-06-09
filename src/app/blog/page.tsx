@@ -1,7 +1,7 @@
 import { ArrowLeft, Search, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { postsMeta } from "@/db/schema";
+import { postsMeta } from "../../db/schema";
 import { desc } from "drizzle-orm";
 
 export default async function BlogPage() {
