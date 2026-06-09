@@ -11,19 +11,20 @@ DATABASE_URL="mysql://usuario:password@tu-servidor-ionos:3306/db_name"
 Puedes ejecutar este script en tu base de datos para crear las tablas necesarias:
 
 ```sql
-CREATE TABLE posts_meta (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  slug TEXT UNIQUE NOT NULL,
-  likes INTEGER DEFAULT 0,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS posts_meta (
+  id VARCHAR(36) PRIMARY KEY,
+  slug VARCHAR(255) UNIQUE NOT NULL,
+  likes INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE comments (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  post_slug TEXT REFERENCES posts_meta(slug),
-  author TEXT NOT NULL,
+CREATE TABLE IF NOT EXISTS comments (
+  id VARCHAR(36) PRIMARY KEY,
+  post_slug VARCHAR(255),
+  author VARCHAR(100) NOT NULL,
   content TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (post_slug) REFERENCES posts_meta(slug)
 );
 ```
 
