@@ -3,40 +3,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
 
-const PROJECTS = [
-  {
-    id: "blau360",
-    title: "Blau360",
-    description: "Digitalización a medida para PYMES y publicidad exterior. Construyendo puentes entre el mundo físico y digital.",
-    tags: ["Product Strategy", "Full Stack Dev", "Consulting"],
-    tech: [
-      { label: "Frontend", value: "Next.js / React" },
-      { label: "Backend", value: "Node.js / PostgreSQL" },
-      { label: "Infrastructure", value: "AWS / Docker" },
-    ],
-    color: "#0055ff",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426",
-  },
-  {
-    id: "bastet",
-    title: "Bastet Project",
-    description: "Marca de ropa impulsada por valores y comunidad. Un ecosistema donde el diseño y la identidad convergen.",
-    tags: ["E-commerce", "Brand Identity", "UX Design"],
-    tech: [
-      { label: "Storefront", value: "Shopify / Liquid" },
-      { label: "Automation", value: "Klaviyo / Zapier" },
-      { label: "Analytics", value: "GA4 / GTM" },
-    ],
-    color: "#ff3300",
-    image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&q=80&w=2340",
-  },
-];
-
-export const ProjectsWall = () => {
+export const ProjectsWall = ({ projects }: { projects: any[] }) => {
   return (
     <section className="bg-background py-20">
       <div className="flex flex-col gap-40">
-        {PROJECTS.map((project, index) => (
+        {projects.map((project, index) => (
           <ProjectItem key={project.id} project={project} index={index} />
         ))}
       </div>
@@ -44,7 +15,7 @@ export const ProjectsWall = () => {
   );
 };
 
-const ProjectItem = ({ project, index }: { project: typeof PROJECTS[0]; index: number }) => {
+const ProjectItem = ({ project, index }: { project: any; index: number }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,

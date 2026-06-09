@@ -1,40 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 
-const SERVICES = [
-  {
-    id: "web",
-    title: "Desarrollo Web",
-    description: "Aplicaciones web de alto rendimiento construidas con las tecnologías más modernas para garantizar velocidad, escalabilidad y una experiencia de usuario excepcional.",
-  },
-  {
-    id: "ecommerce",
-    title: "Ecommerce",
-    description: "Soluciones de comercio electrónico robustas y personalizadas, enfocadas en la conversión y la optimización de la experiencia de compra.",
-  },
-  {
-    id: "seo",
-    title: "SEO Técnico",
-    description: "Optimización profunda desde el código para asegurar que tu producto no solo sea excelente, sino también visible para quienes lo buscan.",
-  },
-  {
-    id: "hosting",
-    title: "Hosting & Ops",
-    description: "Infraestructura gestionada y despliegue continuo para que tu producto esté siempre disponible y funcione a la perfección.",
-  },
-  {
-    id: "maintenance",
-    title: "Mantenimiento",
-    description: "Cuidado constante y evolución de tus sistemas para prevenir problemas antes de que ocurran y mantenerte a la vanguardia.",
-  },
-  {
-    id: "consulting",
-    title: "Consultoría",
-    description: "Asesoramiento estratégico para definir la arquitectura técnica y el roadmap de tu próximo gran producto digital.",
-  },
-];
-
-export const EditorialServices = () => {
+export const EditorialServices = ({ services }: { services: any[] }) => {
   return (
     <section className="bg-background py-40 px-6">
       <div className="mx-auto max-w-7xl">
@@ -48,7 +15,7 @@ export const EditorialServices = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-x-12 gap-y-24 md:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.map((service, index) => (
+          {services.map((service, index) => (
             <motion.div
               key={service.id}
               initial={{ opacity: 0, y: 30 }}

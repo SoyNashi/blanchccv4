@@ -23,7 +23,7 @@ export default async function Home() {
       <Hero />
       <ProjectsWall projects={allProjects} />
       <EditorialServices services={allServices} />
-      <CertificationsMarquee items={certs.map(c => ({ name: c.name, logo: c.logo_url }))} />
+      <CertificationsMarquee items={certs.map(c => ({ name: c.name, logo: c.logo }))} />
       <SecondaryProjects />
       <BlogSlider posts={latestPosts} />
       <Contact />
