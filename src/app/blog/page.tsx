@@ -1,6 +1,9 @@
 import { ArrowLeft, Search } from "lucide-react";
 import Link from "next/link";
 
+// Forzar el uso de Edge Runtime para compatibilidad con Cloudflare y DB
+export const runtime = 'edge';
+
 export default function BlogPage() {
   return (
     <div className="min-h-screen bg-background px-6 py-20">
