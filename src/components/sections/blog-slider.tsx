@@ -3,21 +3,6 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-const SAMPLE_POSTS = [
-  {
-    slug: "optimizacion-nextjs-seo",
-    title: "Optimizando Next.js para SEO técnico extremo",
-    category: "creacion",
-    description: "Cómo logré un 100/100 en Lighthouse mientras mantenía una arquitectura escalable.",
-  },
-  {
-    slug: "alerta-malware-npm",
-    title: "Nueva vulnerabilidad detectada en paquetes npm",
-    category: "alerta",
-    description: "Análisis técnico de la última amenaza detectada en el ecosistema JavaScript.",
-  },
-];
-
 const CATEGORY_STYLES: Record<string, string> = {
   novedad: "bg-blue-500/10 text-blue-500 border-blue-500/20",
   alerta: "bg-red-500/10 text-red-500 border-red-500/20",
@@ -27,7 +12,7 @@ const CATEGORY_STYLES: Record<string, string> = {
   malware: "bg-orange-500/10 text-orange-500 border-orange-500/20",
 };
 
-export const BlogSlider = () => {
+export const BlogSlider = ({ posts }: { posts: any[] }) => {
   return (
     <section className="bg-background py-40 px-6">
       <div className="mx-auto max-w-7xl">
@@ -49,7 +34,7 @@ export const BlogSlider = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {SAMPLE_POSTS.map((post, i) => (
+          {posts.map((post, i) => (
             <Link key={post.slug} href={`/blog/${post.slug}`} className="group">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
