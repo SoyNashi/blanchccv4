@@ -1,0 +1,60 @@
+
+> tmp-app@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.5.19
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ✓ Ready in 1968ms
+ ○ Compiling / ...
+ ✓ Compiled / in 7.9s (1382 modules)
+ HEAD / 200 in 8626ms
+ ✓ Compiled in 383ms (634 modules)
+ ✓ Compiled in 635ms (1376 modules)
+ ✓ Compiled in 166ms (635 modules)
+ ✓ Compiled in 396ms (635 modules)
+ ✓ Compiled in 217ms (635 modules)
+ ✓ Compiled in 178ms (635 modules)
+ ✓ Compiled in 142ms (635 modules)
+ ✓ Compiled in 147ms (635 modules)
+ ✓ Compiled in 131ms (635 modules)
+ ✓ Compiled in 159ms (635 modules)
+ ✓ Compiled in 120ms (635 modules)
+ ✓ Compiled in 138ms (635 modules)
+ ✓ Compiled in 169ms (635 modules)
+ ✓ Compiled in 107ms (621 modules)
+ ✓ Compiled in 132ms (635 modules)
+ ✓ Compiled in 142ms (635 modules)
+ ✓ Compiled in 144ms (635 modules)
+ ✓ Compiled in 255ms (635 modules)
+ ✓ Compiled in 148ms (635 modules)
+ ✓ Compiled in 161ms (635 modules)
+ ✓ Compiled in 158ms (635 modules)
+ ✓ Compiled in 178ms (635 modules)
+ ✓ Compiled in 160ms (635 modules)
+ ✓ Compiled in 707ms (635 modules)
+ ✓ Compiled in 406ms (652 modules)
+ ✓ Compiled in 154ms (652 modules)
+ ✓ Compiled in 140ms (652 modules)
+ ✓ Compiled in 162ms (652 modules)
+ ✓ Compiled in 219ms (652 modules)
+ ✓ Compiled in 160ms (652 modules)
+ ✓ Compiled in 160ms (652 modules)
+ ✓ Compiled in 313ms (652 modules)
+ ⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+   ▲ Next.js 15.5.19
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 4.8s (1528 modules)
+ GET / 200 in 6491ms

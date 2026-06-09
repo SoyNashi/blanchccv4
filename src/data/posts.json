@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "optimizacion-nextjs-seo",
+    "title": "Optimizando Next.js para SEO técnico extremo",
+    "category": "creacion",
+    "description": "Cómo logré un 100/100 en Lighthouse mientras mantenía una arquitectura escalable.",
+    "date": "2024-03-20"
+  },
+  {
+    "slug": "alerta-malware-npm",
+    "title": "Nueva vulnerabilidad detectada en paquetes npm",
+    "category": "alerta",
+    "description": "Análisis técnico de la última amenaza detectada en el ecosistema JavaScript.",
+    "date": "2024-03-18"
+  }
+]

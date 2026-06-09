@@ -1,0 +1,12 @@
+He desarrollado el portfolio premium para Nil Blanch siguiendo todas las directrices:
+1. Estética minimalista, oscura y de alto contraste (estilo Apple/Linear).
+2. Hero con mensajes rotativos y tipografía gigante.
+3. Muro de proyectos (Blau360, Bastet) con scroll cinematográfico y tech stack contextual.
+4. Sección editorial de servicios.
+5. Marquee doble de certificaciones (Google, AWS, Meta, etc.).
+6. Proyectos secundarios (Argentona Bocs, Instint Global) en formato lista limpia.
+7. Sistema de blog con categorías (novedad, alerta, etc.) y preparación para DB PostgreSQL.
+8. Contacto minimalista.
+9. Navegación Dock y microinteracciones magnéticas.
+
+El código está en Next.js 15, verificado con build exitoso y capturas de pantalla.
