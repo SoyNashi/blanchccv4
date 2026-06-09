@@ -8,6 +8,7 @@ export const postsMeta = mysqlTable('posts_meta', {
   category: varchar('category', { length: 50 }).default('novedad'),
   title: varchar('title', { length: 255 }),
   description: text('description'),
+  content: text('content'),
 });
 
 export const comments = mysqlTable('comments', {
@@ -25,10 +26,6 @@ export const services = mysqlTable('services', {
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description').notNull(),
   order: int('sort_order').default(0),
-  category: varchar('category', { length: 50 }).default('novedad'),
-  title: varchar('title', { length: 255 }),
-  description: text('description'),
-  content: text('content'),
 });
 
 export const projects = mysqlTable('projects', {
@@ -36,8 +33,8 @@ export const projects = mysqlTable('projects', {
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description').notNull(),
   image: varchar('image_url', { length: 500 }).notNull(),
-  tags: json('tags'),
-  tech: json('tech'),
+  tags: json('tags').$type<string[]>(),
+  tech: json('tech').$type<{label: string, value: string}[]>(),
   color: varchar('color', { length: 7 }),
   order: int('sort_order').default(0),
 });
