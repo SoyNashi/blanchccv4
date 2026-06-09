@@ -1,7 +1,12 @@
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { db } from "@/lib/db";
+import { postsMeta } from "@/db/schema";
+import { desc } from "drizzle-orm";
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await db.select().from(postsMeta).orderBy(desc(postsMeta.createdAt));
+
   return (
     <div className="min-h-screen bg-background px-6 py-20">
       <div className="mx-auto max-w-4xl">
@@ -20,9 +25,19 @@ export default function BlogPage() {
           />
         </div>
 
-        <div className="flex flex-col gap-8">
-          {/* We'll map real posts here later */}
-          <p className="text-muted-foreground font-mono text-sm italic">Conexión con base de datos preparada. Esperando contenido...</p>
+        <div className="flex flex-col gap-12">
+          {posts.map((post) => (
+            <Link key={post.id} href={`/blog/${post.slug}`} className="group border-b border-white/5 pb-12">
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">{post.category}</span>
+                  <h3 className="mt-4 text-3xl font-bold text-white group-hover:text-blue-400 transition-colors">{post.title}</h3>
+                  <p className="mt-4 text-muted-foreground line-clamp-2 max-w-2xl">{post.description}</p>
+                </div>
+                <ArrowRight className="h-6 w-6 text-white/20 group-hover:text-white transition-colors" />
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
