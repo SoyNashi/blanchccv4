@@ -8,20 +8,25 @@ DATABASE_URL="mysql://usuario:password@tu-servidor-ionos:3306/db_name"
 ```
 
 ## Script Inicial SQL
-Ejecuta este script para crear las tablas e insertar el contenido inicial de una sola vez:
+**¡ATENCIÓN!** Este script borrará las tablas existentes para asegurar que la estructura (incluyendo columnas como `title` o `content`) sea la correcta. Ejecútalo en la pestaña SQL de Ionos:
 
 ```sql
--- 1. CREACIÓN DE TABLAS
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS posts_meta;
+DROP TABLE IF EXISTS projects;
+DROP TABLE IF EXISTS services;
+DROP TABLE IF EXISTS certifications;
 
-CREATE TABLE IF NOT EXISTS services (
+-- 1. CREACIÓN DE TABLAS CORRECTAS
+CREATE TABLE services (
   id VARCHAR(36) PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   sort_order INT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS projects (
+CREATE TABLE projects (
   id VARCHAR(36) PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
@@ -32,24 +37,25 @@ CREATE TABLE IF NOT EXISTS projects (
   sort_order INT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS certifications (
+CREATE TABLE certifications (
   id VARCHAR(36) PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   logo_url VARCHAR(500),
   sort_order INT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS posts_meta (
+CREATE TABLE posts_meta (
   id VARCHAR(36) PRIMARY KEY,
   slug VARCHAR(255) UNIQUE NOT NULL,
   likes INT DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   category VARCHAR(50) DEFAULT 'novedad',
   title VARCHAR(255),
-  description TEXT
+  description TEXT,
+  content TEXT
 );
 
-CREATE TABLE IF NOT EXISTS comments (
+CREATE TABLE comments (
   id VARCHAR(36) PRIMARY KEY,
   author VARCHAR(100) NOT NULL,
   content TEXT NOT NULL,
@@ -59,6 +65,26 @@ CREATE TABLE IF NOT EXISTS comments (
 );
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- 2. INSERCIÓN DE DATOS INICIALES
+INSERT INTO services (id, title, description, sort_order) VALUES
+('s1', 'Desarrollo Web', 'Aplicaciones web de alto rendimiento...', 1),
+('s2', 'Ecommerce', 'Soluciones de comercio electrónico...', 2),
+('s3', 'SEO Técnico', 'Optimización profunda desde el código...', 3),
+('s4', 'Hosting & Ops', 'Infraestructura gestionada y despliegue...', 4),
+('s5', 'Mantenimiento', 'Cuidado constante y evolución...', 5),
+('s6', 'Consultoría', 'Asesoramiento estratégico...', 6);
+
+INSERT INTO projects (id, title, description, image_url, tags, tech, color, sort_order) VALUES
+('p1', 'Blau360', 'Digitalización a medida para PYMES...', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800', '["Product Strategy", "Full Stack Dev"]', '[{"label": "Frontend", "value": "Next.js"}, {"label": "Backend", "value": "MySQL"}]', '#0055ff', 1),
+('p2', 'Bastet Project', 'Marca de ropa impulsada por valores...', 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=800', '["E-commerce", "UX Design"]', '[{"label": "Storefront", "value": "Shopify"}]', '#ff3300', 2);
+
+INSERT INTO certifications (id, name, logo_url, sort_order) VALUES
+('c1', 'AWS Certified', 'https://upload.wikimedia.org/wikipedia/commons/5/5c/AWS_Simple_Icons_AWS_Cloud.svg', 1),
+('c2', 'Google Cloud', 'https://upload.wikimedia.org/wikipedia/commons/5/51/Google_Cloud_logo.svg', 2);
+
+INSERT INTO posts_meta (id, slug, title, description, category, likes, content) VALUES
+('b1', 'optimizacion-nextjs-seo', 'Optimizando Next.js para SEO', 'Descripción corta...', 'creacion', 124, '# Contenido en Markdown');
 
 -- 2. INSERCIÓN DE DATOS INICIALES
 

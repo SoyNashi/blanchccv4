@@ -1,0 +1,6 @@
+node_modules
+.next
+.env
+admin_db.py
+public/admin_db.py
+*.log
