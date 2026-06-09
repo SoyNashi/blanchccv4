@@ -1,7 +1,7 @@
 # Instrucciones Finales - Portfolio Nil Blanch
 
 ## Configuración de Base de Datos
-Para habilitar el blog interactivo (likes y comentarios) con **MySQL**, añade esta variable de entorno en el panel de Cloudflare Pages:
+Para habilitar el blog interactivo (likes y comentarios) con **MySQL**, añade esta variable de entorno en el panel de Cloudflare Pages de tu proyecto `blanchccv4`:
 
 ```env
 DATABASE_URL="mysql://usuario:password@tu-servidor-ionos:3306/db_name"
