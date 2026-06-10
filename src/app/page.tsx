@@ -11,12 +11,12 @@ import { desc } from "drizzle-orm";
 
 export default async function Home() {
   // Recuperamos todos los datos en paralelo para máxima velocidad
-  const [certs, latestPosts, allProjects, allServices] = await Promise.all([
+  const [certs, latestPosts, allProjects, allServices] = db ? await Promise.all([
     db.select().from(certifications).orderBy(certifications.order),
     db.select().from(postsMeta).orderBy(desc(postsMeta.createdAt)).limit(2),
     db.select().from(projects).orderBy(projects.order),
     db.select().from(services).orderBy(services.order),
-  ]).catch(() => [[], [], [], []]);
+  ]) : [[], [], [], []];
 
   return (
     <div className="flex flex-col">

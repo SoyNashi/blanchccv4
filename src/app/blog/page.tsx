@@ -5,7 +5,7 @@ import { postsMeta } from "@/db/schema";
 import { desc } from "drizzle-orm";
 
 export default async function BlogPage() {
-  const posts = await db.select().from(postsMeta).orderBy(desc(postsMeta.createdAt));
+  const posts = db ? await db.select().from(postsMeta).orderBy(desc(postsMeta.createdAt)) : [];
 
   return (
     <div className="min-h-screen bg-background px-6 py-20">
