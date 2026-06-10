@@ -6,7 +6,7 @@ import { SecondaryProjects } from "@/components/sections/secondary-projects";
 import { BlogSlider } from "@/components/sections/blog-slider";
 import { Contact } from "@/components/sections/contact";
 import { db } from "@/lib/db";
-import { certifications, postsMeta, projects, services } from "../db/schema";
+import { certifications, postsMeta, projects, services } from "@/db/schema";
 import { desc } from "drizzle-orm";
 
 export default async function Home() {

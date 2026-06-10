@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { services, projects, certifications, postsMeta } from "./schema";
+import { services, projects, certifications, postsMeta } from "./src/db/schema";
 import { v4 as uuidv4 } from "uuid";
 
 async function seed() {
