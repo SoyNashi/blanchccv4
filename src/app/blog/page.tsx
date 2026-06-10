@@ -1,9 +1,25 @@
 import { ArrowLeft, Search, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import postsData from "@/data/posts.json";
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
 
 export default async function BlogPage() {
-  const posts = postsData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const postsDirectory = path.join(process.cwd(), "src/data/posts");
+  const fileNames = fs.readdirSync(postsDirectory);
+  const posts = fileNames
+    .map(fileName => {
+      const fullPath = path.join(postsDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, "utf8");
+      const { data, content } = matter(fileContents);
+      return {
+        id: fileName.replace(/\.md$/, ""),
+        slug: fileName.replace(/\.md$/, ""),
+        ...data,
+        content,
+      };
+    })
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
     <div className="min-h-screen bg-background px-6 py-20">
