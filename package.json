@@ -5,12 +5,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:worker": "npx @opennextjs/cloudflare",
+    "build:deploy": "next build && npx @opennextjs/cloudflare",
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.19.11",
     "@react-spring/web": "^10.1.0",
     "@types/canvas-confetti": "^1.9.0",
     "canvas-confetti": "^1.9.4",
