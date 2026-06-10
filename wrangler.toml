@@ -9,6 +9,3 @@ directory = ".open-next/assets"
 
 [observability]
 enabled = true
-
-workers_dev = false
-preview_urls = false
