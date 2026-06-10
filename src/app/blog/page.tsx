@@ -1,11 +1,9 @@
 import { ArrowLeft, Search, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { db } from "@/lib/db";
-import { postsMeta } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import postsData from "@/data/posts.json";
 
 export default async function BlogPage() {
-  const posts = db ? await db.select().from(postsMeta).orderBy(desc(postsMeta.createdAt)) : [];
+  const posts = postsData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
     <div className="min-h-screen bg-background px-6 py-20">

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "name": "AWS Certified Solutions Architect",
+    "logo": "/certifications/aws.png",
+    "order": 1
+  },
+  {
+    "id": "2",
+    "name": "Google Cloud Professional",
+    "logo": "/certifications/gcp.png",
+    "order": 2
+  },
+  {
+    "id": "3",
+    "name": "MongoDB Certified Developer",
+    "logo": "/certifications/mongodb.png",
+    "order": 3
+  },
+  {
+    "id": "4",
+    "name": "React Advanced Certification",
+    "logo": "/certifications/react.png",
+    "order": 4
+  },
+  {
+    "id": "5",
+    "name": "Next.js Certification",
+    "logo": "/certifications/nextjs.png",
+    "order": 5
+  }
+]

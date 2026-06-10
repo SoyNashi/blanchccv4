@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "title": "Desarrollo Web Full Stack",
+    "description": "Creación de aplicaciones web modernas y escalables utilizando las últimas tecnologías como Next.js, React, y Node.js.",
+    "order": 1
+  },
+  {
+    "id": "2",
+    "title": "Diseño UI/UX",
+    "description": "Diseño de interfaces intuitivas y experiencias de usuario optimizadas que convierten visitantes en clientes.",
+    "order": 2
+  },
+  {
+    "id": "3",
+    "title": "Consultoría Técnica",
+    "description": "Asesoramiento experto en arquitectura de software, optimización de rendimiento y mejores prácticas de desarrollo.",
+    "order": 3
+  },
+  {
+    "id": "4",
+    "title": "Integración de APIs",
+    "description": "Conexión de sistemas y servicios mediante APIs RESTful y GraphQL para flujos de datos eficientes.",
+    "order": 4
+  }
+]

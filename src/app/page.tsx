@@ -5,18 +5,19 @@ import { CertificationsMarquee } from "@/components/sections/certifications-marq
 import { SecondaryProjects } from "@/components/sections/secondary-projects";
 import { BlogSlider } from "@/components/sections/blog-slider";
 import { Contact } from "@/components/sections/contact";
-import { db } from "@/lib/db";
-import { certifications, postsMeta, projects, services } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import projectsData from "@/data/projects.json";
+import servicesData from "@/data/services.json";
+import certificationsData from "@/data/certifications.json";
+import postsData from "@/data/posts.json";
 
 export default async function Home() {
-  // Recuperamos todos los datos en paralelo para máxima velocidad
-  const [certs, latestPosts, allProjects, allServices] = db ? await Promise.all([
-    db.select().from(certifications).orderBy(certifications.order),
-    db.select().from(postsMeta).orderBy(desc(postsMeta.createdAt)).limit(2),
-    db.select().from(projects).orderBy(projects.order),
-    db.select().from(services).orderBy(services.order),
-  ]) : [[], [], [], []];
+  // Recuperamos todos los datos de los archivos JSON
+  const certs = certificationsData.sort((a, b) => a.order - b.order);
+  const latestPosts = postsData
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 2);
+  const allProjects = projectsData.sort((a, b) => a.order - b.order);
+  const allServices = servicesData.sort((a, b) => a.order - b.order);
 
   return (
     <div className="flex flex-col">

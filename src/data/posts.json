@@ -1,16 +1,32 @@
 [
   {
+    "id": "1",
     "slug": "optimizacion-nextjs-seo",
     "title": "Optimizando Next.js para SEO técnico extremo",
     "category": "creacion",
     "description": "Cómo logré un 100/100 en Lighthouse mientras mantenía una arquitectura escalable.",
-    "date": "2024-03-20"
+    "content": "En este artículo exploramos las técnicas avanzadas de optimización para Next.js...",
+    "createdAt": "2024-03-20T00:00:00Z",
+    "likes": 42
   },
   {
+    "id": "2",
     "slug": "alerta-malware-npm",
     "title": "Nueva vulnerabilidad detectada en paquetes npm",
     "category": "alerta",
     "description": "Análisis técnico de la última amenaza detectada en el ecosistema JavaScript.",
-    "date": "2024-03-18"
+    "content": "Recientemente se detectó una vulnerabilidad crítica en varios paquetes npm...",
+    "createdAt": "2024-03-18T00:00:00Z",
+    "likes": 28
+  },
+  {
+    "id": "3",
+    "slug": "arquitectura-microservicios",
+    "title": "Arquitectura de microservicios con Node.js",
+    "category": "novedad",
+    "description": "Guía completa para implementar microservicios escalables.",
+    "content": "Los microservicios ofrecen flexibilidad y escalabilidad...",
+    "createdAt": "2024-03-15T00:00:00Z",
+    "likes": 35
   }
 ]
