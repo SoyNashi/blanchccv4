@@ -11,7 +11,7 @@ const SOCIAL_LINKS = [
 
 export const Contact = () => {
   return (
-    <section className="bg-background py-40 px-6 border-t border-white/5">
+    <section id="contact" className="bg-background py-40 px-6 border-t border-white/5">
       <div className="mx-auto max-w-7xl flex flex-col items-center text-center">
         <span className="text-xs font-bold tracking-[0.2em] text-muted-foreground uppercase mb-12">
           ¿Hablamos?

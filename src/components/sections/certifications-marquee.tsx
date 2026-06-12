@@ -9,7 +9,7 @@ export const CertificationsMarquee = ({ items }: { items: any[] }) => {
   const doubledItems = [...items, ...items, ...items];
 
   return (
-    <section className="bg-background py-20 overflow-hidden border-y border-white/5">
+    <section id="certifications" className="bg-background py-20 overflow-hidden border-y border-white/5">
       <div className="mb-12 px-6 mx-auto max-w-7xl flex items-center justify-between">
         <span className="text-[10px] font-bold tracking-[0.3em] text-muted-foreground uppercase">
           Reconocimientos y Certificaciones

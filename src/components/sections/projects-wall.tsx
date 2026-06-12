@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export const ProjectsWall = ({ projects }: { projects: any[] }) => {
   return (
-    <section className="bg-background py-20">
+    <section id="projects" className="bg-background py-20">
       <div className="flex flex-col gap-40">
         {projects.map((project, index) => (
           <ProjectItem key={project.id} project={project} index={index} />
@@ -62,7 +62,7 @@ const ProjectItem = ({ project, index }: { project: any; index: number }) => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="grid grid-cols-1 gap-6 border-t border-white/10 pt-8 sm:grid-cols-3"
           >
-            {project.tech.map((item) => (
+            {project.tech.map((item: any) => (
               <div key={item.label} className="flex flex-col gap-1">
                 <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
                   {item.label}

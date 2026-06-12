@@ -1,0 +1,50 @@
+{
+  "Web Platforms": [
+    {
+      "id": "1",
+      "name": "Argentona Bocs",
+      "description": "Plataforma de gestión y comunicación para entidades locales.",
+      "details": "Desarrollado con Next.js y Node.js, incluye sistema de autenticación, gestión de usuarios y panel de administración en tiempo real.",
+      "tech": ["Next.js", "Node.js", "PostgreSQL", "Redis"],
+      "link": "#"
+    },
+    {
+      "id": "2",
+      "name": "E-commerce Pro",
+      "description": "Tienda online con pasarela de pagos integrada.",
+      "details": "Sistema completo de e-commerce con gestión de inventario, procesamiento de pagos con Stripe y panel de administración.",
+      "tech": ["React", "Node.js", "Stripe", "MongoDB"],
+      "link": "#"
+    }
+  ],
+  "Brand Strategy": [
+    {
+      "id": "3",
+      "name": "Instint Global",
+      "description": "Estrategia digital y presencia online para marca de lifestyle.",
+      "details": "Rediseño completo de marca digital, desarrollo de sitio web corporativo y estrategia de contenido para redes sociales.",
+      "tech": ["Webflow", "Figma", "SEO", "Analytics"],
+      "link": "#"
+    }
+  ],
+  "Open Source": [
+    {
+      "id": "4",
+      "name": "Core System",
+      "description": "Librería de componentes internos optimizados para alto rendimiento.",
+      "details": "Sistema de componentes UI reutilizables con TypeScript, documentación automática y tests unitarios.",
+      "tech": ["TypeScript", "React", "Storybook", "Jest"],
+      "link": "#"
+    }
+  ],
+  "Engineering": [
+    {
+      "id": "5",
+      "name": "Data Flow",
+      "description": "Pipeline de datos automatizado para análisis de publicidad exterior.",
+      "details": "Sistema ETL para procesamiento de datos de publicidad exterior con visualización en tiempo real y reportes automáticos.",
+      "tech": ["Python", "Apache Airflow", "Docker", "Grafana"],
+      "link": "#"
+    }
+  ]
+}

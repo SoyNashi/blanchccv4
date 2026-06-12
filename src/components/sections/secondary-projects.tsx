@@ -2,58 +2,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronRight, ArrowUpRight } from "lucide-react";
 import { useState } from "react";
-
-const PROJECTS_BY_CATEGORY = {
-  "Web Platforms": [
-    {
-      name: "Argentona Bocs",
-      description: "Plataforma de gestión y comunicación para entidades locales.",
-      details: "Desarrollado con Next.js y Node.js, incluye sistema de autenticación, gestión de usuarios y panel de administración en tiempo real.",
-      tech: ["Next.js", "Node.js", "PostgreSQL", "Redis"],
-      link: "#",
-    },
-    {
-      name: "E-commerce Pro",
-      description: "Tienda online con pasarela de pagos integrada.",
-      details: "Sistema completo de e-commerce con gestión de inventario, procesamiento de pagos con Stripe y panel de administración.",
-      tech: ["React", "Node.js", "Stripe", "MongoDB"],
-      link: "#",
-    },
-  ],
-  "Brand Strategy": [
-    {
-      name: "Instint Global",
-      description: "Estrategia digital y presencia online para marca de lifestyle.",
-      details: "Rediseño completo de marca digital, desarrollo de sitio web corporativo y estrategia de contenido para redes sociales.",
-      tech: ["Webflow", "Figma", "SEO", "Analytics"],
-      link: "#",
-    },
-  ],
-  "Open Source": [
-    {
-      name: "Core System",
-      description: "Librería de componentes internos optimizados para alto rendimiento.",
-      details: "Sistema de componentes UI reutilizables con TypeScript, documentación automática y tests unitarios.",
-      tech: ["TypeScript", "React", "Storybook", "Jest"],
-      link: "#",
-    },
-  ],
-  "Engineering": [
-    {
-      name: "Data Flow",
-      description: "Pipeline de datos automatizado para análisis de publicidad exterior.",
-      details: "Sistema ETL para procesamiento de datos de publicidad exterior con visualización en tiempo real y reportes automáticos.",
-      tech: ["Python", "Apache Airflow", "Docker", "Grafana"],
-      link: "#",
-    },
-  ],
-};
+import secondaryProjects from "@/data/secondary-projects.json";
 
 export const SecondaryProjects = () => {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
   return (
-    <section className="bg-background py-40 px-6">
+    <section id="other-projects" className="bg-background py-40 px-6">
       <div className="mx-auto max-w-7xl">
         <div className="mb-20">
           <span className="text-xs font-bold tracking-[0.2em] text-muted-foreground uppercase">
@@ -65,7 +20,7 @@ export const SecondaryProjects = () => {
         </div>
 
         <div className="space-y-4">
-          {Object.entries(PROJECTS_BY_CATEGORY).map(([category, projects], index) => (
+          {Object.entries(secondaryProjects).map(([category, projects], index) => (
             <div key={category} className="border border-white/5 rounded-2xl overflow-hidden">
               <motion.button
                 onClick={() => setOpenCategory(openCategory === category ? null : category)}
@@ -96,9 +51,9 @@ export const SecondaryProjects = () => {
                     className="border-t border-white/5"
                   >
                     <div className="p-6 space-y-4">
-                      {projects.map((project, projectIndex) => (
+                      {projects.map((project: any, projectIndex: number) => (
                         <motion.div
-                          key={project.name}
+                          key={project.id}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: projectIndex * 0.1 }}
@@ -120,7 +75,7 @@ export const SecondaryProjects = () => {
                           <p className="text-sm text-white/60 mb-4">{project.details}</p>
                           
                           <div className="flex flex-wrap gap-2">
-                            {project.tech.map((tech) => (
+                            {project.tech.map((tech: string) => (
                               <span
                                 key={tech}
                                 className="px-3 py-1 bg-white/5 rounded-full text-xs font-mono text-white/80"

@@ -14,7 +14,7 @@ const CATEGORY_STYLES: Record<string, string> = {
 
 export const BlogSlider = ({ posts }: { posts: any[] }) => {
   return (
-    <section className="bg-background py-40 px-6">
+    <section id="blog" className="bg-background py-40 px-6">
       <div className="mx-auto max-w-7xl">
         <div className="flex items-end justify-between mb-20">
           <div>

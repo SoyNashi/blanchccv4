@@ -20,7 +20,7 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-6">
+    <section id="hero" className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-6">
       <div className="z-10 w-full max-w-7xl">
         <AnimatePresence mode="wait">
           <motion.div
