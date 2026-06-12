@@ -1,31 +1,57 @@
 "use client";
-import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, ChevronRight, ArrowUpRight } from "lucide-react";
+import { useState } from "react";
 
-const SECONDARY_PROJECTS = [
-  {
-    name: "Argentona Bocs",
-    description: "Plataforma de gestión y comunicación para entidades locales.",
-    category: "Web Platform",
-  },
-  {
-    name: "Instint Global",
-    description: "Estrategia digital y presencia online para marca de lifestyle.",
-    category: "Brand Strategy",
-  },
-  {
-    name: "Core System",
-    description: "Librería de componentes internos optimizados para alto rendimiento.",
-    category: "Open Source",
-  },
-  {
-    name: "Data Flow",
-    description: "Pipeline de datos automatizado para análisis de publicidad exterior.",
-    category: "Engineering",
-  },
-];
+const PROJECTS_BY_CATEGORY = {
+  "Web Platforms": [
+    {
+      name: "Argentona Bocs",
+      description: "Plataforma de gestión y comunicación para entidades locales.",
+      details: "Desarrollado con Next.js y Node.js, incluye sistema de autenticación, gestión de usuarios y panel de administración en tiempo real.",
+      tech: ["Next.js", "Node.js", "PostgreSQL", "Redis"],
+      link: "#",
+    },
+    {
+      name: "E-commerce Pro",
+      description: "Tienda online con pasarela de pagos integrada.",
+      details: "Sistema completo de e-commerce con gestión de inventario, procesamiento de pagos con Stripe y panel de administración.",
+      tech: ["React", "Node.js", "Stripe", "MongoDB"],
+      link: "#",
+    },
+  ],
+  "Brand Strategy": [
+    {
+      name: "Instint Global",
+      description: "Estrategia digital y presencia online para marca de lifestyle.",
+      details: "Rediseño completo de marca digital, desarrollo de sitio web corporativo y estrategia de contenido para redes sociales.",
+      tech: ["Webflow", "Figma", "SEO", "Analytics"],
+      link: "#",
+    },
+  ],
+  "Open Source": [
+    {
+      name: "Core System",
+      description: "Librería de componentes internos optimizados para alto rendimiento.",
+      details: "Sistema de componentes UI reutilizables con TypeScript, documentación automática y tests unitarios.",
+      tech: ["TypeScript", "React", "Storybook", "Jest"],
+      link: "#",
+    },
+  ],
+  "Engineering": [
+    {
+      name: "Data Flow",
+      description: "Pipeline de datos automatizado para análisis de publicidad exterior.",
+      details: "Sistema ETL para procesamiento de datos de publicidad exterior con visualización en tiempo real y reportes automáticos.",
+      tech: ["Python", "Apache Airflow", "Docker", "Grafana"],
+      link: "#",
+    },
+  ],
+};
 
 export const SecondaryProjects = () => {
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
+
   return (
     <section className="bg-background py-40 px-6">
       <div className="mx-auto max-w-7xl">
@@ -38,32 +64,78 @@ export const SecondaryProjects = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
-          {SECONDARY_PROJECTS.map((project, index) => (
-            <motion.div
-              key={project.name}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group relative flex items-center justify-between border-b border-white/5 py-12 transition-colors hover:border-white/20"
-            >
-              <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
-                  {project.category}
-                </span>
-                <h3 className="text-3xl font-bold text-white transition-transform group-hover:translate-x-2">
-                  {project.name}
-                </h3>
-                <p className="max-w-xl text-lg text-muted-foreground">
-                  {project.description}
-                </p>
-              </div>
-              
-              <div className="hidden h-12 w-12 items-center justify-center rounded-full border border-white/10 text-white transition-all group-hover:bg-white group-hover:text-black md:flex">
-                <ArrowUpRight className="h-5 w-5" />
-              </div>
-            </motion.div>
+        <div className="space-y-4">
+          {Object.entries(PROJECTS_BY_CATEGORY).map(([category, projects], index) => (
+            <div key={category} className="border border-white/5 rounded-2xl overflow-hidden">
+              <motion.button
+                onClick={() => setOpenCategory(openCategory === category ? null : category)}
+                className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors"
+                initial={false}
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+                    {projects.length} proyectos
+                  </span>
+                  <h3 className="text-2xl font-bold text-white">{category}</h3>
+                </div>
+                <motion.div
+                  animate={{ rotate: openCategory === category ? 90 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <ChevronRight className="h-5 w-5 text-white/40" />
+                </motion.div>
+              </motion.button>
+
+              <AnimatePresence>
+                {openCategory === category && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="border-t border-white/5"
+                  >
+                    <div className="p-6 space-y-4">
+                      {projects.map((project, projectIndex) => (
+                        <motion.div
+                          key={project.name}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: projectIndex * 0.1 }}
+                          className="bg-card border border-white/5 rounded-xl p-6 hover:border-white/10 transition-colors"
+                        >
+                          <div className="flex items-start justify-between mb-4">
+                            <div>
+                              <h4 className="text-xl font-bold text-white mb-2">{project.name}</h4>
+                              <p className="text-muted-foreground">{project.description}</p>
+                            </div>
+                            <a
+                              href={project.link}
+                              className="h-10 w-10 flex items-center justify-center rounded-full border border-white/10 text-white hover:bg-white hover:text-black transition-all"
+                            >
+                              <ArrowUpRight className="h-5 w-5" />
+                            </a>
+                          </div>
+                          
+                          <p className="text-sm text-white/60 mb-4">{project.details}</p>
+                          
+                          <div className="flex flex-wrap gap-2">
+                            {project.tech.map((tech) => (
+                              <span
+                                key={tech}
+                                className="px-3 py-1 bg-white/5 rounded-full text-xs font-mono text-white/80"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           ))}
         </div>
       </div>

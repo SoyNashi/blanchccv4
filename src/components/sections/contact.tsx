@@ -2,6 +2,13 @@
 
 import { Magnetic } from "@/components/ui/magnetic";
 
+const SOCIAL_LINKS = [
+  { name: "LinkedIn", url: "https://linkedin.com/in/nilblanch" },
+  { name: "GitHub", url: "https://github.com/nilblanch" },
+  { name: "Reddit", url: "https://reddit.com/u/nilblanch" },
+  { name: "PayPal", url: "https://paypal.me/nilblanch" },
+];
+
 export const Contact = () => {
   return (
     <section className="bg-background py-40 px-6 border-t border-white/5">
@@ -19,13 +26,15 @@ export const Contact = () => {
         </Magnetic>
         
         <div className="flex gap-8">
-          {["LinkedIn", "X / Twitter", "GitHub"].map((link) => (
-            <Magnetic key={link}>
+          {SOCIAL_LINKS.map((link) => (
+            <Magnetic key={link.name}>
               <a
-                href="#"
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-sm font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors p-4"
               >
-                {link}
+                {link.name}
               </a>
             </Magnetic>
           ))}

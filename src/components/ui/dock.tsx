@@ -4,11 +4,11 @@ import { Home, Briefcase, Award, PenTool, Mail } from "lucide-react";
 import Link from "next/link";
 
 const DOCK_ITEMS = [
-  { icon: <Home className="h-5 w-5" />, label: "Inicio", href: "#" },
-  { icon: <Briefcase className="h-5 w-5" />, label: "Proyectos", href: "#" },
-  { icon: <Award className="h-5 w-5" />, label: "Certificados", href: "#" },
+  { icon: <Home className="h-5 w-5" />, label: "Inicio", href: "/" },
+  { icon: <Briefcase className="h-5 w-5" />, label: "Proyectos", href: "/#projects" },
+  { icon: <Award className="h-5 w-5" />, label: "Certificados", href: "/certifications" },
   { icon: <PenTool className="h-5 w-5" />, label: "Blog", href: "/blog" },
-  { icon: <Mail className="h-5 w-5" />, label: "Contacto", href: "#" },
+  { icon: <Mail className="h-5 w-5" />, label: "Contacto", href: "/#contact" },
 ];
 
 export const Dock = () => {

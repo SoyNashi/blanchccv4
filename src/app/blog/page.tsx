@@ -1,4 +1,4 @@
-import { ArrowLeft, Search, ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import posts from "@/data/posts.json";
 
@@ -6,36 +6,50 @@ export default async function BlogPage() {
   const sortedPosts = posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
-    <div className="min-h-screen bg-background px-6 py-20">
-      <div className="mx-auto max-w-4xl">
-        <Link href="/" className="group flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase mb-12">
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> Volver
+    <div className="min-h-screen bg-black px-4 py-8 font-mono">
+      <div className="mx-auto max-w-5xl">
+        <Link href="/" className="group flex items-center gap-2 text-sm text-green-400 mb-8 hover:text-green-300">
+          <ArrowLeft className="h-4 w-4" /> ../
         </Link>
         
-        <h1 className="text-6xl font-bold tracking-tighter text-white mb-12">Bitácora Técnica</h1>
+        <div className="mb-8">
+          <span className="text-green-400">$</span>
+          <span className="text-white ml-2">cd ~/bitacora</span>
+        </div>
         
-        <div className="relative mb-20">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <input 
-            type="text" 
-            placeholder="Buscar en el archivo..." 
-            className="w-full bg-card border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white focus:outline-none focus:border-white/20 transition-colors"
-          />
+        <div className="mb-8">
+          <span className="text-green-400">$</span>
+          <span className="text-white ml-2">ls -la</span>
         </div>
 
-        <div className="flex flex-col gap-12">
+        <div className="bg-gray-900 border border-green-500/30 rounded-lg p-4 mb-8">
+          <div className="text-green-400 mb-2">total {sortedPosts.length}</div>
+          <div className="text-gray-400 mb-2">drwxr-xr-x  2 nil nil 4096 Jun 12 16:27 .</div>
+          <div className="text-gray-400 mb-2">drwxr-xr-x  3 nil nil 4096 Jun 12 16:27 ..</div>
           {sortedPosts.map((post) => (
-            <Link key={post.id} href={`/blog/${post.slug}`} className="group border-b border-white/5 pb-12">
-              <div className="flex justify-between items-start">
-                <div>
-                  <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">{post.category}</span>
-                  <h3 className="mt-4 text-3xl font-bold text-white group-hover:text-blue-400 transition-colors">{post.title}</h3>
-                  <p className="mt-4 text-muted-foreground line-clamp-2 max-w-2xl">{post.description}</p>
-                </div>
-                <ArrowRight className="h-6 w-6 text-white/20 group-hover:text-white transition-colors" />
-              </div>
-            </Link>
+            <div key={post.id} className="flex items-center gap-4 text-white hover:bg-green-500/10 px-2 py-1 rounded">
+              <span className="text-green-400">-rw-r--r--</span>
+              <span className="text-yellow-400 w-12">{post.likes} likes</span>
+              <span className="text-blue-400 w-24 text-xs uppercase">{post.category}</span>
+              <Link 
+                href={`/blog/${post.slug}`} 
+                className="text-green-400 hover:text-green-300 hover:underline flex-1"
+              >
+                {post.slug}.md
+              </Link>
+              <span className="text-gray-500 text-xs">{new Date(post.createdAt).toLocaleDateString()}</span>
+            </div>
           ))}
+        </div>
+
+        <div className="mb-8">
+          <span className="text-green-400">$</span>
+          <span className="text-white ml-2">cat README.md</span>
+        </div>
+
+        <div className="bg-gray-900 border border-green-500/30 rounded-lg p-4 text-gray-300 text-sm">
+          <p>Bitácora técnica de desarrollo web, seguridad y arquitectura de sistemas.</p>
+          <p className="mt-2">Total de entradas: {sortedPosts.length}</p>
         </div>
       </div>
     </div>
