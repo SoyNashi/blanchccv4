@@ -61,9 +61,6 @@ export default function BlogPage() {
                 </p>
                 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-sm text-white/60">
-                    <span>❤️ {post.likes} likes</span>
-                  </div>
                   <span className="text-blue-400 font-medium group-hover:text-blue-300 transition-colors">
                     Leer artículo →
                   </span>

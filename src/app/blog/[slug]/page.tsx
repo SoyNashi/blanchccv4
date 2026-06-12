@@ -2,6 +2,8 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import posts from "@/data/posts.json";
 import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -38,56 +40,41 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-black px-4 py-8 font-mono">
-      <div className="mx-auto max-w-5xl">
-        <Link href="/blog" className="group flex items-center gap-2 text-sm text-green-400 mb-8 hover:text-green-300">
-          <ArrowLeft className="h-4 w-4" /> ../bitacora
+    <div className="min-h-screen bg-background px-6 py-20">
+      <div className="mx-auto max-w-4xl">
+        <Link href="/blog" className="group flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase mb-12">
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> Volver al blog
         </Link>
         
-        <div className="mb-8">
-          <span className="text-green-400">$</span>
-          <span className="text-white ml-2">cat {post.slug}.md</span>
-        </div>
-
-        <div className="bg-gray-900 border border-green-500/30 rounded-lg p-6 mb-8">
-          <div className="text-gray-500 mb-4">
-            <span className="text-green-400">#</span> {post.title}
+        <article className="bg-card border border-white/5 rounded-2xl p-8 md:p-12">
+          <div className="flex items-start justify-between mb-6">
+            <span className="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold uppercase tracking-wider">
+              {post.category}
+            </span>
+            <span className="text-white/40 text-sm">{new Date(post.createdAt).toLocaleDateString()}</span>
           </div>
           
-          <div className="flex gap-4 mb-6 text-sm">
-            <span className="text-blue-400 uppercase">{post.category}</span>
-            <span className="text-yellow-400">{post.likes} likes</span>
-            <span className="text-gray-400">{new Date(post.createdAt).toLocaleDateString()}</span>
-          </div>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-white mb-6">
+            {post.title}
+          </h1>
+          
+          <p className="text-xl text-muted-foreground mb-12 leading-relaxed">
+            {post.description}
+          </p>
 
-          <div className="border-t border-green-500/20 pt-6">
-            <div className="text-gray-500 mb-2">
-              <span className="text-green-400">##</span> Descripción
+          <div className="border-t border-white/10 pt-8">
+            <div className="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-white/90 prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-code:text-blue-400 prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {post.content}
+              </ReactMarkdown>
             </div>
-            <p className="text-gray-300 leading-relaxed">{post.description}</p>
           </div>
+        </article>
 
-          <div className="border-t border-green-500/20 pt-6 mt-6">
-            <div className="text-gray-500 mb-2">
-              <span className="text-green-400">##</span> Contenido
-            </div>
-            <p className="text-gray-300 leading-relaxed">{post.content}</p>
-          </div>
-        </div>
-
-        <div className="mb-8">
-          <span className="text-green-400">$</span>
-          <span className="text-white ml-2">git log --oneline -1</span>
-        </div>
-
-        <div className="bg-gray-900 border border-green-500/30 rounded-lg p-4 text-gray-400 text-sm">
-          <span className="text-yellow-400">commit</span> {post.slug.slice(0, 7)} (HEAD -&gt; main)
-          <br />
-          <span className="text-blue-400">Author:</span> Nil Blanch &lt;hola@blanch.cc&gt;
-          <br />
-          <span className="text-purple-400">Date:</span> {new Date(post.createdAt).toLocaleString()}
-          <br />
-          <span className="text-green-400">    </span> {post.title}
+        <div className="mt-12 flex items-center justify-between">
+          <Link href="/blog" className="text-blue-400 font-medium hover:text-blue-300 transition-colors">
+            ← Volver a todos los artículos
+          </Link>
         </div>
       </div>
     </div>
