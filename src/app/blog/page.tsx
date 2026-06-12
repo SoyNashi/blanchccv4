@@ -1,25 +1,9 @@
 import { ArrowLeft, Search, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
+import posts from "@/data/posts.json";
 
 export default async function BlogPage() {
-  const postsDirectory = path.join(process.cwd(), "src/data/posts");
-  const fileNames = fs.readdirSync(postsDirectory);
-  const posts = fileNames
-    .map(fileName => {
-      const fullPath = path.join(postsDirectory, fileName);
-      const fileContents = fs.readFileSync(fullPath, "utf8");
-      const { data, content } = matter(fileContents);
-      return {
-        id: fileName.replace(/\.md$/, ""),
-        slug: fileName.replace(/\.md$/, ""),
-        ...data,
-        content,
-      };
-    })
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const sortedPosts = posts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
     <div className="min-h-screen bg-background px-6 py-20">
@@ -40,7 +24,7 @@ export default async function BlogPage() {
         </div>
 
         <div className="flex flex-col gap-12">
-          {posts.map((post) => (
+          {sortedPosts.map((post) => (
             <Link key={post.id} href={`/blog/${post.slug}`} className="group border-b border-white/5 pb-12">
               <div className="flex justify-between items-start">
                 <div>
