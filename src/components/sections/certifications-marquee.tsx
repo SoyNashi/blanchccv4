@@ -1,7 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 export const CertificationsMarquee = ({ items }: { items: any[] }) => {
@@ -34,12 +33,11 @@ export const CertificationsMarquee = ({ items }: { items: any[] }) => {
         >
           {doubledItems.map((cert, idx) => (
             <div key={idx} className="flex items-center gap-6 group">
-              <div className="relative h-12 w-12 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
-                <Image
+              <div className="h-12 w-12 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                <img
                   src={`/certifications/${cert.icon}.svg`}
                   alt={cert.name}
-                  fill
-                  className="object-contain"
+                  className="h-10 w-10 object-contain"
                 />
               </div>
               <span className="text-3xl font-bold tracking-tighter text-white/20 group-hover:text-white transition-colors duration-500 uppercase">

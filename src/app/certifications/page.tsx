@@ -1,6 +1,5 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import certifications from "@/data/certifications.json";
 
 export default function CertificationsPage() {
@@ -21,12 +20,11 @@ export default function CertificationsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedCerts.map((cert) => (
             <div key={cert.id} className="bg-card border border-white/5 rounded-2xl p-8 hover:border-white/20 transition-all group">
-              <div className="relative h-16 w-16 mb-6">
-                <Image
+              <div className="h-16 w-16 mb-6 flex items-center justify-center">
+                <img
                   src={`/certifications/${cert.icon}.svg`}
                   alt={cert.name}
-                  fill
-                  className="object-contain"
+                  className="h-14 w-14 object-contain"
                 />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">{cert.name}</h3>
