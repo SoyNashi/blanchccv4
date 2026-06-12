@@ -1,14 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import certifications from "@/data/certifications.json";
-
-const ICONS: Record<string, string> = {
-  aws: "☁️",
-  gcp: "🔷",
-  mongodb: "🍃",
-  react: "⚛️",
-  nextjs: "▲",
-};
 
 export default function CertificationsPage() {
   const sortedCerts = certifications.sort((a, b) => a.order - b.order);
@@ -28,7 +21,14 @@ export default function CertificationsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedCerts.map((cert) => (
             <div key={cert.id} className="bg-card border border-white/5 rounded-2xl p-8 hover:border-white/20 transition-all group">
-              <div className="text-5xl mb-6">{ICONS[cert.icon] || "📜"}</div>
+              <div className="relative h-16 w-16 mb-6">
+                <Image
+                  src={`/certifications/${cert.icon}.svg`}
+                  alt={cert.name}
+                  fill
+                  className="object-contain"
+                />
+              </div>
               <h3 className="text-xl font-bold text-white mb-2">{cert.name}</h3>
               <p className="text-muted-foreground mb-4">{cert.issuer}</p>
               <div className="flex items-center justify-between text-sm">
