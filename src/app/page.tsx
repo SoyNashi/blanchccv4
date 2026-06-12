@@ -25,7 +25,7 @@ export default async function Home() {
       <Hero />
       <ProjectsWall projects={allProjects} />
       <EditorialServices services={allServices} />
-      <CertificationsMarquee items={certs.map(c => ({ name: c.name, logo: c.logo }))} />
+      <CertificationsMarquee items={certs.map(c => ({ name: c.name, icon: c.icon }))} />
       <SecondaryProjects />
       <BlogSlider posts={latestPosts} />
       <Contact />

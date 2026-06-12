@@ -38,6 +38,10 @@ export const CertificationsMarquee = ({ items }: { items: any[] }) => {
                   src={`/certifications/${cert.icon}.svg`}
                   alt={cert.name}
                   className="h-10 w-10 object-contain"
+                  onError={(e) => {
+                    console.error(`Error loading image: /certifications/${cert.icon}.svg`);
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
                 />
               </div>
               <span className="text-3xl font-bold tracking-tighter text-white/20 group-hover:text-white transition-colors duration-500 uppercase">
