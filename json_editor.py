@@ -112,6 +112,7 @@ class JSONEditor:
         
         self.create_visual_view()
         self.create_text_editor()
+        self.create_dashboard()
         
         # Línea decorativa
         tk.Frame(main_frame, bg='#00ff00', height=2).pack(fill=tk.X, pady=(20, 15))
@@ -119,6 +120,10 @@ class JSONEditor:
         # Botones de acción
         action_frame = tk.Frame(main_frame, bg='#0a0a0a')
         action_frame.pack(fill=tk.X, pady=(0, 15))
+        
+        btn_style = {'font': ('Consolas', 10, 'bold'), 'bg': '#00ff00', 'fg': '#000000', 
+                     'activebackground': '#00cc00', 'activeforeground': '#000000',
+                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0}
         
         tk.Button(action_frame, text="+ ADD", command=self.add_element, width=15, **btn_style).pack(side=tk.LEFT, padx=(0, 10))
         tk.Button(action_frame, text="✏ EDIT", command=self.edit_element, width=15, **btn_style).pack(side=tk.LEFT, padx=(0, 10))
@@ -175,6 +180,87 @@ class JSONEditor:
         
         text_scroll.config(command=self.text_editor.yview)
     
+    def create_dashboard(self):
+        # Frame principal del dashboard
+        dash_main = tk.Frame(self.dashboard_frame, bg='#0a0a0a')
+        dash_main.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        
+        # Título del dashboard
+        title_frame = tk.Frame(dash_main, bg='#0a0a0a')
+        title_frame.pack(fill=tk.X, pady=(0, 30))
+        
+        tk.Label(title_frame, text="DASHBOARD // ESTADÍSTICAS Y ACCIONES RÁPIDAS", 
+                font=('Consolas', 16, 'bold'), bg='#0a0a0a', fg='#00ff00').pack(anchor=tk.W)
+        
+        # Frame para estadísticas
+        stats_frame = tk.Frame(dash_main, bg='#0a0a0a')
+        stats_frame.pack(fill=tk.X, pady=(0, 30))
+        
+        # Cargar estadísticas
+        self.dashboard_stats = {}
+        for name, file in self.json_files.items():
+            try:
+                file_path = self.base_path / file
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        self.dashboard_stats[name] = len(data)
+                    elif isinstance(data, dict):
+                        if file == 'secondary-projects.json':
+                            total = sum(len(v) if isinstance(v, list) else 1 for v in data.values())
+                            self.dashboard_stats[name] = total
+                        else:
+                            self.dashboard_stats[name] = len(data)
+            except:
+                self.dashboard_stats[name] = 0
+        
+        # Crear tarjetas de estadísticas
+        stats_grid = tk.Frame(stats_frame, bg='#0a0a0a')
+        stats_grid.pack(fill=tk.X)
+        
+        for idx, (name, count) in enumerate(self.dashboard_stats.items()):
+            card = tk.Frame(stats_grid, bg='#1a1a1a', bd=2, relief=tk.FLAT, highlightbackground='#00ff00', highlightthickness=1)
+            card.grid(row=0, column=idx, padx=10, pady=10, sticky='nsew')
+            stats_grid.grid_columnconfigure(idx, weight=1)
+            
+            tk.Label(card, text=name.upper(), font=('Consolas', 10, 'bold'), 
+                    bg='#1a1a1a', fg='#00aa00').pack(pady=(15, 5))
+            tk.Label(card, text=str(count), font=('Consolas', 24, 'bold'), 
+                    bg='#1a1a1a', fg='#00ff00').pack(pady=(0, 15))
+            
+            # Hacer la tarjeta clickeable
+            card.bind('<Button-1>', lambda e, f=self.json_files[name]: self.load_specific_file(f))
+        
+        # Frame para acciones rápidas
+        actions_frame = tk.Frame(dash_main, bg='#0a0a0a')
+        actions_frame.pack(fill=tk.BOTH, expand=True)
+        
+        tk.Label(actions_frame, text="ACCIONES RÁPIDAS", 
+                font=('Consolas', 14, 'bold'), bg='#0a0a0a', fg='#00ff00').pack(anchor=tk.W, pady=(0, 20))
+        
+        # Botones grandes para cargar archivos
+        btn_grid = tk.Frame(actions_frame, bg='#0a0a0a')
+        btn_grid.pack(fill=tk.BOTH, expand=True)
+        
+        btn_style_large = {'font': ('Consolas', 12, 'bold'), 'bg': '#00ff00', 'fg': '#000000', 
+                          'activebackground': '#00cc00', 'activeforeground': '#000000',
+                          'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 30, 'pady': 15}
+        
+        for idx, (name, file) in enumerate(self.json_files.items()):
+            btn = tk.Button(btn_grid, text=f"📂 {name.upper()}", 
+                          command=lambda f=file: self.load_specific_file(f),
+                          **btn_style_large)
+            btn.grid(row=idx // 2, column=idx % 2, padx=10, pady=10, sticky='nsew')
+        
+        btn_grid.grid_columnconfigure(0, weight=1)
+        btn_grid.grid_columnconfigure(1, weight=1)
+        btn_grid.grid_rowconfigure(0, weight=1)
+        btn_grid.grid_rowconfigure(1, weight=1)
+        btn_grid.grid_rowconfigure(2, weight=1)
+    
+    def show_dashboard(self):
+        self.notebook.select(0)
+    
     def load_specific_file(self, json_file):
         # Verificar si hay cambios sin guardar
         if self.unsaved_changes:
@@ -202,6 +288,9 @@ class JSONEditor:
                     btn.config(bg='#00ff00', fg='#000000', activebackground='#00cc00')
                 else:
                     btn.config(bg='#1a1a1a', fg='#00ff00', activebackground='#00ff00')
+            
+            # Cambiar automáticamente a la vista visual al cargar un archivo
+            self.notebook.select(1)
             
         except FileNotFoundError:
             messagebox.showerror("Error", f"No se encontró el archivo: {file_path}")
