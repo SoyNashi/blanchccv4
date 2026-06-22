@@ -18,9 +18,9 @@ export const Contact = () => {
         </span>
         
         <Magnetic>
-          <a href="mailto:hola@blanch.cc">
+          <a href="mailto:nil@blanch.cc">
             <h2 className="text-huge font-bold tracking-tighter text-white mb-12 cursor-pointer hover:text-white/80 transition-colors">
-              HOLA@BLANCH.CC
+              NIL@BLANCH.CC
             </h2>
           </a>
         </Magnetic>

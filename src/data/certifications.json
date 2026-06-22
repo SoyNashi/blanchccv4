@@ -6,7 +6,8 @@
     "order": 1,
     "issuer": "Amazon Web Services",
     "date": "2023",
-    "credentialId": "AWS-ASA-123456"
+    "credentialId": "AWS-ASA-123456",
+    "badge": null
   },
   {
     "id": "2",
@@ -15,7 +16,8 @@
     "order": 2,
     "issuer": "Google Cloud",
     "date": "2023",
-    "credentialId": "GCP-PRO-789012"
+    "credentialId": "GCP-PRO-789012",
+    "badge": null
   },
   {
     "id": "3",
@@ -24,7 +26,8 @@
     "order": 3,
     "issuer": "MongoDB",
     "date": "2022",
-    "credentialId": "MONGO-DEV-345678"
+    "credentialId": "MONGO-DEV-345678",
+    "badge": null
   },
   {
     "id": "4",
@@ -33,7 +36,8 @@
     "order": 4,
     "issuer": "Meta",
     "date": "2023",
-    "credentialId": "REACT-ADV-901234"
+    "credentialId": "REACT-ADV-901234",
+    "badge": null
   },
   {
     "id": "5",
@@ -42,6 +46,7 @@
     "order": 5,
     "issuer": "Vercel",
     "date": "2024",
-    "credentialId": "NEXTJS-CERT-567890"
+    "credentialId": "NEXTJS-CERT-567890",
+    "badge": null
   }
 ]

@@ -33,20 +33,30 @@ export const CertificationsMarquee = ({ items }: { items: any[] }) => {
         >
           {doubledItems.map((cert, idx) => (
             <div key={idx} className="flex items-center gap-6 group">
-              <div className="h-12 w-12 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+              {cert.badge ? (
                 <img
-                  src={`/certifications/${cert.icon}.svg`}
+                  src={cert.badge}
                   alt={cert.name}
-                  className="h-10 w-10 object-contain"
-                  onError={(e) => {
-                    console.error(`Error loading image: /certifications/${cert.icon}.svg`);
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
+                  className="h-16 w-auto object-contain grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
                 />
-              </div>
-              <span className="text-3xl font-bold tracking-tighter text-white/20 group-hover:text-white transition-colors duration-500 uppercase">
-                {cert.name}
-              </span>
+              ) : (
+                <>
+                  <div className="h-12 w-12 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                    <img
+                      src={`/certifications/${cert.icon}.svg`}
+                      alt={cert.name}
+                      className="h-10 w-10 object-contain"
+                      onError={(e) => {
+                        console.error(`Error loading image: /certifications/${cert.icon}.svg`);
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  </div>
+                  <span className="text-3xl font-bold tracking-tighter text-white/20 group-hover:text-white transition-colors duration-500 uppercase">
+                    {cert.name}
+                  </span>
+                </>
+              )}
             </div>
           ))}
         </motion.div>

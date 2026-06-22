@@ -50,6 +50,33 @@ export const Hero = () => {
         </motion.div>
       </div>
 
+      {/* SVG Logo con efecto flotante */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+        animate={{ opacity: 0.15, scale: 1, rotate: 0 }}
+        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none"
+      >
+        <motion.div
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, 5, -5, 0],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="w-[600px] h-[600px] opacity-10"
+        >
+          <img
+            src="/path2.svg"
+            alt="Logo"
+            className="w-full h-full object-contain"
+          />
+        </motion.div>
+      </motion.div>
+
       <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/[0.03] to-transparent opacity-50" />
     </section>
   );

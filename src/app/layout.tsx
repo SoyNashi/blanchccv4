@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export const metadata: Metadata = {
   title: "Nil Blanch | Digital Product Builder",
   description: "Especialista en desarrollo web, ecommerce y SEO técnico. Construyendo productos digitales reales.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
