@@ -1,6 +1,6 @@
 import json
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
+from tkinter import ttk, messagebox, filedialog, simpledialog
 from pathlib import Path
 import re
 
@@ -36,69 +36,107 @@ class JSONEditor:
         
         self.current_data = None
         self.current_file = None
+        self.unsaved_changes = False
+        self.showing_dashboard = True
         
         self.create_ui()
+        self.show_dashboard()
     
     def create_ui(self):
         # Frame principal
-        main_frame = ttk.Frame(self.root)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        main_frame = tk.Frame(self.root, bg='#0a0a0a')
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=25, pady=25)
         
-        # Header
-        header_frame = ttk.Frame(main_frame)
-        header_frame.pack(fill=tk.X, pady=(0, 20))
+        # Header con estilo futurista
+        header_frame = tk.Frame(main_frame, bg='#0a0a0a')
+        header_frame.pack(fill=tk.X, pady=(0, 25))
         
-        title_label = ttk.Label(header_frame, text="Editor de JSON - Portfolio Nil Blanch", font=('Arial', 16, 'bold'))
+        # Línea decorativa
+        tk.Frame(header_frame, bg='#00ff00', height=2).pack(fill=tk.X, pady=(0, 15))
+        
+        title_label = tk.Label(header_frame, text="JSON EDITOR // PORTFOLIO NIL BLANCH", 
+                              font=('Consolas', 18, 'bold'), bg='#0a0a0a', fg='#00ff00')
         title_label.pack(side=tk.LEFT)
         
-        # Selector de archivo
-        selector_frame = ttk.Frame(main_frame)
+        # Selector de archivo con estilo - botones grandes
+        selector_frame = tk.Frame(main_frame, bg='#0a0a0a')
         selector_frame.pack(fill=tk.X, pady=(0, 20))
         
-        ttk.Label(selector_frame, text="Seleccionar archivo:", font=('Arial', 11, 'bold')).pack(side=tk.LEFT, padx=(0, 10))
+        # Grid de botones para cada archivo
+        self.file_buttons = {}
+        button_grid = tk.Frame(selector_frame, bg='#0a0a0a')
+        button_grid.pack(fill=tk.X)
         
-        self.file_var = tk.StringVar()
-        file_combo = ttk.Combobox(selector_frame, textvariable=self.file_var, values=list(self.json_files.keys()), state='readonly', width=25, font=('Arial', 10))
-        file_combo.pack(side=tk.LEFT, padx=(0, 10))
-        file_combo.bind('<<ComboboxSelected>>', self.load_file)
+        btn_style_large = {'font': ('Consolas', 12, 'bold'), 'bg': '#1a1a1a', 'fg': '#00ff00', 
+                          'activebackground': '#00ff00', 'activeforeground': '#000000',
+                          'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 2, 'padx': 25, 'pady': 12,
+                          'highlightbackground': '#00ff00', 'highlightthickness': 1}
         
-        load_btn = ttk.Button(selector_frame, text="Cargar", command=self.load_file, width=10)
-        load_btn.pack(side=tk.LEFT, padx=(0, 10))
+        for idx, (name, file) in enumerate(self.json_files.items()):
+            btn = tk.Button(button_grid, text=name, 
+                          command=lambda f=file: self.load_specific_file(f),
+                          **btn_style_large)
+            btn.grid(row=0, column=idx, padx=8, pady=5, sticky='ew')
+            button_grid.grid_columnconfigure(idx, weight=1)
+            self.file_buttons[file] = btn
         
-        save_btn = ttk.Button(selector_frame, text="Guardar", command=self.save_file, width=10)
+        # Botones de acción
+        action_btn_frame = tk.Frame(selector_frame, bg='#0a0a0a')
+        action_btn_frame.pack(fill=tk.X, pady=(15, 0))
+        
+        btn_style_action = {'font': ('Consolas', 11, 'bold'), 'bg': '#00ff00', 'fg': '#000000', 
+                           'activebackground': '#00cc00', 'activeforeground': '#000000',
+                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 25, 'pady': 10}
+        
+        save_btn = tk.Button(action_btn_frame, text="💾 SAVE", command=self.save_file, **btn_style_action)
         save_btn.pack(side=tk.LEFT, padx=(0, 10))
         
-        refresh_btn = ttk.Button(selector_frame, text="Recargar", command=self.refresh_file, width=10)
+        refresh_btn = tk.Button(action_btn_frame, text="🔄 REFRESH", command=self.refresh_file, **btn_style_action)
         refresh_btn.pack(side=tk.LEFT)
         
         # Notebook para diferentes vistas
         self.notebook = ttk.Notebook(main_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True)
         
+        # Vista dashboard
+        self.dashboard_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.dashboard_frame, text='DASHBOARD')
+        
         # Vista visual por tipo de JSON
         self.visual_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.visual_frame, text='Vista Visual')
+        self.notebook.add(self.visual_frame, text='VISUAL VIEW')
         
         # Editor de texto para JSON raw
         self.text_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.text_frame, text='JSON Raw')
+        self.notebook.add(self.text_frame, text='RAW JSON')
         
         self.create_visual_view()
         self.create_text_editor()
         
+        # Línea decorativa
+        tk.Frame(main_frame, bg='#00ff00', height=2).pack(fill=tk.X, pady=(20, 15))
+        
         # Botones de acción
-        action_frame = ttk.Frame(main_frame)
-        action_frame.pack(fill=tk.X, pady=(20, 0))
+        action_frame = tk.Frame(main_frame, bg='#0a0a0a')
+        action_frame.pack(fill=tk.X, pady=(0, 15))
         
-        ttk.Button(action_frame, text="+ Añadir", command=self.add_element, width=12).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(action_frame, text="✏ Editar", command=self.edit_element, width=12).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Button(action_frame, text="🗑 Eliminar", command=self.delete_element, width=12).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(action_frame, text="+ ADD", command=self.add_element, width=15, **btn_style).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(action_frame, text="✏ EDIT", command=self.edit_element, width=15, **btn_style).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(action_frame, text="🗑 DELETE", command=self.delete_element, width=15, **btn_style).pack(side=tk.LEFT, padx=(0, 10))
         
-        # Status bar
+        # Status bar con estilo
         self.status_var = tk.StringVar()
-        self.status_var.set("Listo - Selecciona un archivo para comenzar")
-        status_bar = ttk.Label(main_frame, textvariable=self.status_var, relief=tk.SUNKEN, font=('Arial', 9))
-        status_bar.pack(fill=tk.X, pady=(10, 0))
+        self.status_var.set("READY // SELECT A FILE TO BEGIN")
+        status_bar = tk.Label(main_frame, textvariable=self.status_var, 
+                            font=('Consolas', 9), bg='#0a0a0a', fg='#00aa00', 
+                            relief=tk.FLAT, pady=10)
+        status_bar.pack(fill=tk.X)
+        
+        # Indicador de cambios sin guardar
+        self.unsaved_label = tk.Label(main_frame, text="", 
+                                     font=('Consolas', 10, 'bold'), 
+                                     bg='#0a0a0a', fg='#ff6600')
+        self.unsaved_label.pack(fill=tk.X, pady=(5, 0))
     
     def create_visual_view(self):
         # Scrollbars
@@ -131,15 +169,20 @@ class JSONEditor:
         self.text_editor = tk.Text(self.text_frame, yscrollcommand=text_scroll.set, bg='#0a0a0a', fg='#00ff00', font=('Consolas', 11), insertbackground='#00ff00')
         self.text_editor.pack(fill=tk.BOTH, expand=True)
         
+        # Detectar cambios en el editor de texto
+        self.text_editor.bind('<KeyRelease>', lambda e: self.mark_unsaved())
+        self.text_editor.bind('<ButtonRelease-1>', lambda e: self.mark_unsaved())
+        
         text_scroll.config(command=self.text_editor.yview)
     
-    def load_file(self, event=None):
-        file_name = self.file_var.get()
-        if not file_name:
-            messagebox.showwarning("Advertencia", "Selecciona un archivo primero")
-            return
+    def load_specific_file(self, json_file):
+        # Verificar si hay cambios sin guardar
+        if self.unsaved_changes:
+            if not messagebox.askyesno("Cambios sin guardar", "Hay cambios sin guardar. ¿Deseas guardar antes de cargar otro archivo?"):
+                self.unsaved_changes = False
+            else:
+                self.save_file()
         
-        json_file = self.json_files[file_name]
         file_path = self.base_path / json_file
         
         try:
@@ -150,6 +193,15 @@ class JSONEditor:
             self.update_visual_view()
             self.update_text_editor()
             self.status_var.set(f"Archivo cargado: {json_file}")
+            self.unsaved_changes = False
+            self.unsaved_label.config(text="")
+            
+            # Actualizar botones para mostrar el archivo activo
+            for file, btn in self.file_buttons.items():
+                if file == json_file:
+                    btn.config(bg='#00ff00', fg='#000000', activebackground='#00cc00')
+                else:
+                    btn.config(bg='#1a1a1a', fg='#00ff00', activebackground='#00ff00')
             
         except FileNotFoundError:
             messagebox.showerror("Error", f"No se encontró el archivo: {file_path}")
@@ -157,6 +209,15 @@ class JSONEditor:
         except json.JSONDecodeError:
             messagebox.showerror("Error", f"Error al decodificar JSON: {file_path}")
             self.status_var.set("Error: JSON inválido")
+    
+    def load_file(self, event=None):
+        file_name = self.file_var.get()
+        if not file_name:
+            messagebox.showwarning("Advertencia", "Selecciona un archivo primero")
+            return
+        
+        json_file = self.json_files[file_name]
+        self.load_specific_file(json_file)
     
     def refresh_file(self):
         if self.current_file:
@@ -185,8 +246,8 @@ class JSONEditor:
     def create_posts_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 350
-        card_height = 200
+        card_width = 380
+        card_height = 220
         gap = 20
         
         for idx, post in enumerate(self.current_data):
@@ -194,49 +255,69 @@ class JSONEditor:
                 x_pos = 20
                 y_pos += card_height + gap
             
-            # Card background
+            # Card background con gradiente simulado
             card = self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                fill='#1a1a1a', outline='#00ff00', width=2,
+                fill='#0d1117', outline='#00ff00', width=2,
                 tags=('card', f'post_{idx}')
             )
             
-            # Title
+            # Title con wrapping
+            title = post.get('title', 'Sin título')
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + 15,
-                text=post.get('title', 'Sin título'),
-                font=('Consolas', 12, 'bold'),
+                x_pos + 15, y_pos + 15,
+                text=title,
+                font=('Consolas', 11, 'bold'),
                 fill='#00ff00', anchor='nw',
+                width=card_width - 30,
                 tags=('card', f'post_{idx}')
             )
             
-            # Category
+            # Category badge
+            category = post.get('category', '')
+            self.visual_canvas.create_rectangle(
+                x_pos + 15, y_pos + 50, x_pos + 15 + len(category) * 8 + 20, y_pos + 70,
+                fill='#00ff00', outline='#00ff00',
+                tags=('card', f'post_{idx}')
+            )
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + 45,
-                text=f"Category: {post.get('category', '')}",
-                font=('Consolas', 9),
-                fill='#00aa00', anchor='nw',
+                x_pos + 25, y_pos + 52,
+                text=category.upper(),
+                font=('Consolas', 8, 'bold'),
+                fill='#000000', anchor='nw',
                 tags=('card', f'post_{idx}')
             )
             
-            # Description (truncated)
-            desc = post.get('description', '')[:80] + '...' if len(post.get('description', '')) > 80 else post.get('description', '')
+            # Description con wrapping
+            desc = post.get('description', '')
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + 65,
+                x_pos + 15, y_pos + 80,
                 text=desc,
                 font=('Consolas', 9),
                 fill='#00cc00', anchor='nw',
+                width=card_width - 30,
                 tags=('card', f'post_{idx}')
             )
             
             # Date
+            date = post.get('createdAt', '')
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + card_height - 25,
-                text=post.get('createdAt', ''),
+                x_pos + 15, y_pos + card_height - 25,
+                text=date,
                 font=('Consolas', 8),
                 fill='#008800', anchor='nw',
                 tags=('card', f'post_{idx}')
             )
+            
+            # Featured indicator
+            if post.get('featured', False):
+                self.visual_canvas.create_text(
+                    x_pos + card_width - 25, y_pos + 15,
+                    text="★",
+                    font=('Consolas', 14),
+                    fill='#ffff00', anchor='ne',
+                    tags=('card', f'post_{idx}')
+                )
             
             self.visual_elements.append({'type': 'post', 'index': idx, 'data': post, 'x': x_pos, 'y': y_pos, 'width': card_width, 'height': card_height})
             x_pos += card_width + gap
@@ -247,8 +328,8 @@ class JSONEditor:
     def create_projects_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 300
-        card_height = 180
+        card_width = 320
+        card_height = 200
         gap = 20
         
         for idx, project in enumerate(self.current_data):
@@ -256,42 +337,45 @@ class JSONEditor:
                 x_pos = 20
                 y_pos += card_height + gap
             
-            # Card background
+            # Card background con color personalizado
             color = project.get('color', '#00ff00')
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                fill='#1a1a1a', outline=color, width=3,
+                fill='#0d1117', outline=color, width=3,
                 tags=('card', f'project_{idx}')
             )
             
-            # Title
+            # Title con wrapping
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + 15,
+                x_pos + 15, y_pos + 15,
                 text=project.get('title', 'Sin título'),
                 font=('Consolas', 11, 'bold'),
                 fill='#00ff00', anchor='nw',
+                width=card_width - 30,
                 tags=('card', f'project_{idx}')
             )
             
-            # Description (truncated)
-            desc = project.get('description', '')[:60] + '...' if len(project.get('description', '')) > 60 else project.get('description', '')
+            # Description con wrapping
+            desc = project.get('description', '')
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + 40,
+                x_pos + 15, y_pos + 45,
                 text=desc,
                 font=('Consolas', 9),
                 fill='#00cc00', anchor='nw',
+                width=card_width - 30,
                 tags=('card', f'project_{idx}')
             )
             
-            # Tags
+            # Tags con wrapping
             tags = project.get('tags', [])
             if tags:
-                tags_text = ', '.join(tags[:3])
+                tags_text = ', '.join(tags[:4])
                 self.visual_canvas.create_text(
-                    x_pos + 10, y_pos + card_height - 30,
+                    x_pos + 15, y_pos + card_height - 35,
                     text=tags_text,
                     font=('Consolas', 8),
-                    fill='#00aa00', anchor='nw',
+                    fill=color, anchor='nw',
+                    width=card_width - 30,
                     tags=('card', f'project_{idx}')
                 )
             
@@ -303,8 +387,8 @@ class JSONEditor:
     def create_certifications_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 280
-        card_height = 120
+        card_width = 300
+        card_height = 140
         gap = 15
         
         for idx, cert in enumerate(self.current_data):
@@ -315,36 +399,48 @@ class JSONEditor:
             # Card background
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                fill='#1a1a1a', outline='#00ff00', width=2,
+                fill='#0d1117', outline='#00ff00', width=2,
                 tags=('card', f'cert_{idx}')
             )
             
-            # Name
+            # Name con wrapping
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + 15,
+                x_pos + 15, y_pos + 15,
                 text=cert.get('name', 'Sin nombre'),
                 font=('Consolas', 10, 'bold'),
                 fill='#00ff00', anchor='nw',
+                width=card_width - 30,
                 tags=('card', f'cert_{idx}')
             )
             
             # Issuer
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + 40,
+                x_pos + 15, y_pos + 45,
                 text=f"Issuer: {cert.get('issuer', '')}",
                 font=('Consolas', 9),
                 fill='#00aa00', anchor='nw',
+                width=card_width - 30,
                 tags=('card', f'cert_{idx}')
             )
             
             # Date
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + card_height - 25,
+                x_pos + 15, y_pos + card_height - 25,
                 text=f"Date: {cert.get('date', '')}",
                 font=('Consolas', 8),
                 fill='#008800', anchor='nw',
                 tags=('card', f'cert_{idx}')
             )
+            
+            # Badge indicator
+            if cert.get('badge'):
+                self.visual_canvas.create_text(
+                    x_pos + card_width - 15, y_pos + 15,
+                    text="●",
+                    font=('Consolas', 12),
+                    fill='#ffff00', anchor='ne',
+                    tags=('card', f'cert_{idx}')
+                )
             
             self.visual_elements.append({'type': 'cert', 'index': idx, 'data': cert, 'x': x_pos, 'y': y_pos, 'width': card_width, 'height': card_height})
             x_pos += card_width + gap
@@ -354,8 +450,8 @@ class JSONEditor:
     def create_services_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 320
-        card_height = 100
+        card_width = 340
+        card_height = 120
         gap = 15
         
         for idx, service in enumerate(self.current_data):
@@ -366,26 +462,38 @@ class JSONEditor:
             # Card background
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                fill='#1a1a1a', outline='#00ff00', width=2,
+                fill='#0d1117', outline='#00ff00', width=2,
                 tags=('card', f'service_{idx}')
             )
             
-            # Title
+            # Title con wrapping
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + 15,
+                x_pos + 15, y_pos + 15,
                 text=service.get('title', 'Sin título'),
                 font=('Consolas', 11, 'bold'),
                 fill='#00ff00', anchor='nw',
+                width=card_width - 30,
                 tags=('card', f'service_{idx}')
             )
             
-            # Description (truncated)
-            desc = service.get('description', '')[:70] + '...' if len(service.get('description', '')) > 70 else service.get('description', '')
+            # Description con wrapping
+            desc = service.get('description', '')
             self.visual_canvas.create_text(
-                x_pos + 10, y_pos + 40,
+                x_pos + 15, y_pos + 40,
                 text=desc,
                 font=('Consolas', 9),
                 fill='#00cc00', anchor='nw',
+                width=card_width - 30,
+                tags=('card', f'service_{idx}')
+            )
+            
+            # Order indicator
+            order = service.get('order', 0)
+            self.visual_canvas.create_text(
+                x_pos + card_width - 15, y_pos + card_height - 15,
+                text=f"#{order}",
+                font=('Consolas', 10, 'bold'),
+                fill='#008800', anchor='se',
                 tags=('card', f'service_{idx}')
             )
             
@@ -400,18 +508,24 @@ class JSONEditor:
         
         for category, projects in self.current_data.items():
             if isinstance(projects, list):
-                # Category header
-                self.visual_canvas.create_text(
-                    x_pos, y_pos,
-                    text=category,
-                    font=('Consolas', 14, 'bold'),
-                    fill='#00ff00', anchor='nw'
+                # Category header con estilo
+                self.visual_canvas.create_rectangle(
+                    x_pos, y_pos, x_pos + 200, y_pos + 30,
+                    fill='#00ff00', outline='#00ff00',
+                    tags=('header', f'cat_{category}')
                 )
-                y_pos += 30
+                self.visual_canvas.create_text(
+                    x_pos + 10, y_pos + 5,
+                    text=category.upper(),
+                    font=('Consolas', 11, 'bold'),
+                    fill='#000000', anchor='nw',
+                    tags=('header', f'cat_{category}')
+                )
+                y_pos += 40
                 
                 # Projects in category
-                card_width = 300
-                card_height = 120
+                card_width = 320
+                card_height = 140
                 gap = 15
                 
                 for idx, project in enumerate(projects):
@@ -422,38 +536,41 @@ class JSONEditor:
                     # Card background
                     self.visual_canvas.create_rectangle(
                         x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                        fill='#1a1a1a', outline='#00ff00', width=2,
+                        fill='#0d1117', outline='#00ff00', width=2,
                         tags=('card', f'secproj_{category}_{idx}')
                     )
                     
-                    # Name
+                    # Name con wrapping
                     self.visual_canvas.create_text(
-                        x_pos + 10, y_pos + 15,
+                        x_pos + 15, y_pos + 15,
                         text=project.get('name', 'Sin nombre'),
                         font=('Consolas', 10, 'bold'),
                         fill='#00ff00', anchor='nw',
+                        width=card_width - 30,
                         tags=('card', f'secproj_{category}_{idx}')
                     )
                     
-                    # Description (truncated)
-                    desc = project.get('description', '')[:60] + '...' if len(project.get('description', '')) > 60 else project.get('description', '')
+                    # Description con wrapping
+                    desc = project.get('description', '')
                     self.visual_canvas.create_text(
-                        x_pos + 10, y_pos + 40,
+                        x_pos + 15, y_pos + 40,
                         text=desc,
                         font=('Consolas', 9),
                         fill='#00cc00', anchor='nw',
+                        width=card_width - 30,
                         tags=('card', f'secproj_{category}_{idx}')
                     )
                     
-                    # Tech
+                    # Tech con wrapping
                     tech = project.get('tech', [])
                     if tech:
-                        tech_text = ', '.join(tech[:2])
+                        tech_text = ', '.join(tech[:3])
                         self.visual_canvas.create_text(
-                            x_pos + 10, y_pos + card_height - 25,
+                            x_pos + 15, y_pos + card_height - 30,
                             text=tech_text,
                             font=('Consolas', 8),
                             fill='#00aa00', anchor='nw',
+                            width=card_width - 30,
                             tags=('card', f'secproj_{category}_{idx}')
                         )
                     
@@ -472,16 +589,43 @@ class JSONEditor:
     
     def on_canvas_click(self, event):
         # Encontrar elemento clickeado
-        x, y = self.canvasx = event.x, event.y
+        x, y = event.x, event.y
         clicked_items = self.visual_canvas.find_overlapping(x, y, x+1, y+1)
         
         if clicked_items:
             # Obtener tags del elemento clickeado
             tags = self.visual_canvas.gettags(clicked_items[0])
             if 'card' in tags:
-                # Extraer índice del elemento
+                # Extraer índice y categoría del elemento
                 for tag in tags:
-                    if '_' in tag:
+                    if tag.startswith('secproj_'):
+                        # Formato: secproj_category_idx
+                        parts = tag.split('_')
+                        if len(parts) >= 3:
+                            try:
+                                category = parts[1]
+                                idx = int(parts[2])
+                                # Encontrar el elemento correspondiente en la estructura anidada
+                                if isinstance(self.current_data, dict) and category in self.current_data:
+                                    projects = self.current_data[category]
+                                    if isinstance(projects, list) and idx < len(projects):
+                                        element_data = projects[idx]
+                                        self.selected_element = {
+                                            'type': 'secproj',
+                                            'index': idx,
+                                            'category': category,
+                                            'data': element_data,
+                                            'x': 0,  # No se usa para highlight
+                                            'y': 0,
+                                            'width': 0,
+                                            'height': 0
+                                        }
+                                        self.highlight_selected_from_tags(clicked_items[0])
+                                        break
+                            except (ValueError, IndexError):
+                                pass
+                    elif '_' in tag and not tag.startswith('secproj_'):
+                        # Para otros tipos (post, project, cert, service)
                         parts = tag.split('_')
                         if len(parts) >= 2:
                             try:
@@ -513,6 +657,20 @@ class JSONEditor:
             tags='highlight'
         )
     
+    def highlight_selected_from_tags(self, canvas_item):
+        # Remover highlight anterior
+        self.visual_canvas.delete('highlight')
+        
+        # Obtener bounding box del item
+        bbox = self.visual_canvas.bbox(canvas_item)
+        if bbox:
+            x1, y1, x2, y2 = bbox
+            self.visual_canvas.create_rectangle(
+                x1 - 2, y1 - 2, x2 + 2, y2 + 2,
+                outline='#ffffff', width=3,
+                tags='highlight'
+            )
+    
     def on_double_click(self, event):
         self.edit_element()
     
@@ -533,8 +691,9 @@ class JSONEditor:
                 if category in self.current_data and isinstance(self.current_data[category], list):
                     self.current_data[category].append(dialog.result)
             
-            self.update_treeview()
+            self.update_visual_view()
             self.update_text_editor()
+            self.mark_unsaved()
             self.status_var.set("Elemento añadido")
     
     def edit_element(self):
@@ -542,25 +701,54 @@ class JSONEditor:
             messagebox.showwarning("Advertencia", "Carga un archivo primero")
             return
         
-        selected = self.tree.selection()
-        if not selected:
-            messagebox.showwarning("Advertencia", "Selecciona un elemento para editar")
+        if not self.selected_element:
+            messagebox.showwarning("Advertencia", "Selecciona un elemento para editar (doble click en la tarjeta)")
             return
         
-        item = self.tree.item(selected[0])
-        index = item['text']
+        element = self.selected_element
+        
+        # Manejar estructura anidada de secondary-projects
+        if element.get('type') == 'secproj':
+            category = element['category']
+            index = element['index']
+            data = element['data']
+            
+            if isinstance(self.current_data, dict) and category in self.current_data:
+                projects = self.current_data[category]
+                if isinstance(projects, list) and index < len(projects):
+                    try:
+                        dialog = ElementEditorDialog(self.root, "Editar Elemento", self.current_file, self.current_data, data)
+                        self.root.wait_window(dialog.dialog)
+                        
+                        if dialog.result:
+                            self.current_data[category][index] = dialog.result
+                            self.update_visual_view()
+                            self.update_text_editor()
+                            self.mark_unsaved()
+                            self.status_var.set("Elemento actualizado")
+                            self.selected_element = None
+                            self.visual_canvas.delete('highlight')
+                    except (ValueError, IndexError):
+                        messagebox.showerror("Error", "No se pudo editar el elemento")
+            return
+        
+        # Manejar estructura normal (list)
+        index = element['index']
+        data = element['data']
         
         if isinstance(self.current_data, list):
             try:
-                element = self.current_data[int(index)]
-                dialog = ElementEditorDialog(self.root, "Editar Elemento", self.current_file, self.current_data, element)
+                dialog = ElementEditorDialog(self.root, "Editar Elemento", self.current_file, self.current_data, data)
                 self.root.wait_window(dialog.dialog)
                 
                 if dialog.result:
-                    self.current_data[int(index)] = dialog.result
-                    self.update_treeview()
+                    self.current_data[index] = dialog.result
+                    self.update_visual_view()
                     self.update_text_editor()
+                    self.mark_unsaved()
                     self.status_var.set("Elemento actualizado")
+                    self.selected_element = None
+                    self.visual_canvas.delete('highlight')
             except (ValueError, IndexError):
                 messagebox.showerror("Error", "No se pudo editar el elemento")
     
@@ -569,21 +757,45 @@ class JSONEditor:
             messagebox.showwarning("Advertencia", "Carga un archivo primero")
             return
         
-        selected = self.tree.selection()
-        if not selected:
-            messagebox.showwarning("Advertencia", "Selecciona un elemento para eliminar")
+        if not self.selected_element:
+            messagebox.showwarning("Advertencia", "Selecciona un elemento para eliminar (click en la tarjeta)")
             return
         
         if messagebox.askyesno("Confirmar", "¿Estás seguro de eliminar este elemento?"):
-            item = self.tree.item(selected[0])
-            index = item['text']
+            element = self.selected_element
+            
+            # Manejar estructura anidada de secondary-projects
+            if element.get('type') == 'secproj':
+                category = element['category']
+                index = element['index']
+                
+                if isinstance(self.current_data, dict) and category in self.current_data:
+                    projects = self.current_data[category]
+                    if isinstance(projects, list) and index < len(projects):
+                        try:
+                            del self.current_data[category][index]
+                            self.update_visual_view()
+                            self.update_text_editor()
+                            self.mark_unsaved()
+                            self.status_var.set("Elemento eliminado")
+                            self.selected_element = None
+                            self.visual_canvas.delete('highlight')
+                        except (ValueError, IndexError):
+                            messagebox.showerror("Error", "No se pudo eliminar el elemento")
+                return
+            
+            # Manejar estructura normal (list)
+            index = element['index']
             
             if isinstance(self.current_data, list):
                 try:
-                    del self.current_data[int(index)]
-                    self.update_treeview()
+                    del self.current_data[index]
+                    self.update_visual_view()
                     self.update_text_editor()
+                    self.mark_unsaved()
                     self.status_var.set("Elemento eliminado")
+                    self.selected_element = None
+                    self.visual_canvas.delete('highlight')
                 except (ValueError, IndexError):
                     messagebox.showerror("Error", "No se pudo eliminar el elemento")
     
@@ -606,12 +818,18 @@ class JSONEditor:
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(self.current_data, f, indent=2, ensure_ascii=False)
             
+            self.unsaved_changes = False
+            self.unsaved_label.config(text="")
             messagebox.showinfo("Éxito", f"Archivo guardado: {self.current_file}")
             self.status_var.set(f"Archivo guardado: {self.current_file}")
             
         except Exception as e:
             messagebox.showerror("Error", f"Error al guardar archivo: {str(e)}")
             self.status_var.set("Error al guardar archivo")
+    
+    def mark_unsaved(self):
+        self.unsaved_changes = True
+        self.unsaved_label.config(text="⚠️ HAY CAMBIOS SIN GUARDAR")
 
 
 class ElementEditorDialog:
@@ -623,8 +841,8 @@ class ElementEditorDialog:
         
         self.dialog = tk.Toplevel(parent)
         self.dialog.title(title)
-        self.dialog.geometry("600x500")
-        self.dialog.configure(bg='#1a1a1a')
+        self.dialog.geometry("800x700")
+        self.dialog.configure(bg='#0d1117')
         self.dialog.transient(parent)
         self.dialog.grab_set()
         
@@ -633,9 +851,9 @@ class ElementEditorDialog:
     
     def create_ui(self):
         # Scrollable frame
-        canvas = tk.Canvas(self.dialog, bg='#1a1a1a')
+        canvas = tk.Canvas(self.dialog, bg='#0d1117')
         scrollbar = ttk.Scrollbar(self.dialog, orient="vertical", command=canvas.yview)
-        scrollable_frame = ttk.Frame(canvas)
+        scrollable_frame = tk.Frame(canvas, bg='#0d1117')
         
         scrollable_frame.bind(
             "<Configure>",
@@ -651,32 +869,76 @@ class ElementEditorDialog:
         # Campos según el tipo de archivo
         fields = self.get_fields_for_file_type()
         
+        # Obtener categorías y series existentes para posts
+        existing_categories = set()
+        existing_series = set()
+        if self.file_type == 'posts.json' and isinstance(self.current_data, list):
+            for post in self.current_data:
+                if 'category' in post:
+                    existing_categories.add(post['category'])
+                if 'series' in post and post['series']:
+                    existing_series.add(post['series'])
+        
         for idx, (field, field_type) in enumerate(fields.items()):
-            frame = ttk.Frame(scrollable_frame)
-            frame.pack(fill=tk.X, padx=10, pady=5)
+            frame = tk.Frame(scrollable_frame, bg='#0d1117')
+            frame.pack(fill=tk.X, padx=15, pady=8)
             
-            label = ttk.Label(frame, text=field + ":")
+            label = tk.Label(frame, text=field.upper() + ":", font=('Consolas', 10, 'bold'), 
+                           bg='#0d1117', fg='#00ff00')
             label.pack(anchor=tk.W)
             
             if field_type == 'text':
-                entry = ttk.Entry(frame, width=50)
+                entry = tk.Entry(frame, width=50, bg='#1a1a1a', fg='#00ff00', 
+                               insertbackground='#00ff00', font=('Consolas', 10))
                 entry.pack(fill=tk.X)
             elif field_type == 'textarea':
-                entry = tk.Text(frame, height=4, width=50, bg='#f5f5f5', fg='#000000', insertbackground='#000000')
+                entry = tk.Text(frame, height=4, width=50, bg='#1a1a1a', fg='#00ff00', 
+                              insertbackground='#00ff00', font=('Consolas', 10))
                 entry.pack(fill=tk.X)
             elif field_type == 'markdown':
                 # Editor markdown grande
-                entry = tk.Text(frame, height=15, width=80, bg='#f5f5f5', fg='#000000', insertbackground='#000000', font=('Consolas', 10))
+                entry = tk.Text(frame, height=15, width=80, bg='#1a1a1a', fg='#00ff00', 
+                              insertbackground='#00ff00', font=('Consolas', 10))
                 entry.pack(fill=tk.BOTH, expand=True)
             elif field_type == 'number':
-                entry = ttk.Entry(frame, width=50)
+                entry = tk.Entry(frame, width=50, bg='#1a1a1a', fg='#00ff00', 
+                               insertbackground='#00ff00', font=('Consolas', 10))
                 entry.pack(fill=tk.X)
             elif field_type == 'color':
-                entry = ttk.Entry(frame, width=50)
+                entry = tk.Entry(frame, width=50, bg='#1a1a1a', fg='#00ff00', 
+                               insertbackground='#00ff00', font=('Consolas', 10))
                 entry.pack(fill=tk.X)
             elif field_type == 'array':
-                entry = tk.Text(frame, height=3, width=50, bg='#f5f5f5', fg='#000000', insertbackground='#000000')
+                entry = tk.Text(frame, height=3, width=50, bg='#1a1a1a', fg='#00ff00', 
+                              insertbackground='#00ff00', font=('Consolas', 10))
                 entry.pack(fill=tk.X)
+            elif field_type == 'boolean':
+                var = tk.StringVar(value='false')
+                entry = ttk.Combobox(frame, textvariable=var, values=['true', 'false'], 
+                                   state='readonly', width=47, font=('Consolas', 10))
+                entry.pack(fill=tk.X)
+                self.entries[field] = (var, 'boolean')
+                continue
+            elif field_type == 'select':
+                # Selector de categorías existentes + opción de crear nueva
+                var = tk.StringVar()
+                values = ['[CREAR NUEVA...]'] + list(existing_categories) + [''] if existing_categories else ['[CREAR NUEVA...]', '']
+                entry = ttk.Combobox(frame, textvariable=var, values=values, 
+                                   state='readonly', width=47, font=('Consolas', 10))
+                entry.pack(fill=tk.X)
+                entry.bind('<<ComboboxSelected>>', lambda e, f=field, v=var: self.on_category_selected(f, v))
+                self.entries[field] = (var, 'select')
+                continue
+            elif field_type == 'select_series':
+                # Selector de series existentes + opción de crear nueva
+                var = tk.StringVar()
+                values = ['[CREAR NUEVA...]'] + list(existing_series) + [''] if existing_series else ['[CREAR NUEVA...]', '']
+                entry = ttk.Combobox(frame, textvariable=var, values=values, 
+                                   state='readonly', width=47, font=('Consolas', 10))
+                entry.pack(fill=tk.X)
+                entry.bind('<<ComboboxSelected>>', lambda e, f=field, v=var: self.on_series_selected(f, v))
+                self.entries[field] = (var, 'select_series')
+                continue
             
             # Valor por defecto si estamos editando
             if self.element and field in self.element:
@@ -693,23 +955,49 @@ class ElementEditorDialog:
         
         # Categoría para secondary-projects
         if self.file_type == 'secondary-projects.json' and not self.element:
-            cat_frame = ttk.Frame(scrollable_frame)
-            cat_frame.pack(fill=tk.X, padx=10, pady=5)
+            cat_frame = tk.Frame(scrollable_frame, bg='#0d1117')
+            cat_frame.pack(fill=tk.X, padx=15, pady=8)
             
-            ttk.Label(cat_frame, text="Categoría:").pack(anchor=tk.W)
+            tk.Label(cat_frame, text="CATEGORÍA:", font=('Consolas', 10, 'bold'), 
+                   bg='#0d1117', fg='#00ff00').pack(anchor=tk.W)
             
             categories = list(self.current_data.keys()) if isinstance(self.current_data, dict) else []
             cat_var = tk.StringVar()
-            cat_combo = ttk.Combobox(cat_frame, textvariable=cat_var, values=categories, state='readonly', width=47)
+            cat_values = ['[CREAR NUEVA...]'] + categories if categories else ['[CREAR NUEVA...]']
+            cat_combo = ttk.Combobox(cat_frame, textvariable=cat_var, values=cat_values, 
+                                   state='readonly', width=47, font=('Consolas', 10))
             cat_combo.pack(fill=tk.X)
-            self.entries['category'] = (cat_combo, 'select')
+            cat_combo.bind('<<ComboboxSelected>>', lambda e, v=cat_var: self.on_category_selected_secondary(v))
+            self.entries['category'] = (cat_var, 'select')
         
         # Botones
-        button_frame = ttk.Frame(scrollable_frame)
-        button_frame.pack(fill=tk.X, padx=10, pady=10)
+        button_frame = tk.Frame(scrollable_frame, bg='#0d1117')
+        button_frame.pack(fill=tk.X, padx=15, pady=15)
         
-        ttk.Button(button_frame, text="Guardar", command=self.save).pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(button_frame, text="Cancelar", command=self.cancel).pack(side=tk.LEFT)
+        btn_style = {'font': ('Consolas', 10, 'bold'), 'bg': '#00ff00', 'fg': '#000000', 
+                     'activebackground': '#00cc00', 'activeforeground': '#000000',
+                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 20, 'pady': 8}
+        
+        tk.Button(button_frame, text="SAVE", command=self.save, **btn_style).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(button_frame, text="CANCEL", command=self.cancel, **btn_style).pack(side=tk.LEFT)
+    
+    def on_category_selected(self, field, var):
+        if var.get() == '[CREAR NUEVA...]':
+            new_category = simpledialog.askstring("Nueva Categoría", "Introduce el nombre de la nueva categoría:")
+            if new_category:
+                var.set(new_category)
+    
+    def on_series_selected(self, field, var):
+        if var.get() == '[CREAR NUEVA...]':
+            new_series = simpledialog.askstring("Nueva Serie", "Introduce el nombre de la nueva serie:")
+            if new_series:
+                var.set(new_series)
+    
+    def on_category_selected_secondary(self, var):
+        if var.get() == '[CREAR NUEVA...]':
+            new_category = simpledialog.askstring("Nueva Categoría", "Introduce el nombre de la nueva categoría:")
+            if new_category:
+                var.set(new_category)
     
     def get_fields_for_file_type(self):
         if self.file_type == 'certifications.json':
@@ -728,10 +1016,18 @@ class ElementEditorDialog:
                 'id': 'text',
                 'slug': 'text',
                 'title': 'text',
-                'category': 'text',
+                'category': 'select',
                 'description': 'textarea',
                 'content': 'markdown',
-                'createdAt': 'text'
+                'createdAt': 'text',
+                'keywords': 'array',
+                'readingTime': 'number',
+                'wordCount': 'number',
+                'featured': 'boolean',
+                'published': 'boolean',
+                'series': 'select_series',
+                'seriesOrder': 'number',
+                'seriesPartTitle': 'text'
             }
         elif self.file_type == 'projects.json':
             return {
@@ -782,6 +1078,12 @@ class ElementEditorDialog:
                         value = float(value)
                     except ValueError:
                         value = 0
+            elif field_type == 'boolean':
+                value = entry.get() == 'true'
+            elif field_type in ['select', 'select_series']:
+                value = entry.get().strip()
+                if not value:
+                    value = None
             else:
                 value = entry.get().strip()
             
@@ -790,6 +1092,25 @@ class ElementEditorDialog:
         # Añadir campo tech vacío para projects si no existe
         if self.file_type == 'projects.json' and 'tech' not in result:
             result['tech'] = []
+        
+        # Para posts, asegurar que los campos nuevos tengan valores por defecto
+        if self.file_type == 'posts.json':
+            if 'keywords' not in result or not result['keywords']:
+                result['keywords'] = []
+            if 'readingTime' not in result:
+                result['readingTime'] = 0
+            if 'wordCount' not in result:
+                result['wordCount'] = 0
+            if 'featured' not in result:
+                result['featured'] = False
+            if 'published' not in result:
+                result['published'] = True
+            if 'series' not in result or not result['series']:
+                result['series'] = None
+            if 'seriesOrder' not in result:
+                result['seriesOrder'] = None
+            if 'seriesPartTitle' not in result:
+                result['seriesPartTitle'] = None
         
         self.result = result
         self.dialog.destroy()

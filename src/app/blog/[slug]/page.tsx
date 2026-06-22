@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import BlogNavbar from "@/components/blog-navbar";
+import BlogFooter from "@/components/blog-footer";
 
 // Función para extraer headings del markdown
 function extractHeadings(markdown: string) {
@@ -77,10 +78,6 @@ export default async function BlogPostPage({ params }: PageProps) {
       <BlogNavbar />
       <div className="px-4 py-12 md:px-6 md:py-20">
         <div className="mx-auto max-w-7xl">
-        <Link href="/blog" className="group inline-flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase mb-12">
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> Volver al blog
-        </Link>
-        
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <aside className="lg:col-span-1 space-y-6">
@@ -252,6 +249,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         </div>
       </div>
       </div>
+      <BlogFooter />
     </div>
   );
 }

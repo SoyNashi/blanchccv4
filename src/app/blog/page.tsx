@@ -4,6 +4,8 @@ import Link from "next/link";
 import posts from "@/data/posts.json";
 import { useState, useMemo } from "react";
 import BlogNavbar from "@/components/blog-navbar";
+import BlogAbout from "@/components/blog-about";
+import BlogFooter from "@/components/blog-footer";
 
 type PostCategory = 'novedad' | 'alerta' | 'descubrimiento' | 'creacion' | 'seguridad' | 'malware';
 
@@ -87,17 +89,14 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-background">
       <BlogNavbar />
+      <BlogAbout />
       <div className="px-4 py-12 md:px-6 md:py-20">
         <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-12">
-          <Link href="/" className="group inline-flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase mb-8">
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> Volver
-          </Link>
-          
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div>
-              <h1 className="text-5xl md:text-6xl font-bold tracking-tighter text-white mb-4">Bitácora Técnica</h1>
+              <h1 className="text-5xl md:text-6xl font-bold tracking-tighter text-white mb-4">Insights</h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
                 Artículos sobre desarrollo web, seguridad, arquitectura de sistemas y tecnología.
               </p>
@@ -294,6 +293,7 @@ export default function BlogPage() {
         </div>
       </div>
       </div>
+      <BlogFooter />
     </div>
   );
 }

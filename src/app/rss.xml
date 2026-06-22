@@ -5,10 +5,14 @@ export async function GET() {
   const baseUrl = 'https://blanch.cc'
   
   const publishedPosts = posts
-    .filter(post => post.published)
+    .filter(post => post.published !== false)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
-  const rssItems = publishedPosts.map(post => `
+  const rssItems = publishedPosts.map(post => {
+    const keywords = post.keywords || []
+    const keywordTags = keywords.map(kw => `<category>${kw}</category>`).join('')
+    
+    return `
     <item>
       <title><![CDATA[${post.title}]]></title>
       <link>${baseUrl}/blog/${post.slug}</link>
@@ -16,9 +20,9 @@ export async function GET() {
       <category>${post.category}</category>
       <pubDate>${new Date(post.createdAt).toUTCString()}</pubDate>
       <guid isPermaLink="false">${post.id}</guid>
-      ${post.keywords.map(kw => `<category>${kw}</category>`).join('')}
-    </item>
-  `).join('')
+      ${keywordTags}
+    </item>`
+  }).join('')
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -35,7 +39,8 @@ export async function GET() {
 
   return new Response(rss, {
     headers: {
-      'Content-Type': 'application/xml; charset=utf-8',
+      'Content-Type': 'application/rss+xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600',
     },
   })
 }

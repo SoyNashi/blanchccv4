@@ -1,5 +1,5 @@
 "use client";
-import { Home, Rss, Search, Menu, X } from "lucide-react";
+import { Home, Rss, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -10,12 +10,20 @@ export default function BlogNavbar() {
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-white/5">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/blog" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">NB</span>
-            </div>
-            <span className="text-white font-bold tracking-tighter">Bitácora</span>
+          {/* Logo con SVG */}
+          <Link href="/blog" className="flex items-center gap-3">
+            <svg viewBox="0 0 100 100" className="w-10 h-10">
+              <defs>
+                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#00ff00" />
+                  <stop offset="100%" stopColor="#00cc00" />
+                </linearGradient>
+              </defs>
+              <circle cx="50" cy="50" r="45" fill="none" stroke="url(#logoGradient)" strokeWidth="2" />
+              <path d="M30 50 L50 30 L70 50 L50 70 Z" fill="url(#logoGradient)" />
+              <circle cx="50" cy="50" r="8" fill="#0a0a0a" />
+            </svg>
+            <span className="text-white font-bold tracking-tighter text-lg">Insights</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -25,7 +33,7 @@ export default function BlogNavbar() {
               Portfolio
             </Link>
             <Link href="/blog" className="text-sm font-bold tracking-widest text-white uppercase">
-              Blog
+              Insights
             </Link>
             <Link href="/rss.xml" className="flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors">
               <Rss className="h-4 w-4" />
@@ -59,7 +67,7 @@ export default function BlogNavbar() {
                 className="text-sm font-bold tracking-widest text-white uppercase"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Blog
+                Insights
               </Link>
               <Link
                 href="/rss.xml"
