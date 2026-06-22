@@ -11,7 +11,9 @@ export const metadata: Metadata = {
   description: "Especialista en desarrollo web, ecommerce y SEO técnico. Construyendo productos digitales reales.",
   icons: {
     icon: "/favicon.ico",
+    apple: "/favicon.ico",
   },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

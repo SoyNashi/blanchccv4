@@ -10,17 +10,17 @@ class JSONEditor:
         self.root.title("Editor de JSON - Portfolio Nil Blanch")
         self.root.geometry("1400x900")
         
-        # Configurar estilo blanco y negro
+        # Configurar estilo oscuro tipo consola
         self.style = ttk.Style()
         self.style.theme_use('clam')
-        self.style.configure('TFrame', background='#ffffff')
-        self.style.configure('TLabel', background='#ffffff', foreground='#000000', font=('Arial', 10))
-        self.style.configure('TButton', background='#000000', foreground='#ffffff', font=('Arial', 10, 'bold'))
-        self.style.configure('TNotebook', background='#ffffff')
-        self.style.configure('TNotebook.Tab', background='#f0f0f0', foreground='#000000', padding=[10, 5])
-        self.style.map('TNotebook.Tab', background=[('selected', '#000000')], foreground=[('selected', '#ffffff')])
+        self.style.configure('TFrame', background='#0a0a0a')
+        self.style.configure('TLabel', background='#0a0a0a', foreground='#00ff00', font=('Consolas', 10))
+        self.style.configure('TButton', background='#00ff00', foreground='#000000', font=('Consolas', 10, 'bold'))
+        self.style.configure('TNotebook', background='#0a0a0a')
+        self.style.configure('TNotebook.Tab', background='#1a1a1a', foreground='#00ff00', padding=[10, 5])
+        self.style.map('TNotebook.Tab', background=[('selected', '#00ff00')], foreground=[('selected', '#000000')])
         
-        self.root.configure(bg='#ffffff')
+        self.root.configure(bg='#0a0a0a')
         
         # Ruta base del proyecto
         self.base_path = Path(__file__).parent / 'src' / 'data'
@@ -109,13 +109,18 @@ class JSONEditor:
         visual_scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
         
         # Canvas para vista visual
-        self.visual_canvas = tk.Canvas(self.visual_frame, bg='#ffffff', yscrollcommand=visual_scroll_y.set, xscrollcommand=visual_scroll_x.set)
+        self.visual_canvas = tk.Canvas(self.visual_frame, bg='#0a0a0a', yscrollcommand=visual_scroll_y.set, xscrollcommand=visual_scroll_x.set)
         self.visual_canvas.pack(fill=tk.BOTH, expand=True)
         
         visual_scroll_y.config(command=self.visual_canvas.yview)
         visual_scroll_x.config(command=self.visual_canvas.xview)
         
         self.visual_elements = []
+        self.selected_element = None
+        
+        # Bind events para selección y edición
+        self.visual_canvas.bind('<Button-1>', self.on_canvas_click)
+        self.visual_canvas.bind('<Double-Button-1>', self.on_canvas_double_click)
     
     def create_text_editor(self):
         # Scrollbar
@@ -123,7 +128,7 @@ class JSONEditor:
         text_scroll.pack(side=tk.RIGHT, fill=tk.Y)
         
         # Text widget
-        self.text_editor = tk.Text(self.text_frame, yscrollcommand=text_scroll.set, bg='#f5f5f5', fg='#000000', font=('Consolas', 11), insertbackground='#000000')
+        self.text_editor = tk.Text(self.text_frame, yscrollcommand=text_scroll.set, bg='#0a0a0a', fg='#00ff00', font=('Consolas', 11), insertbackground='#00ff00')
         self.text_editor.pack(fill=tk.BOTH, expand=True)
         
         text_scroll.config(command=self.text_editor.yview)
@@ -192,26 +197,26 @@ class JSONEditor:
             # Card background
             card = self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                fill='#ffffff', outline='#000000', width=2,
-                tags=f'post_{idx}'
+                fill='#1a1a1a', outline='#00ff00', width=2,
+                tags=('card', f'post_{idx}')
             )
             
             # Title
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + 15,
                 text=post.get('title', 'Sin título'),
-                font=('Arial', 12, 'bold'),
-                fill='#000000', anchor='nw',
-                tags=f'post_{idx}'
+                font=('Consolas', 12, 'bold'),
+                fill='#00ff00', anchor='nw',
+                tags=('card', f'post_{idx}')
             )
             
             # Category
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + 45,
                 text=f"Category: {post.get('category', '')}",
-                font=('Arial', 9),
-                fill='#666666', anchor='nw',
-                tags=f'post_{idx}'
+                font=('Consolas', 9),
+                fill='#00aa00', anchor='nw',
+                tags=('card', f'post_{idx}')
             )
             
             # Description (truncated)
@@ -219,21 +224,21 @@ class JSONEditor:
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + 65,
                 text=desc,
-                font=('Arial', 9),
-                fill='#333333', anchor='nw',
-                tags=f'post_{idx}'
+                font=('Consolas', 9),
+                fill='#00cc00', anchor='nw',
+                tags=('card', f'post_{idx}')
             )
             
             # Date
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + card_height - 25,
                 text=post.get('createdAt', ''),
-                font=('Arial', 8),
-                fill='#999999', anchor='nw',
-                tags=f'post_{idx}'
+                font=('Consolas', 8),
+                fill='#008800', anchor='nw',
+                tags=('card', f'post_{idx}')
             )
             
-            self.visual_elements.append({'type': 'post', 'index': idx, 'data': post})
+            self.visual_elements.append({'type': 'post', 'index': idx, 'data': post, 'x': x_pos, 'y': y_pos, 'width': card_width, 'height': card_height})
             x_pos += card_width + gap
         
         # Update scroll region
@@ -252,20 +257,20 @@ class JSONEditor:
                 y_pos += card_height + gap
             
             # Card background
-            color = project.get('color', '#000000')
+            color = project.get('color', '#00ff00')
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                fill='#ffffff', outline=color, width=3,
-                tags=f'project_{idx}'
+                fill='#1a1a1a', outline=color, width=3,
+                tags=('card', f'project_{idx}')
             )
             
             # Title
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + 15,
                 text=project.get('title', 'Sin título'),
-                font=('Arial', 11, 'bold'),
-                fill='#000000', anchor='nw',
-                tags=f'project_{idx}'
+                font=('Consolas', 11, 'bold'),
+                fill='#00ff00', anchor='nw',
+                tags=('card', f'project_{idx}')
             )
             
             # Description (truncated)
@@ -273,9 +278,9 @@ class JSONEditor:
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + 40,
                 text=desc,
-                font=('Arial', 9),
-                fill='#333333', anchor='nw',
-                tags=f'project_{idx}'
+                font=('Consolas', 9),
+                fill='#00cc00', anchor='nw',
+                tags=('card', f'project_{idx}')
             )
             
             # Tags
@@ -285,12 +290,12 @@ class JSONEditor:
                 self.visual_canvas.create_text(
                     x_pos + 10, y_pos + card_height - 30,
                     text=tags_text,
-                    font=('Arial', 8),
-                    fill='#666666', anchor='nw',
-                    tags=f'project_{idx}'
+                    font=('Consolas', 8),
+                    fill='#00aa00', anchor='nw',
+                    tags=('card', f'project_{idx}')
                 )
             
-            self.visual_elements.append({'type': 'project', 'index': idx, 'data': project})
+            self.visual_elements.append({'type': 'project', 'index': idx, 'data': project, 'x': x_pos, 'y': y_pos, 'width': card_width, 'height': card_height})
             x_pos += card_width + gap
         
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
@@ -310,38 +315,38 @@ class JSONEditor:
             # Card background
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                fill='#ffffff', outline='#000000', width=2,
-                tags=f'cert_{idx}'
+                fill='#1a1a1a', outline='#00ff00', width=2,
+                tags=('card', f'cert_{idx}')
             )
             
             # Name
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + 15,
                 text=cert.get('name', 'Sin nombre'),
-                font=('Arial', 10, 'bold'),
-                fill='#000000', anchor='nw',
-                tags=f'cert_{idx}'
+                font=('Consolas', 10, 'bold'),
+                fill='#00ff00', anchor='nw',
+                tags=('card', f'cert_{idx}')
             )
             
             # Issuer
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + 40,
                 text=f"Issuer: {cert.get('issuer', '')}",
-                font=('Arial', 9),
-                fill='#666666', anchor='nw',
-                tags=f'cert_{idx}'
+                font=('Consolas', 9),
+                fill='#00aa00', anchor='nw',
+                tags=('card', f'cert_{idx}')
             )
             
             # Date
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + card_height - 25,
                 text=f"Date: {cert.get('date', '')}",
-                font=('Arial', 8),
-                fill='#999999', anchor='nw',
-                tags=f'cert_{idx}'
+                font=('Consolas', 8),
+                fill='#008800', anchor='nw',
+                tags=('card', f'cert_{idx}')
             )
             
-            self.visual_elements.append({'type': 'cert', 'index': idx, 'data': cert})
+            self.visual_elements.append({'type': 'cert', 'index': idx, 'data': cert, 'x': x_pos, 'y': y_pos, 'width': card_width, 'height': card_height})
             x_pos += card_width + gap
         
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
@@ -361,17 +366,17 @@ class JSONEditor:
             # Card background
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                fill='#ffffff', outline='#000000', width=2,
-                tags=f'service_{idx}'
+                fill='#1a1a1a', outline='#00ff00', width=2,
+                tags=('card', f'service_{idx}')
             )
             
             # Title
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + 15,
                 text=service.get('title', 'Sin título'),
-                font=('Arial', 11, 'bold'),
-                fill='#000000', anchor='nw',
-                tags=f'service_{idx}'
+                font=('Consolas', 11, 'bold'),
+                fill='#00ff00', anchor='nw',
+                tags=('card', f'service_{idx}')
             )
             
             # Description (truncated)
@@ -379,12 +384,12 @@ class JSONEditor:
             self.visual_canvas.create_text(
                 x_pos + 10, y_pos + 40,
                 text=desc,
-                font=('Arial', 9),
-                fill='#333333', anchor='nw',
-                tags=f'service_{idx}'
+                font=('Consolas', 9),
+                fill='#00cc00', anchor='nw',
+                tags=('card', f'service_{idx}')
             )
             
-            self.visual_elements.append({'type': 'service', 'index': idx, 'data': service})
+            self.visual_elements.append({'type': 'service', 'index': idx, 'data': service, 'x': x_pos, 'y': y_pos, 'width': card_width, 'height': card_height})
             x_pos += card_width + gap
         
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
@@ -399,8 +404,8 @@ class JSONEditor:
                 self.visual_canvas.create_text(
                     x_pos, y_pos,
                     text=category,
-                    font=('Arial', 14, 'bold'),
-                    fill='#000000', anchor='nw'
+                    font=('Consolas', 14, 'bold'),
+                    fill='#00ff00', anchor='nw'
                 )
                 y_pos += 30
                 
@@ -417,17 +422,17 @@ class JSONEditor:
                     # Card background
                     self.visual_canvas.create_rectangle(
                         x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                        fill='#ffffff', outline='#000000', width=2,
-                        tags=f'secproj_{category}_{idx}'
+                        fill='#1a1a1a', outline='#00ff00', width=2,
+                        tags=('card', f'secproj_{category}_{idx}')
                     )
                     
                     # Name
                     self.visual_canvas.create_text(
                         x_pos + 10, y_pos + 15,
                         text=project.get('name', 'Sin nombre'),
-                        font=('Arial', 10, 'bold'),
-                        fill='#000000', anchor='nw',
-                        tags=f'secproj_{category}_{idx}'
+                        font=('Consolas', 10, 'bold'),
+                        fill='#00ff00', anchor='nw',
+                        tags=('card', f'secproj_{category}_{idx}')
                     )
                     
                     # Description (truncated)
@@ -435,9 +440,9 @@ class JSONEditor:
                     self.visual_canvas.create_text(
                         x_pos + 10, y_pos + 40,
                         text=desc,
-                        font=('Arial', 9),
-                        fill='#333333', anchor='nw',
-                        tags=f'secproj_{category}_{idx}'
+                        font=('Consolas', 9),
+                        fill='#00cc00', anchor='nw',
+                        tags=('card', f'secproj_{category}_{idx}')
                     )
                     
                     # Tech
@@ -447,9 +452,9 @@ class JSONEditor:
                         self.visual_canvas.create_text(
                             x_pos + 10, y_pos + card_height - 25,
                             text=tech_text,
-                            font=('Arial', 8),
-                            fill='#666666', anchor='nw',
-                            tags=f'secproj_{category}_{idx}'
+                            font=('Consolas', 8),
+                            fill='#00aa00', anchor='nw',
+                            tags=('card', f'secproj_{category}_{idx}')
                         )
                     
                     x_pos += card_width + gap
@@ -464,6 +469,49 @@ class JSONEditor:
         if self.current_data:
             json_str = json.dumps(self.current_data, indent=2, ensure_ascii=False)
             self.text_editor.insert(1.0, json_str)
+    
+    def on_canvas_click(self, event):
+        # Encontrar elemento clickeado
+        x, y = self.canvasx = event.x, event.y
+        clicked_items = self.visual_canvas.find_overlapping(x, y, x+1, y+1)
+        
+        if clicked_items:
+            # Obtener tags del elemento clickeado
+            tags = self.visual_canvas.gettags(clicked_items[0])
+            if 'card' in tags:
+                # Extraer índice del elemento
+                for tag in tags:
+                    if '_' in tag:
+                        parts = tag.split('_')
+                        if len(parts) >= 2:
+                            try:
+                                idx = int(parts[-1])
+                                # Encontrar el elemento correspondiente
+                                for element in self.visual_elements:
+                                    if element['index'] == idx:
+                                        self.selected_element = element
+                                        self.highlight_selected(element)
+                                        break
+                            except ValueError:
+                                pass
+    
+    def on_canvas_double_click(self, event):
+        if self.selected_element:
+            self.edit_element()
+    
+    def highlight_selected(self, element):
+        # Remover highlight anterior
+        self.visual_canvas.delete('highlight')
+        
+        # Añadir highlight al elemento seleccionado
+        x, y = element['x'], element['y']
+        width, height = element['width'], element['height']
+        
+        self.visual_canvas.create_rectangle(
+            x - 2, y - 2, x + width + 2, y + height + 2,
+            outline='#ffffff', width=3,
+            tags='highlight'
+        )
     
     def on_double_click(self, event):
         self.edit_element()
