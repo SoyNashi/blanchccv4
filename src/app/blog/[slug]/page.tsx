@@ -1,9 +1,10 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Clock, FileText, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import Link from "next/link";
 import posts from "@/data/posts.json";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import BlogNavbar from "@/components/blog-navbar";
 
 // Función para extraer headings del markdown
 function extractHeadings(markdown: string) {
@@ -62,16 +63,28 @@ export default async function BlogPostPage({ params }: PageProps) {
   // Extraer headings para la tabla de contenido
   const headings = extractHeadings(post.content);
 
+  // Obtener posts de la misma serie
+  const seriesPosts = post.series 
+    ? posts.filter(p => p.series === post.series && p.published).sort((a, b) => (a.seriesOrder || 0) - (b.seriesOrder || 0))
+    : [];
+
+  const currentSeriesIndex = seriesPosts.findIndex(p => p.slug === post.slug);
+  const prevPost = currentSeriesIndex > 0 ? seriesPosts[currentSeriesIndex - 1] : null;
+  const nextPost = currentSeriesIndex < seriesPosts.length - 1 ? seriesPosts[currentSeriesIndex + 1] : null;
+
   return (
-    <div className="min-h-screen bg-background px-6 py-20">
-      <div className="mx-auto max-w-6xl">
-        <Link href="/blog" className="group flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase mb-12">
+    <div className="min-h-screen bg-background">
+      <BlogNavbar />
+      <div className="px-4 py-12 md:px-6 md:py-20">
+        <div className="mx-auto max-w-7xl">
+        <Link href="/blog" className="group inline-flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase mb-12">
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> Volver al blog
         </Link>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Tabla de contenido */}
-          <aside className="lg:col-span-1">
+          {/* Sidebar */}
+          <aside className="lg:col-span-1 space-y-6">
+            {/* Tabla de contenido */}
             <div className="bg-card border border-white/5 rounded-2xl p-6 sticky top-8">
               <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
                 Contenido
@@ -96,32 +109,139 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </nav>
               )}
             </div>
+
+            {/* Info del post */}
+            <div className="bg-card border border-white/5 rounded-2xl p-6">
+              <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
+                Información
+              </h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center gap-2 text-white/60">
+                  <Clock className="h-4 w-4" />
+                  <span>{post.readingTime} min de lectura</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/60">
+                  <FileText className="h-4 w-4" />
+                  <span>{post.wordCount} palabras</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/60">
+                  <span className="text-xs">{new Date(post.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+
+              {post.featured && (
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-2 text-yellow-500">
+                    <Star className="h-4 w-4" />
+                    <span className="text-sm font-medium">Artículo destacado</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Keywords */}
+            {post.keywords.length > 0 && (
+              <div className="bg-card border border-white/5 rounded-2xl p-6">
+                <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
+                  Keywords
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {post.keywords.map(kw => (
+                    <span key={kw} className="px-2 py-1 bg-white/5 rounded text-xs text-white/60">
+                      #{kw}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </aside>
 
           {/* Contenido principal */}
-          <article className="lg:col-span-3 bg-card border border-white/5 rounded-2xl p-8 md:p-12">
-            <div className="flex items-start justify-between mb-6">
-              <span className="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold uppercase tracking-wider">
-                {post.category}
-              </span>
-              <span className="text-white/40 text-sm">{new Date(post.createdAt).toLocaleDateString()}</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-white mb-6">
-              {post.title}
-            </h1>
-            
-            <p className="text-xl text-muted-foreground mb-12 leading-relaxed">
-              {post.description}
-            </p>
+          <article className="lg:col-span-3">
+            <div className="bg-card border border-white/5 rounded-2xl p-6 md:p-8 lg:p-12">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <span className="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold uppercase tracking-wider">
+                    {post.category}
+                  </span>
+                  {post.featured && <Star className="h-4 w-4 text-yellow-500" />}
+                  {post.series && <span className="text-xs text-white/40">{post.series}</span>}
+                </div>
+                <span className="text-white/40 text-sm">{new Date(post.createdAt).toLocaleDateString()}</span>
+              </div>
+              
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-white mb-6">
+                {post.title}
+              </h1>
+              
+              <p className="text-lg md:text-xl text-muted-foreground mb-12 leading-relaxed">
+                {post.description}
+              </p>
 
-            <div className="border-t border-white/10 pt-8">
-              <div className="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-8 prose-h1:font-extrabold prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-6 prose-h2:font-bold prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-4 prose-h3:font-semibold prose-h4:text-xl prose-h4:mb-2 prose-h4:mt-3 prose-h4:font-semibold prose-h5:text-lg prose-h5:mb-2 prose-h5:mt-2 prose-h5:font-medium prose-h6:text-base prose-h6:mb-2 prose-h6:mt-2 prose-h6:font-medium prose-p:text-white/90 prose-p:leading-relaxed prose-p:mb-4 prose-p:text-base prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-strong:text-white prose-strong:font-bold prose-em:text-white/80 prose-em:italic prose-code:text-blue-400 prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:text-sm prose-pre:text-white/90 prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4 prose-ul:text-white/90 prose-ul:space-y-2 prose-li:mb-1 prose-li:text-white/90 prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4 prose-ol:text-white/90 prose-ol:space-y-2 prose-blockquote:border-l-4 prose-blockquote:border-white/20 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-white/70 prose-blockquote:my-4 prose-hr:border-white/10 prose-hr:my-8 prose-table:text-white/90 prose-table:border prose-table:border-white/10 prose-thead:border-b prose-thead:border-white/10 prose-th:text-white prose-th:font-semibold prose-th:p-3 prose-th:bg-white/5 prose-tr:border-b prose-tr:border-white/10 prose-td:p-3 prose-td:text-white/90 prose-img:rounded-lg prose-img:my-4">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {post.content}
-                </ReactMarkdown>
+              <div className="border-t border-white/10 pt-8">
+                <div className="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-8 prose-h1:font-extrabold prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-6 prose-h2:font-bold prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-4 prose-h3:font-semibold prose-h4:text-xl prose-h4:mb-2 prose-h4:mt-3 prose-h4:font-semibold prose-h5:text-lg prose-h5:mb-2 prose-h5:mt-2 prose-h5:font-medium prose-h6:text-base prose-h6:mb-2 prose-h6:mt-2 prose-h6:font-medium prose-p:text-white/90 prose-p:leading-relaxed prose-p:mb-4 prose-p:text-base prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-strong:text-white prose-strong:font-bold prose-em:text-white/80 prose-em:italic prose-code:text-blue-400 prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:text-sm prose-pre:text-white/90 prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4 prose-ul:text-white/90 prose-ul:space-y-2 prose-li:mb-1 prose-li:text-white/90 prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4 prose-ol:text-white/90 prose-ol:space-y-2 prose-blockquote:border-l-4 prose-blockquote:border-white/20 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-white/70 prose-blockquote:my-4 prose-hr:border-white/10 prose-hr:my-8 prose-table:text-white/90 prose-table:border prose-table:border-white/10 prose-thead:border-b prose-thead:border-white/10 prose-th:text-white prose-th:font-semibold prose-th:p-3 prose-th:bg-white/5 prose-tr:border-b prose-tr:border-white/10 prose-td:p-3 prose-td:text-white/90 prose-img:rounded-lg prose-img:my-4">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {post.content}
+                  </ReactMarkdown>
+                </div>
               </div>
             </div>
+
+            {/* Navegación de serie */}
+            {seriesPosts.length > 1 && (
+              <div className="mt-8 bg-card border border-white/5 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-bold tracking-widest text-white uppercase">
+                    {post.series}
+                  </h3>
+                  <span className="text-xs text-white/40">
+                    Parte {currentSeriesIndex + 1} de {seriesPosts.length}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  {prevPost ? (
+                    <Link href={`/blog/${prevPost.slug}`} className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
+                      <ChevronLeft className="h-4 w-4" />
+                      <div className="text-left">
+                        <div className="text-xs text-white/40">Anterior</div>
+                        <div className="text-sm font-medium">{prevPost.seriesPartTitle || `Parte ${prevPost.seriesOrder}`}</div>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div />
+                  )}
+                  
+                  <div className="flex gap-2">
+                    {seriesPosts.map((p, idx) => (
+                      <Link
+                        key={p.slug}
+                        href={`/blog/${p.slug}`}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center text-xs transition-colors ${
+                          p.slug === post.slug
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-white/5 text-white/60 hover:bg-white/10'
+                        }`}
+                      >
+                        {idx + 1}
+                      </Link>
+                    ))}
+                  </div>
+                  
+                  {nextPost ? (
+                    <Link href={`/blog/${nextPost.slug}`} className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
+                      <div className="text-right">
+                        <div className="text-xs text-white/40">Siguiente</div>
+                        <div className="text-sm font-medium">{nextPost.seriesPartTitle || `Parte ${nextPost.seriesOrder}`}</div>
+                      </div>
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
+                  ) : (
+                    <div />
+                  )}
+                </div>
+              </div>
+            )}
           </article>
         </div>
 
@@ -130,6 +250,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             ← Volver a todos los artículos
           </Link>
         </div>
+      </div>
       </div>
     </div>
   );

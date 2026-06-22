@@ -7,6 +7,13 @@ export interface Post {
   description: string;
   content: string; // Markdown
   category: PostCategory;
-  publishedAt: string;
-  likes: number;
+  createdAt: string;
+  keywords: string[];
+  readingTime: number;
+  wordCount: number;
+  featured: boolean;
+  published: boolean;
+  series: string | null;
+  seriesOrder: number | null;
+  seriesPartTitle: string | null;
 }
