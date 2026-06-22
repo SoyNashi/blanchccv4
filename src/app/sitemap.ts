@@ -1,11 +1,9 @@
 import { MetadataRoute } from 'next'
-import posts from '@/data/posts.json'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://blanch.cc'
 
-  // Páginas estáticas
-  const staticPages: MetadataRoute.Sitemap = [
+  return [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -19,20 +17,34 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/blog/optimizacion-nextjs-seo`,
+      lastModified: new Date('2024-03-20'),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/blog/alerta-malware-npm`,
+      lastModified: new Date('2024-03-18'),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/blog/arquitectura-microservicios`,
+      lastModified: new Date('2024-03-15'),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/blog/guia-completa-desarrollo-web-moderno`,
+      lastModified: new Date('2024-06-12'),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
       url: `${baseUrl}/certifications`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
   ]
-
-  // Páginas de blog dinámicas
-  const blogPages: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.createdAt),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }))
-
-  return [...staticPages, ...blogPages]
 }

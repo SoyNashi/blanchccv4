@@ -74,3 +74,150 @@ h1, h2, h3, h4, h5, h6 {
   font-size: clamp(3rem, 10vw, 8rem);
   line-height: 0.9;
 }
+
+/* Markdown Styles Enhancement */
+.prose {
+  color: #a3a3a3;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: #ffffff;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.prose h1 {
+  font-size: 2.25rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose h2 {
+  font-size: 1.875rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose h3 {
+  font-size: 1.5rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose h4 {
+  font-size: 1.25rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+.prose a {
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+}
+
+.prose strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.prose em {
+  color: #d4d4d4;
+  font-style: italic;
+}
+
+.prose code {
+  color: #60a5fa;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.prose pre {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: #d4d4d4;
+  font-size: 0.875rem;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+  color: #d4d4d4;
+}
+
+.prose blockquote {
+  border-left: 4px solid rgba(255, 255, 255, 0.2);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #a3a3a3;
+}
+
+.prose hr {
+  border-color: rgba(255, 255, 255, 0.1);
+  margin: 2rem 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.prose th,
+.prose td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.prose th {
+  background-color: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
