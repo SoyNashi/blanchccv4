@@ -6,8 +6,7 @@
     "category": "creacion",
     "description": "Cómo logré un 100/100 en Lighthouse mientras mantenía una arquitectura escalable.",
     "content": "En este artículo exploramos las técnicas avanzadas de optimización para Next.js...",
-    "createdAt": "2024-03-20T00:00:00Z",
-    "likes": 42
+    "createdAt": "2024-03-20T00:00:00Z"
   },
   {
     "id": "2",
@@ -16,8 +15,7 @@
     "category": "alerta",
     "description": "Análisis técnico de la última amenaza detectada en el ecosistema JavaScript.",
     "content": "Recientemente se detectó una vulnerabilidad crítica en varios paquetes npm...",
-    "createdAt": "2024-03-18T00:00:00Z",
-    "likes": 28
+    "createdAt": "2024-03-18T00:00:00Z"
   },
   {
     "id": "3",
@@ -26,8 +24,7 @@
     "category": "novedad",
     "description": "Guía completa para implementar microservicios escalables.",
     "content": "Los microservicios ofrecen flexibilidad y escalabilidad...",
-    "createdAt": "2024-03-15T00:00:00Z",
-    "likes": 35
+    "createdAt": "2024-03-15T00:00:00Z"
   },
   {
     "id": "4",
@@ -36,7 +33,6 @@
     "category": "descubrimiento",
     "description": "Una guía exhaustiva sobre las tecnologías y mejores prácticas del desarrollo web moderno en 2024.",
     "content": "# Introducción\n\nEl desarrollo web ha evolucionado significativamente en los últimos años. En esta guía completa, exploraremos las tecnologías, herramientas y mejores prácticas que todo desarrollador web debería conocer en 2024.\n\n## 1. Fundamentos del Desarrollo Web\n\n### 1.1 HTML Semántico\n\nEl HTML semántico es fundamental para crear sitios web accesibles y optimizados para SEO. Las etiquetas semánticas como <header>, <nav>, <main>, <article> y <footer> proporcionan significado estructural al contenido.\n\n### 1.2 CSS Moderno\n\nEl CSS ha evolucionado con nuevas características como:\n\n- CSS Grid para layouts complejos\n- Flexbox para alineación flexible\n- Variables CSS para theming\n- Animaciones y transiciones suaves\n\n## 2. Frameworks JavaScript\n\n### 2.1 React\n\nReact es una de las bibliotecas más populares para construir interfaces de usuario. Sus características principales incluyen:\n\n- Componentes reutilizables\n- Virtual DOM para rendimiento\n- Hooks para manejo de estado\n- Ecosistema extenso\n\n### 2.2 Next.js\n\nNext.js es un framework React que proporciona:\n\n- Server-Side Rendering (SSR)\n- Static Site Generation (SSG)\n- File-based routing\n- Optimización automática de imágenes\n\n## 3. Backend y APIs\n\n### 3.1 Node.js y Express\n\nNode.js permite ejecutar JavaScript en el servidor, mientras que Express es un framework minimalista para crear APIs RESTful.\n\n### 3.2 Bases de Datos\n\n- **SQL**: PostgreSQL, MySQL para datos estructurados\n- **NoSQL**: MongoDB, Redis para datos flexibles\n- **Serverless**: Supabase, Firebase para aplicaciones modernas\n\n## 4. DevOps y Despliegue\n\n### 4.1 CI/CD\n\nLos pipelines de Integración Continua y Despliegue Continuo automatizan el proceso de desarrollo:\n\n- GitHub Actions\n- GitLab CI\n- CircleCI\n\n### 4.2 Contenedores\n\nDocker y Kubernetes son esenciales para:\n\n- Consistencia entre entornos\n- Escalabilidad horizontal\n- Aislamiento de dependencias\n\n## 5. Seguridad Web\n\n### 5.1 OWASP Top 10\n\nLas vulnerabilidades más comunes incluyen:\n\n1. Injection\n2. Broken Authentication\n3. Sensitive Data Exposure\n4. XML External Entities (XXE)\n5. Broken Access Control\n\n### 5.2 HTTPS y Certificados SSL\n\nEl uso de HTTPS es obligatorio para cualquier aplicación web moderna. Let's Encrypt proporciona certificados SSL gratuitos.\n\n## 6. Rendimiento y Optimización\n\n### 6.1 Core Web Vitals\n\nGoogle mide la experiencia del usuario mediante:\n\n- LCP (Largest Contentful Paint)\n- FID (First Input Delay)\n- CLS (Cumulative Layout Shift)\n\n### 6.2 Optimización de Imágenes\n\n- Formatos modernos: WebP, AVIF\n- Lazy loading\n- Responsive images\n- Compresión sin pérdida de calidad\n\n## 7. Accesibilidad (a11y)\n\n### 7.1 WCAG 2.1\n\nLas Pautas de Accesibilidad al Contenido Web establecen estándares para:\n\n- Texto alternativo para imágenes\n- Navegación por teclado\n- Contraste de colores\n- Lectores de pantalla\n\n### 7.2 Herramientas de Testing\n\n- axe DevTools\n- Lighthouse\n- WAVE\n\n## 8. Conclusión\n\nEl desarrollo web moderno requiere un conocimiento profundo de múltiples tecnologías y prácticas. Esta guía proporciona una base sólida, pero el aprendizaje continuo es esencial en este campo en constante evolución.\n\n### Recursos Recomendados\n\n- MDN Web Docs\n- CSS Tricks\n- JavaScript.info\n- freeCodeCamp\n\n¡Sigue aprendiendo y construyendo proyectos increíbles!",
-    "createdAt": "2024-06-12T00:00:00Z",
-    "likes": 0
+    "createdAt": "2024-06-12T00:00:00Z"
   }
 ]
