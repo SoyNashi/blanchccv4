@@ -1,4 +1,3 @@
-import { ArrowLeft, Clock, FileText, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import Link from "next/link";
 import posts from "@/data/posts.json";
 import { notFound } from "next/navigation";
@@ -79,9 +78,8 @@ export default async function BlogPostPage({ params }: PageProps) {
       <div className="px-4 py-12 md:px-6 md:py-20">
         <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <aside className="lg:col-span-1 space-y-6">
-            {/* Tabla de contenido */}
+          {/* Sidebar izquierdo - Tabla de contenido */}
+          <aside className="lg:col-span-1">
             <div className="bg-card border border-white/5 rounded-2xl p-6 sticky top-8">
               <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
                 Contenido
@@ -106,62 +104,19 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </nav>
               )}
             </div>
-
-            {/* Info del post */}
-            <div className="bg-card border border-white/5 rounded-2xl p-6">
-              <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
-                Información
-              </h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center gap-2 text-white/60">
-                  <Clock className="h-4 w-4" />
-                  <span>{post.readingTime} min de lectura</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/60">
-                  <FileText className="h-4 w-4" />
-                  <span>{post.wordCount} palabras</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/60">
-                  <span className="text-xs">{new Date(post.createdAt).toLocaleDateString()}</span>
-                </div>
-              </div>
-
-              {post.featured && (
-                <div className="mt-4 pt-4 border-t border-white/10">
-                  <div className="flex items-center gap-2 text-yellow-500">
-                    <Star className="h-4 w-4" />
-                    <span className="text-sm font-medium">Artículo destacado</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Keywords */}
-            {post.keywords.length > 0 && (
-              <div className="bg-card border border-white/5 rounded-2xl p-6">
-                <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
-                  Keywords
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {post.keywords.map(kw => (
-                    <span key={kw} className="px-2 py-1 bg-white/5 rounded text-xs text-white/60">
-                      #{kw}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
           </aside>
 
           {/* Contenido principal */}
-          <article className="lg:col-span-3">
+          <article className="lg:col-span-2">
             <div className="bg-card border border-white/5 rounded-2xl p-6 md:p-8 lg:p-12">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
                 <div className="flex items-center gap-3">
                   <span className="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold uppercase tracking-wider">
                     {post.category}
                   </span>
-                  {post.featured && <Star className="h-4 w-4 text-yellow-500" />}
+                  {post.featured && <svg className="h-4 w-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>}
                   {post.series && <span className="text-xs text-white/40">{post.series}</span>}
                 </div>
                 <span className="text-white/40 text-sm">{new Date(post.createdAt).toLocaleDateString()}</span>
@@ -199,7 +154,9 @@ export default async function BlogPostPage({ params }: PageProps) {
                 <div className="flex items-center justify-between">
                   {prevPost ? (
                     <Link href={`/blog/${prevPost.slug}`} className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
-                      <ChevronLeft className="h-4 w-4" />
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                      </svg>
                       <div className="text-left">
                         <div className="text-xs text-white/40">Anterior</div>
                         <div className="text-sm font-medium">{prevPost.seriesPartTitle || `Parte ${prevPost.seriesOrder}`}</div>
@@ -231,7 +188,9 @@ export default async function BlogPostPage({ params }: PageProps) {
                         <div className="text-xs text-white/40">Siguiente</div>
                         <div className="text-sm font-medium">{nextPost.seriesPartTitle || `Parte ${nextPost.seriesOrder}`}</div>
                       </div>
-                      <ChevronRight className="h-4 w-4" />
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
                     </Link>
                   ) : (
                     <div />
@@ -240,6 +199,60 @@ export default async function BlogPostPage({ params }: PageProps) {
               </div>
             )}
           </article>
+
+          {/* Sidebar derecho - Info del post */}
+          <aside className="lg:col-span-1 space-y-6">
+            {/* Info del post */}
+            <div className="bg-card border border-white/5 rounded-2xl p-6">
+              <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
+                Información
+              </h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center gap-2 text-white/60">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{post.readingTime} min de lectura</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/60">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>{post.wordCount} palabras</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/60">
+                  <span className="text-xs">{new Date(post.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+
+              {post.featured && (
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-2 text-yellow-500">
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    <span className="text-sm font-medium">Artículo destacado</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Keywords */}
+            {post.keywords.length > 0 && (
+              <div className="bg-card border border-white/5 rounded-2xl p-6">
+                <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
+                  Keywords
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {post.keywords.map(kw => (
+                    <span key={kw} className="px-2 py-1 bg-white/5 rounded text-xs text-white/60">
+                      #{kw}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </aside>
         </div>
 
         <div className="mt-12 flex items-center justify-between">
