@@ -1,5 +1,4 @@
 "use client";
-import { ArrowLeft, Search, Clock, FileText, Star, Filter } from "lucide-react";
 import Link from "next/link";
 import posts from "@/data/posts.json";
 import { useState, useMemo } from "react";
@@ -104,11 +103,15 @@ export default function BlogPage() {
             
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
                 {posts.filter(p => p.published).length} artículos
               </span>
               <span className="flex items-center gap-2">
-                <Star className="h-4 w-4" />
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
                 {featuredPosts.length} destacados
               </span>
             </div>
@@ -118,7 +121,9 @@ export default function BlogPage() {
         {/* Búsqueda y Filtros */}
         <div className="mb-12">
           <div className="relative mb-6">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
             <input 
               type="text" 
               placeholder="Buscar por título, descripción o keywords..." 
@@ -132,7 +137,9 @@ export default function BlogPage() {
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase mb-4 hover:text-white transition-colors"
           >
-            <Filter className="h-4 w-4" />
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
             {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
           </button>
 
@@ -177,7 +184,9 @@ export default function BlogPage() {
         {featuredPosts.length > 0 && selectedCategory === 'all' && selectedKeyword === 'all' && !searchTerm && (
           <div className="mb-16">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-              <Star className="h-5 w-5 text-yellow-500" />
+              <svg className="h-5 w-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
               Destacados
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -187,7 +196,9 @@ export default function BlogPage() {
                     <span className="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold uppercase tracking-wider">
                       {post.category}
                     </span>
-                    <Star className="h-4 w-4 text-yellow-500" />
+                    <svg className="h-4 w-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
                   </div>
                   
                   <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors line-clamp-2">
@@ -200,7 +211,9 @@ export default function BlogPage() {
                   
                   <div className="flex items-center gap-4 text-xs text-white/40">
                     <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
+                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                       {post.readingTime} min
                     </span>
                     <span>{post.wordCount} palabras</span>
@@ -252,12 +265,16 @@ export default function BlogPage() {
                       <span className="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold uppercase tracking-wider">
                         {post.category}
                       </span>
-                      {post.featured && <Star className="h-4 w-4 text-yellow-500" />}
+                      {post.featured && <svg className="h-4 w-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>}
                       {post.series && <span className="text-xs text-white/40">{post.series}</span>}
                     </div>
                     <div className="flex items-center gap-4 text-xs text-white/40">
                       <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
+                        <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                         {post.readingTime} min
                       </span>
                       <span>{post.wordCount} palabras</span>
