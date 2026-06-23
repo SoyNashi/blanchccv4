@@ -189,7 +189,7 @@ export default function BlogPage() {
               </svg>
               Destacados
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {featuredPosts.map((post) => (
                 <Link key={post.id} href={`/blog/${post.slug}`} className="group block bg-card border border-white/5 rounded-2xl p-6 hover:border-white/20 transition-all">
                   <div className="flex items-center justify-between mb-4">
@@ -310,9 +310,6 @@ export default function BlogPage() {
         </div>
       </div>
       </div>
-      
-      {/* Biografía */}
-      <BlogAbout />
       
       <BlogFooter />
     </div>

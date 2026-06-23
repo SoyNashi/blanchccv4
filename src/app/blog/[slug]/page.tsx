@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import BlogNavbar from "@/components/blog-navbar";
 import BlogFooter from "@/components/blog-footer";
+import BlogAbout from "@/components/blog-about";
 
 // Función para extraer headings del markdown
 function extractHeadings(markdown: string) {
@@ -262,6 +263,10 @@ export default async function BlogPostPage({ params }: PageProps) {
         </div>
       </div>
       </div>
+      
+      {/* Biografía */}
+      <BlogAbout />
+      
       <BlogFooter />
     </div>
   );
