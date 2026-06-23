@@ -12,8 +12,7 @@ export async function GET() {
     const keywords = post.keywords || []
     const keywordTags = keywords.map(kw => `<category>${kw}</category>`).join('')
     
-    return `
-    <item>
+    return `<item>
       <title><![CDATA[${post.title}]]></title>
       <link>${baseUrl}/blog/${post.slug}</link>
       <description><![CDATA[${post.description}]]></description>
@@ -33,14 +32,15 @@ export async function GET() {
     <language>es</language>
     <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml" />
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    ${rssItems}
+${rssItems}
   </channel>
 </rss>`
 
   return new Response(rss, {
     headers: {
       'Content-Type': 'application/rss+xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600',
+      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+      'X-Content-Type-Options': 'nosniff',
     },
   })
 }
