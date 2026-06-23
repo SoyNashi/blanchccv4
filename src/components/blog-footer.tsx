@@ -68,7 +68,7 @@ export default function BlogFooter() {
                 <LinkedinIcon className="h-5 w-5" />
               </a>
               <a
-                href="mailto:contact@blanch.cc"
+                href="mailto:nil@blanch.cc"
                 className="text-muted-foreground hover:text-white transition-colors"
               >
                 <MailIcon className="h-5 w-5" />
