@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
 import { cn } from "@/lib/utils";
+import BlogDockHider from "@/components/blog-dock-hider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -23,12 +24,7 @@ export default function BlogLayout({
           "min-h-screen bg-background font-sans antialiased text-foreground"
         )}
       >
-        <style jsx global>{`
-          /* Ocultar Dock en el blog */
-          .fixed.bottom-8 {
-            display: none !important;
-          }
-        `}</style>
+        <BlogDockHider />
         <main className="relative flex min-h-screen flex-col">
           {children}
         </main>
