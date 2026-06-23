@@ -11,17 +11,7 @@ export default function BlogNavbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo con SVG */}
           <Link href="/blog" className="flex items-center gap-3">
-            <svg viewBox="0 0 100 100" className="w-10 h-10">
-              <defs>
-                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#00ff00" />
-                  <stop offset="100%" stopColor="#00cc00" />
-                </linearGradient>
-              </defs>
-              <circle cx="50" cy="50" r="45" fill="none" stroke="url(#logoGradient)" strokeWidth="2" />
-              <path d="M30 50 L50 30 L70 50 L50 70 Z" fill="url(#logoGradient)" />
-              <circle cx="50" cy="50" r="8" fill="#0a0a0a" />
-            </svg>
+            <img src="/path2.svg" alt="Logo" className="w-10 h-10" />
             <span className="text-white font-bold tracking-tighter text-lg">Insights</span>
           </Link>
 

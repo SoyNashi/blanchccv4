@@ -6,17 +6,7 @@ export default function BlogAbout() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
           {/* Logo grande */}
           <div className="lg:col-span-1 flex justify-center">
-            <svg viewBox="0 0 100 100" className="w-48 h-48 md:w-64 md:h-64">
-              <defs>
-                <linearGradient id="aboutLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#00ff00" />
-                  <stop offset="100%" stopColor="#00cc00" />
-                </linearGradient>
-              </defs>
-              <circle cx="50" cy="50" r="45" fill="none" stroke="url(#aboutLogoGradient)" strokeWidth="2" />
-              <path d="M30 50 L50 30 L70 50 L50 70 Z" fill="url(#aboutLogoGradient)" />
-              <circle cx="50" cy="50" r="8" fill="#0a0a0a" />
-            </svg>
+            <img src="/path2.svg" alt="Logo" className="w-48 h-48 md:w-64 md:h-64" />
           </div>
 
           {/* Información */}

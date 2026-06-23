@@ -1,0 +1,16 @@
+{
+  "name": "Nil Blanch - Digital Product Builder",
+  "short_name": "Nil Blanch",
+  "description": "Especialista en desarrollo web, ecommerce y SEO técnico",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#00ff00",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

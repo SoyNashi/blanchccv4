@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 
 export default function BlogFooter() {
+  const currentYear = new Date().getFullYear();
   return (
     <footer className="bg-card border-t border-white/5 py-12 mt-20">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
@@ -8,17 +10,7 @@ export default function BlogFooter() {
           {/* Logo y descripción */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <svg viewBox="0 0 100 100" className="w-8 h-8">
-                <defs>
-                  <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#00ff00" />
-                    <stop offset="100%" stopColor="#00cc00" />
-                  </linearGradient>
-                </defs>
-                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#footerLogoGradient)" strokeWidth="2" />
-                <path d="M30 50 L50 30 L70 50 L50 70 Z" fill="url(#footerLogoGradient)" />
-                <circle cx="50" cy="50" r="8" fill="#0a0a0a" />
-              </svg>
+              <img src="/path2.svg" alt="Logo" className="w-8 h-8" />
               <span className="text-white font-bold tracking-tighter">Nil Blanch</span>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -79,7 +71,7 @@ export default function BlogFooter() {
 
         <div className="border-t border-white/5 pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Nil Blanch. Todos los derechos reservados.
+            © {currentYear} Nil Blanch. Todos los derechos reservados.
           </p>
         </div>
       </div>
