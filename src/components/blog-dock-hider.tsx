@@ -12,13 +12,16 @@ export default function BlogDockHider() {
       });
     };
 
-    hideDock();
+    // Esperar a que el DOM esté completamente cargado
+    if (typeof window !== 'undefined') {
+      hideDock();
+      
+      // Ocultar Dock cuando se monta el componente
+      const observer = new MutationObserver(hideDock);
+      observer.observe(document.body, { childList: true, subtree: true });
 
-    // Ocultar Dock cuando se monta el componente
-    const observer = new MutationObserver(hideDock);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => observer.disconnect();
+      return () => observer.disconnect();
+    }
   }, []);
 
   return null;

@@ -90,7 +90,7 @@ export default function BlogPage() {
       <BlogNavbar />
       <BlogAbout />
       <div className="px-4 py-12 md:px-6 md:py-20">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-12">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
@@ -310,6 +310,10 @@ export default function BlogPage() {
         </div>
       </div>
       </div>
+      
+      {/* Biografía */}
+      <BlogAbout />
+      
       <BlogFooter />
     </div>
   );
