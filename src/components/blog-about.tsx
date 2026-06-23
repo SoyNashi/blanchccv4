@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, MapPin } from "lucide-react";
+import { GithubIcon, LinkedinIcon, MailIcon, MapPinIcon } from "lucide-react";
 
 export default function BlogAbout() {
   return (
@@ -40,7 +40,7 @@ export default function BlogAbout() {
             </div>
 
             <div className="flex items-center gap-2 text-muted-foreground">
-              <MapPin className="h-4 w-4" />
+              <MapPinIcon className="h-4 w-4" />
               <span>Barcelona, España</span>
             </div>
 
@@ -51,7 +51,7 @@ export default function BlogAbout() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors"
               >
-                <Github className="h-5 w-5" />
+                <GithubIcon className="h-5 w-5" />
                 GitHub
               </a>
               <a
@@ -60,14 +60,14 @@ export default function BlogAbout() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors"
               >
-                <Linkedin className="h-5 w-5" />
+                <LinkedinIcon className="h-5 w-5" />
                 LinkedIn
               </a>
               <a
                 href="mailto:contact@blanch.cc"
                 className="flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors"
               >
-                <Mail className="h-5 w-5" />
+                <MailIcon className="h-5 w-5" />
                 Email
               </a>
             </div>

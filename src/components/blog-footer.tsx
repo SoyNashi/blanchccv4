@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Rss } from "lucide-react";
+import { GithubIcon, LinkedinIcon, MailIcon, RssIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function BlogFooter() {
@@ -57,7 +57,7 @@ export default function BlogFooter() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-white transition-colors"
               >
-                <Github className="h-5 w-5" />
+                <GithubIcon className="h-5 w-5" />
               </a>
               <a
                 href="https://linkedin.com"
@@ -65,16 +65,16 @@ export default function BlogFooter() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-white transition-colors"
               >
-                <Linkedin className="h-5 w-5" />
+                <LinkedinIcon className="h-5 w-5" />
               </a>
               <a
                 href="mailto:contact@blanch.cc"
                 className="text-muted-foreground hover:text-white transition-colors"
               >
-                <Mail className="h-5 w-5" />
+                <MailIcon className="h-5 w-5" />
               </a>
               <Link href="/rss.xml" className="text-muted-foreground hover:text-white transition-colors">
-                <Rss className="h-5 w-5" />
+                <RssIcon className="h-5 w-5" />
               </Link>
             </div>
           </div>
