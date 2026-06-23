@@ -23,6 +23,12 @@ export default function BlogLayout({
           "min-h-screen bg-background font-sans antialiased text-foreground"
         )}
       >
+        <style jsx global>{`
+          /* Ocultar Dock en el blog */
+          .fixed.bottom-8 {
+            display: none !important;
+          }
+        `}</style>
         <main className="relative flex min-h-screen flex-col">
           {children}
         </main>
