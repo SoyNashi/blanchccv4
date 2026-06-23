@@ -1,89 +1,51 @@
-"use client";
 import Link from "next/link";
 import posts from "@/data/posts.json";
-import { useState, useMemo } from "react";
 import BlogNavbar from "@/components/blog-navbar";
-import BlogAbout from "@/components/blog-about";
 import BlogFooter from "@/components/blog-footer";
+import BlogClient from "./blog-client";
 
 type PostCategory = 'novedad' | 'alerta' | 'descubrimiento' | 'creacion' | 'seguridad' | 'malware';
 
 export default function BlogPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<PostCategory | 'all'>('all');
-  const [selectedKeyword, setSelectedKeyword] = useState<string | 'all'>('all');
-  const [showFilters, setShowFilters] = useState(false);
-
   // Obtener categorías únicas
-  const categories = useMemo(() => {
-    const cats = new Set<PostCategory>();
-    posts.forEach(post => cats.add(post.category));
-    return Array.from(cats);
-  }, []);
+  const categories = Array.from(new Set<PostCategory>(posts.map(post => post.category)));
 
   // Obtener keywords únicas
-  const keywords = useMemo(() => {
-    const kw = new Set<string>();
-    posts.forEach(post => post.keywords.forEach(k => kw.add(k)));
-    return Array.from(kw).sort();
-  }, []);
-
-  // Filtrar y ordenar posts
-  const filteredPosts = useMemo(() => {
-    let filtered = posts.filter(post => post.published);
-
-    // Filtrar por categoría
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(post => post.category === selectedCategory);
-    }
-
-    // Filtrar por keyword
-    if (selectedKeyword !== 'all') {
-      filtered = filtered.filter(post => post.keywords.includes(selectedKeyword));
-    }
-
-    // Filtrar por búsqueda
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(post => 
-        post.title.toLowerCase().includes(term) ||
-        post.description.toLowerCase().includes(term) ||
-        post.keywords.some(k => k.toLowerCase().includes(term))
-      );
-    }
-
-    // Ordenar: destacados primero, luego por fecha
-    return filtered.sort((a, b) => {
-      if (a.featured && !b.featured) return -1;
-      if (!a.featured && b.featured) return 1;
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-  }, [searchTerm, selectedCategory, selectedKeyword]);
+  const keywords = Array.from(new Set<string>(posts.flatMap(post => post.keywords))).sort();
 
   // Posts destacados
-  const featuredPosts = useMemo(() => {
-    return posts.filter(post => post.featured && post.published).slice(0, 3);
-  }, []);
+  const featuredPosts = posts.filter(post => post.featured && post.published).slice(0, 3);
 
   // Series
-  const series = useMemo(() => {
-    const seriesMap = new Map<string, typeof posts>();
-    posts.forEach(post => {
-      if (post.series && post.published) {
-        if (!seriesMap.has(post.series)) {
-          seriesMap.set(post.series, []);
-        }
-        seriesMap.get(post.series)!.push(post);
+  const seriesMap = new Map<string, typeof posts>();
+  posts.forEach(post => {
+    if (post.series && post.published) {
+      if (!seriesMap.has(post.series)) {
+        seriesMap.set(post.series, []);
       }
-    });
-    
-    // Ordenar posts dentro de cada serie
-    seriesMap.forEach((seriesPosts) => {
-      seriesPosts.sort((a, b) => (a.seriesOrder || 0) - (b.seriesOrder || 0));
-    });
-    
-    return seriesMap;
-  }, []);
+      seriesMap.get(post.series)!.push(post);
+    }
+  });
+  
+  // Ordenar posts dentro de cada serie
+  seriesMap.forEach((seriesPosts) => {
+    seriesPosts.sort((a, b) => (a.seriesOrder || 0) - (b.seriesOrder || 0));
+  });
+
+  return (
+    <div className="min-h-screen bg-background">
+      <BlogNavbar />
+      <BlogClient 
+        posts={posts}
+        categories={categories}
+        keywords={keywords}
+        featuredPosts={featuredPosts}
+        series={seriesMap}
+      />
+      <BlogFooter />
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-background">
