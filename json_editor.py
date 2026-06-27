@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog, simpledialog
 from pathlib import Path
 import re
+from datetime import datetime
 from PIL import Image, ImageTk
 
 class JSONEditor:
@@ -62,6 +63,15 @@ class JSONEditor:
         self.title_label = tk.Label(header_frame, text="⚡ CYBERPUNK JSON EDITOR // NIL BLANCH ⚡", 
                               font=('Orbitron', 20, 'bold'), bg='#0a0a0a', fg='#ff0040')
         self.title_label.pack(side=tk.LEFT)
+        
+        # Botón de cierre
+        close_btn = tk.Button(header_frame, text="✕ CLOSE", 
+                            command=self.root.destroy,
+                            font=('Orbitron', 10, 'bold'), 
+                            bg='#ff0040', fg='#000000', 
+                            activebackground='#cc0033', activeforeground='#000000',
+                            relief=tk.RAISED, cursor='hand2', bd=2, padx=15, pady=8)
+        close_btn.pack(side=tk.RIGHT)
         
         # Selector de archivo con estilo - botones grandes
         selector_frame = tk.Frame(main_frame, bg='#0a0a0a')
@@ -185,8 +195,11 @@ class JSONEditor:
         self.visual_canvas.bind('<Double-Button-1>', self.on_canvas_double_click)
         self.visual_canvas.bind('<Motion>', self.on_canvas_hover)
         
-        # Bind events para scroll del ratón
-        self.visual_canvas.bind('<Mouse-Wheel>', lambda e: self.visual_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        # Bind events para scroll del ratón (Linux usa Button-4/5, Windows/Mac usan MouseWheel)
+        try:
+            self.visual_canvas.bind('<MouseWheel>', lambda e: self.visual_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        except:
+            pass
         self.visual_canvas.bind('<Button-4>', lambda e: self.visual_canvas.yview_scroll(-1, "units"))
         self.visual_canvas.bind('<Button-5>', lambda e: self.visual_canvas.yview_scroll(1, "units"))
     
@@ -1353,6 +1366,9 @@ class JSONEditor:
                 result['seriesOrder'] = None
             if 'seriesPartTitle' not in result:
                 result['seriesPartTitle'] = None
+            # Auto-generar createdAt si está vacío o no existe
+            if 'createdAt' not in result or not result['createdAt']:
+                result['createdAt'] = datetime.now().isoformat()
         
         # Aplicar cambios según el modo
         if self.editor_mode == 'add':

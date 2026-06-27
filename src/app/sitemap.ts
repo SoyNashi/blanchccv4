@@ -6,12 +6,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
   
   const postUrls = posts
     .filter(post => post.published)
-    .map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: new Date(post.createdAt),
-      changeFrequency: 'monthly' as const,
-      priority: 0.6,
-    }))
+    .map((post) => {
+      let lastModified = new Date()
+      try {
+        if (post.createdAt) {
+          const parsedDate = new Date(post.createdAt)
+          if (!isNaN(parsedDate.getTime())) {
+            lastModified = parsedDate
+          }
+        }
+      } catch (e) {
+        console.error('Invalid date for post:', post.slug, post.createdAt)
+      }
+      
+      return {
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified,
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+      }
+    })
 
   return [
     {
