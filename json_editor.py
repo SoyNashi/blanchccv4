@@ -371,17 +371,14 @@ class JSONEditor:
             self.status_var.set("Error: JSON inválido")
     
     def load_file(self, event=None):
-        file_name = self.file_var.get()
-        if not file_name:
-            messagebox.showwarning("Advertencia", "Selecciona un archivo primero")
-            return
-        
-        json_file = self.json_files[file_name]
-        self.load_specific_file(json_file)
+        # Este método ya no se usa, se mantiene por compatibilidad
+        # El sistema ahora usa load_specific_file directamente
+        if self.current_file:
+            self.load_specific_file(self.current_file)
     
     def refresh_file(self):
         if self.current_file:
-            self.load_file()
+            self.load_specific_file(self.current_file)
     
     def update_visual_view(self):
         # Limpiar canvas
@@ -434,7 +431,7 @@ class JSONEditor:
             )
             
             # Category badge
-            category = post.get('category', '')
+            category = post.get('category', '') or ''
             self.visual_canvas.create_rectangle(
                 x_pos + 15, y_pos + 50, x_pos + 15 + len(category) * 8 + 20, y_pos + 70,
                 fill='#ff0040', outline='#ff0040',
@@ -1339,6 +1336,9 @@ class JSONEditor:
                 value = entry.get().strip()
                 if not value:
                     value = None
+                # Para category, asegurar que no sea None
+                if field == 'category' and value is None:
+                    value = ''
             else:
                 value = entry.get().strip()
             
@@ -1352,10 +1352,6 @@ class JSONEditor:
         if self.current_file == 'posts.json':
             if 'keywords' not in result or not result['keywords']:
                 result['keywords'] = []
-            if 'readingTime' not in result:
-                result['readingTime'] = 0
-            if 'wordCount' not in result:
-                result['wordCount'] = 0
             if 'featured' not in result:
                 result['featured'] = False
             if 'published' not in result:
@@ -1369,6 +1365,16 @@ class JSONEditor:
             # Auto-generar createdAt si está vacío o no existe
             if 'createdAt' not in result or not result['createdAt']:
                 result['createdAt'] = datetime.now().isoformat()
+            # Calcular wordCount y readingTime automáticamente desde el contenido
+            if 'content' in result and result['content']:
+                # Contar palabras (separando por espacios y saltos de línea)
+                words = result['content'].split()
+                result['wordCount'] = len(words)
+                # Calcular tiempo de lectura (200 palabras por minuto)
+                result['readingTime'] = max(1, round(len(words) / 200))
+            else:
+                result['wordCount'] = 0
+                result['readingTime'] = 0
         
         # Aplicar cambios según el modo
         if self.editor_mode == 'add':
