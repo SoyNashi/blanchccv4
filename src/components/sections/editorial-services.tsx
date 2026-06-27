@@ -14,7 +14,7 @@ export const EditorialServices = ({ services }: { services: any[] }) => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-12 gap-y-24 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, index) => (
             <motion.div
               key={service.id}

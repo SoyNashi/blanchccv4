@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { Magnetic } from "@/components/ui/magnetic";
 
 const MESSAGES = [
   "CONSTRUYO PRODUCTOS REALES.",
@@ -10,32 +11,53 @@ const MESSAGES = [
 ];
 
 export const Hero = () => {
-  const [index, setIndex] = useState(0);
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [displayText, setDisplayText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [typingSpeed, setTypingSpeed] = useState(100);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % MESSAGES.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
+    const currentMessage = MESSAGES[messageIndex];
+    
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        if (displayText.length < currentMessage.length) {
+          setDisplayText(currentMessage.slice(0, displayText.length + 1));
+          setTypingSpeed(100);
+        } else {
+          setIsDeleting(true);
+          setTypingSpeed(2000); // Pausa antes de borrar
+        }
+      } else {
+        if (displayText.length > 0) {
+          setDisplayText(displayText.slice(0, -1));
+          setTypingSpeed(50);
+        } else {
+          setIsDeleting(false);
+          setMessageIndex((prev) => (prev + 1) % MESSAGES.length);
+          setTypingSpeed(500);
+        }
+      }
+    }, typingSpeed);
+
+    return () => clearTimeout(timer);
+  }, [displayText, isDeleting, messageIndex]);
 
   return (
     <section id="hero" className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-6">
       <div className="z-10 w-full max-w-7xl">
-        <AnimatePresence mode="wait">
+        <Magnetic>
           <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
             className="flex flex-col items-start justify-center"
           >
-            <h1 className="text-huge font-bold tracking-tighter text-white">
-              {MESSAGES[index]}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-huge font-bold tracking-tighter text-white">
+              {displayText}<span className="animate-pulse">|</span>
             </h1>
           </motion.div>
-        </AnimatePresence>
+        </Magnetic>
         
         <motion.div
           initial={{ opacity: 0 }}

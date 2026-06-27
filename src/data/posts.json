@@ -29,8 +29,8 @@
     ],
     "readingTime": 5,
     "wordCount": 943,
-    "featured": false,
-    "published": false,
+    "featured": true,
+    "published": true,
     "series": null,
     "seriesOrder": 0,
     "seriesPartTitle": ""

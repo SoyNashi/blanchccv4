@@ -33,7 +33,7 @@ export const BlogSlider = ({ posts }: { posts: any[] }) => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
           {posts.map((post, i) => (
             <Link key={post.slug} href={`/blog/${post.slug}`} className="group">
               <motion.div

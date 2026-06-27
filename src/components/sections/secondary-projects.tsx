@@ -27,11 +27,11 @@ export const SecondaryProjects = () => {
                 className="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors"
                 initial={false}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
                     {projects.length} proyectos
                   </span>
-                  <h3 className="text-2xl font-bold text-white">{category}</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white">{category}</h3>
                 </div>
                 <motion.div
                   animate={{ rotate: openCategory === category ? 90 : 0 }}

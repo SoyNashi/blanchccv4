@@ -32,7 +32,7 @@ const ProjectItem = ({ project, index }: { project: any; index: number }) => {
       style={{ opacity }}
       className="relative flex min-h-[80vh] w-full flex-col items-center justify-center px-6"
     >
-      <div className="grid w-full max-w-7xl grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+      <div className="grid w-full max-w-7xl grid-cols-1 gap-12 md:grid-cols-2 lg:items-center">
         <div className={`order-2 flex flex-col gap-6 ${index % 2 === 0 ? "lg:order-1" : "lg:order-2"}`}>
           <motion.div
             initial={{ opacity: 0, x: -20 }}

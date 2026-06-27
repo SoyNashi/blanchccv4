@@ -78,9 +78,9 @@ export default async function BlogPostPage({ params }: PageProps) {
       <BlogNavbar />
       <div className="px-4 py-12 md:px-6 md:py-20">
         <div className="mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-          {/* Sidebar izquierdo - Tabla de contenido (oculto en móvil) */}
-          <aside className="hidden xl:block xl:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
+          {/* Sidebar izquierdo - Tabla de contenido (oculto en móvil/tablet) */}
+          <aside className="hidden lg:block lg:col-span-1">
             <div className="bg-card border border-white/5 rounded-2xl p-6 sticky top-8">
               <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
                 Contenido
@@ -108,7 +108,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           </aside>
 
           {/* Contenido principal - más ancho */}
-          <article className="xl:col-span-2 lg:col-span-3">
+          <article className="lg:col-span-4">
             <div className="bg-card border border-white/5 rounded-2xl p-6 md:p-8 lg:p-12">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
                 <div className="flex items-center gap-3">
