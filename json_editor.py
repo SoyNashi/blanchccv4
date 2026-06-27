@@ -184,6 +184,11 @@ class JSONEditor:
         self.visual_canvas.bind('<Button-1>', self.on_canvas_click)
         self.visual_canvas.bind('<Double-Button-1>', self.on_canvas_double_click)
         self.visual_canvas.bind('<Motion>', self.on_canvas_hover)
+        
+        # Bind events para scroll del ratón
+        self.visual_canvas.bind('<Mouse-Wheel>', lambda e: self.visual_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        self.visual_canvas.bind('<Button-4>', lambda e: self.visual_canvas.yview_scroll(-1, "units"))
+        self.visual_canvas.bind('<Button-5>', lambda e: self.visual_canvas.yview_scroll(1, "units"))
     
     def create_text_editor(self):
         # Scrollbar
@@ -388,12 +393,12 @@ class JSONEditor:
     def create_posts_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 380
-        card_height = 220
-        gap = 20
+        card_width = 320
+        card_height = 200
+        gap = 15
         
         for idx, post in enumerate(self.current_data):
-            if idx > 0 and idx % 3 == 0:
+            if idx > 0 and idx % 5 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
@@ -471,12 +476,12 @@ class JSONEditor:
     def create_projects_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 320
-        card_height = 200
-        gap = 20
+        card_width = 280
+        card_height = 180
+        gap = 12
         
         for idx, project in enumerate(self.current_data):
-            if idx > 0 and idx % 4 == 0:
+            if idx > 0 and idx % 6 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
@@ -530,12 +535,12 @@ class JSONEditor:
     def create_certifications_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 300
-        card_height = 160
-        gap = 15
+        card_width = 260
+        card_height = 140
+        gap = 12
         
         for idx, cert in enumerate(self.current_data):
-            if idx > 0 and idx % 4 == 0:
+            if idx > 0 and idx % 6 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
@@ -668,12 +673,12 @@ class JSONEditor:
     def create_services_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 340
-        card_height = 120
-        gap = 15
+        card_width = 300
+        card_height = 130
+        gap = 12
         
         for idx, service in enumerate(self.current_data):
-            if idx > 0 and idx % 3 == 0:
+            if idx > 0 and idx % 5 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
@@ -742,12 +747,12 @@ class JSONEditor:
                 y_pos += 40
                 
                 # Projects in category
-                card_width = 320
-                card_height = 140
-                gap = 15
+                card_width = 280
+                card_height = 120
+                gap = 12
                 
                 for idx, project in enumerate(projects):
-                    if idx > 0 and idx % 3 == 0:
+                    if idx > 0 and idx % 5 == 0:
                         x_pos = 20
                         y_pos += card_height + gap
                     
