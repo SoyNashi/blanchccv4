@@ -228,6 +228,14 @@ class JSONEditor:
         
         self.editor_scroll_y.config(command=self.editor_canvas.yview)
         
+        # Bind para scroll con ratón
+        try:
+            self.editor_canvas.bind('<MouseWheel>', lambda e: self.editor_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        except:
+            pass
+        self.editor_canvas.bind('<Button-4>', lambda e: self.editor_canvas.yview_scroll(-1, "units"))
+        self.editor_canvas.bind('<Button-5>', lambda e: self.editor_canvas.yview_scroll(1, "units"))
+        
         self.editor_scrollable_frame = tk.Frame(self.editor_canvas, bg='#0a0a0a')
         self.editor_canvas.create_window((0, 0), window=self.editor_scrollable_frame, anchor="nw")
         
@@ -575,23 +583,30 @@ class JSONEditor:
                     tags=('card', f'cert_{idx}')
                 )
             elif icon_name:
-                # Intentar cargar imagen del icono
-                icon_path = self.public_path / 'certifications' / f'{icon_name}.svg'
-                if icon_path.exists():
+                # Intentar cargar imagen del icono (SVG o PNG)
+                svg_path = self.public_path / 'certifications' / f'{icon_name}.svg'
+                png_path = self.public_path / 'certifications' / f'{icon_name}.png'
+                
+                # Primero intentar con SVG usando rsvg-convert (disponible en Arch)
+                if svg_path.exists():
                     try:
-                        # Intentar cargar SVG (PIL no soporta SVG nativamente, intentamos como PNG)
-                        # Primero intentamos buscar versión PNG
-                        png_path = self.public_path / 'certifications' / f'{icon_name}.png'
-                        if png_path.exists():
-                            img = Image.open(png_path)
-                        else:
-                            # Si no hay PNG, mostrar icono de texto
-                            raise Exception("SVG not supported")
+                        import subprocess
+                        import tempfile
+                        import os
                         
-                        img = img.resize((50, 50), Image.Resampling.LANCZOS)
+                        # Crear archivo temporal
+                        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp_file:
+                            tmp_path = tmp_file.name
+                        
+                        # Usar rsvg-convert para convertir SVG a PNG
+                        subprocess.run(['rsvg-convert', '-w', '50', '-h', '50', '-o', tmp_path, str(svg_path)], 
+                                     check=True, capture_output=True)
+                        
+                        # Cargar el PNG convertido
+                        img = Image.open(tmp_path)
                         photo = ImageTk.PhotoImage(img)
                         
-                        # Guardar referencia para evitar garbage collection
+                        # Guardar referencia
                         self.cert_images[f'cert_{idx}'] = photo
                         
                         # Mostrar imagen
@@ -600,40 +615,83 @@ class JSONEditor:
                             image=photo,
                             tags=('card', f'cert_{idx}')
                         )
+                        
+                        # Limpiar archivo temporal
+                        os.unlink(tmp_path)
+                        
                     except Exception as e:
-                        # Si falla, mostrar primera letra del issuer como icono
-                        issuer = cert.get('issuer', '')
-                        first_letter = issuer[0].upper() if issuer else '?'
-                        self.visual_canvas.create_oval(
-                            x_pos + card_width - 55, y_pos + 10,
-                            x_pos + card_width - 25, y_pos + 40,
-                            fill='#1a0a0a', outline='#ff0040', width=2,
-                            tags=('card', f'cert_{idx}')
-                        )
-                        self.visual_canvas.create_text(
+                        # Si falla rsvg-convert, intentar con cairosvg
+                        try:
+                            import cairosvg
+                            import io
+                            svg_data = svg_path.read_text()
+                            png_data = cairosvg.svg2png(bytestring=svg_data.encode(), output_width=50, output_height=50)
+                            img = Image.open(io.BytesIO(png_data))
+                            photo = ImageTk.PhotoImage(img)
+                            
+                            self.cert_images[f'cert_{idx}'] = photo
+                            
+                            self.visual_canvas.create_image(
+                                x_pos + card_width - 40, y_pos + 25,
+                                image=photo,
+                                tags=('card', f'cert_{idx}')
+                            )
+                        except:
+                            # Si falla todo, intentar con PNG directo
+                            if png_path.exists():
+                                try:
+                                    img = Image.open(png_path)
+                                    img = img.resize((50, 50), Image.Resampling.LANCZOS)
+                                    photo = ImageTk.PhotoImage(img)
+                                    
+                                    self.cert_images[f'cert_{idx}'] = photo
+                                    
+                                    self.visual_canvas.create_image(
+                                        x_pos + card_width - 40, y_pos + 25,
+                                        image=photo,
+                                        tags=('card', f'cert_{idx}')
+                                    )
+                                except:
+                                    # Fallback a primera letra
+                                    self._show_cert_fallback(x_pos, y_pos, card_width, cert, idx)
+                            else:
+                                self._show_cert_fallback(x_pos, y_pos, card_width, cert, idx)
+                elif png_path.exists():
+                    # Si no hay SVG pero sí PNG
+                    try:
+                        img = Image.open(png_path)
+                        img = img.resize((50, 50), Image.Resampling.LANCZOS)
+                        photo = ImageTk.PhotoImage(img)
+                        
+                        self.cert_images[f'cert_{idx}'] = photo
+                        
+                        self.visual_canvas.create_image(
                             x_pos + card_width - 40, y_pos + 25,
-                            text=first_letter,
-                            font=('Orbitron', 16, 'bold'),
-                            fill='#ff0040',
+                            image=photo,
                             tags=('card', f'cert_{idx}')
                         )
+                    except:
+                        self._show_cert_fallback(x_pos, y_pos, card_width, cert, idx)
                 else:
-                    # Si no existe el archivo, mostrar primera letra del issuer
-                    issuer = cert.get('issuer', '')
-                    first_letter = issuer[0].upper() if issuer else '?'
-                    self.visual_canvas.create_oval(
-                        x_pos + card_width - 55, y_pos + 10,
-                        x_pos + card_width - 25, y_pos + 40,
-                        fill='#1a0a0a', outline='#ff0040', width=2,
-                        tags=('card', f'cert_{idx}')
-                    )
-                    self.visual_canvas.create_text(
-                        x_pos + card_width - 40, y_pos + 25,
-                        text=first_letter,
-                        font=('Orbitron', 16, 'bold'),
-                        fill='#ff0040',
-                        tags=('card', f'cert_{idx}')
-                    )
+                    self._show_cert_fallback(x_pos, y_pos, card_width, cert, idx)
+    
+    def _show_cert_fallback(self, x_pos, y_pos, card_width, cert, idx):
+        """Mostrar fallback con primera letra del issuer"""
+        issuer = cert.get('issuer', '')
+        first_letter = issuer[0].upper() if issuer else '?'
+        self.visual_canvas.create_oval(
+            x_pos + card_width - 55, y_pos + 10,
+            x_pos + card_width - 25, y_pos + 40,
+            fill='#1a0a0a', outline='#ff0040', width=2,
+            tags=('card', f'cert_{idx}')
+        )
+        self.visual_canvas.create_text(
+            x_pos + card_width - 40, y_pos + 25,
+            text=first_letter,
+            font=('Orbitron', 16, 'bold'),
+            fill='#ff0040',
+            tags=('card', f'cert_{idx}')
+        )
             
             # Name con wrapping
             self.visual_canvas.create_text(
@@ -1138,9 +1196,28 @@ class JSONEditor:
                 if 'series' in post and post['series']:
                     existing_series.add(post['series'])
         
+        # Crear frame para 2 columnas
+        columns_frame = tk.Frame(self.editor_scrollable_frame, bg='#0a0a0a')
+        columns_frame.pack(fill=tk.BOTH, expand=True, padx=15, pady=8)
+        
+        # Frame para columna izquierda
+        left_column = tk.Frame(columns_frame, bg='#0a0a0a')
+        left_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
+        
+        # Frame para columna derecha
+        right_column = tk.Frame(columns_frame, bg='#0a0a0a')
+        right_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
+        
         for idx, (field, field_type) in enumerate(fields.items()):
-            frame = tk.Frame(self.editor_scrollable_frame, bg='#0a0a0a')
-            frame.pack(fill=tk.X, padx=15, pady=8)
+            # Para campos grandes (markdown, content), usar todo el ancho
+            if field in ['content', 'markdown']:
+                column = columns_frame
+            else:
+                # Alternar entre columnas
+                column = left_column if idx % 2 == 0 else right_column
+            
+            frame = tk.Frame(column, bg='#0a0a0a')
+            frame.pack(fill=tk.X, pady=8)
             
             label = tk.Label(frame, text=field.upper() + ":", font=('Orbitron', 10, 'bold'), 
                            bg='#0a0a0a', fg='#ff0040')
