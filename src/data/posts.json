@@ -34,5 +34,29 @@
     "series": null,
     "seriesOrder": 0,
     "seriesPartTitle": ""
+  },
+  {
+    "id": "",
+    "slug": "punto-entrada-encontrado",
+    "title": "PUNTO DE ENTRADA ENCONTRADO - WordPress",
+    "category": "Seguridad",
+    "description": "Identificado y eliminado el punto de entrada crítico que permitió la nueva infección",
+    "content": "# PUNTO DE ENTRADA ENCONTRADO EN WORDPRESS\n\nEl 14 de junio de 2026 se completó la identificación y eliminación definitiva de un punto de entrada crítico en el sitio. Esta carpeta era el origen principal de la nueva oleada de infecciones.\n\n## Ubicación del Problema\n\nLa carpeta doc contenía herramientas de gestión de archivos completamente expuestas. Cualquiera con el enlace podía acceder sin login.\n\n## Archivos Inseguros Detectados\n\n### Upload.php\nEste script permitía subir múltiples archivos directamente a la carpeta sin ninguna verificación. No comprobaba extensiones ni tipos. Cualquiera podía subir archivos PHP ejecutables.\n\n### Delete.php\nScript peligroso que eliminaba cualquier archivo del servidor simplemente pasando la ruta. Vulnerable a path traversal lo que permitía borrar archivos críticos del sistema.\n\n### Index.php\nInterfaz gráfica completa que mostraba botones para subir y eliminar archivos. Totalmente pública y sin protección.\n\n## Cómo Explotó el Atacante Este Vector\n\nEl atacante accedió a la página de gestión subió varias webshells con nombres comunes y código muy ofuscado. Desde allí propagó el malware a plugins y al núcleo del sistema. Usó los scripts para mantener persistencia y borrar evidencias.\n\n## Impacto Real de la Vulnerabilidad\n\nEste punto permitió al atacante control total durante días. Pudo modificar archivos del core infectar múltiples plugins y preparar ataques futuros. La severidad es máxima porque no requería conocimientos avanzados ni credenciales.\n\n## Acciones de Limpieza Ejecutadas\n\nSe eliminaron completamente los tres archivos inseguros y toda la carpeta doc. Se borraron plugins de alto riesgo como file manager advanced y code snippets. Se limpiaron treinta archivos maliciosos y se restauraron los index.php afectados.\n\nOtras carpetas como IPG timetracker e intranet fueron revisadas y confirmadas como legítimas. No quedan trazas del patrón de ofuscación goto ni archivos grandes sospechosos.\n\n## Análisis Detallado de Riesgos\n\nEsta vulnerabilidad es trivial de explotar pero de impacto devastador. Permite subida arbitraria de código ejecución remota y borrado masivo. Combina falta de autenticación con falta de validación lo que la hace especialmente peligrosa en entornos compartidos.\n\n## Lecciones Aprendidas\n\nNunca expongas gestores de archivos sin protección. Siempre valida todo lo que se sube al servidor. Separa aplicaciones internas del sitio principal. Revisa regularmente plugins y permisos. La seguridad debe ser proactiva no reactiva.\n\n## Recomendaciones Inmediatas\n\nCambia todas las contraseñas ahora mismo. Reinstala el núcleo completo de WordPress. Revisa y limpia la lista de usuarios. Instala un scanner de seguridad profesional. Configura backups diarios externos.\n\n## Medidas a Medio y Largo Plazo\n\nImplementa firewall de aplicaciones web. Ajusta permisos estrictos de archivos. Desactiva edición de archivos desde el panel. Considera migrar a hosting con mejor aislamiento. Realiza auditorías periódicas.\n\nEste incidente sirve como recordatorio claro de que un solo descuido puede comprometer todo el proyecto. La vigilancia constante y las buenas prácticas son la mejor defensa contra este tipo de ataques.\n\nPróximos artículos de la serie analizarán la nueva infección detectada el mecanismo completo de propagación y el plan detallado de endurecimiento de seguridad para evitar que vuelva a ocurrir.",
+    "createdAt": "2026-06-28T18:24:59.007028",
+    "keywords": [
+      "wordpress",
+      "malware",
+      "webshell",
+      "seguridad",
+      "blau360",
+      "punto-entrada"
+    ],
+    "readingTime": 2,
+    "wordCount": 494,
+    "featured": true,
+    "published": true,
+    "series": "Malware Wordpress",
+    "seriesOrder": 1,
+    "seriesPartTitle": "Parte 1 - Punto de Entrada"
   }
 ]

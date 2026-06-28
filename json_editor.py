@@ -75,23 +75,23 @@ class JSONEditor:
         
         # Selector de archivo con estilo - botones grandes
         selector_frame = tk.Frame(main_frame, bg='#0a0a0a')
-        selector_frame.pack(fill=tk.X, pady=(0, 20))
+        selector_frame.pack(fill=tk.X, pady=(0, 10))
         
         # Grid de botones para cada archivo
         self.file_buttons = {}
         button_grid = tk.Frame(selector_frame, bg='#0a0a0a')
         button_grid.pack(fill=tk.X)
         
-        btn_style_large = {'font': ('Orbitron', 12, 'bold'), 'bg': '#1a0a0a', 'fg': '#ff0040', 
+        btn_style_large = {'font': ('Orbitron', 9, 'bold'), 'bg': '#1a0a0a', 'fg': '#ff0040', 
                           'activebackground': '#ff0040', 'activeforeground': '#000000',
-                          'relief': tk.RAISED, 'cursor': 'hand2', 'bd': 3, 'padx': 25, 'pady': 12,
-                          'highlightbackground': '#ff0040', 'highlightthickness': 2}
+                          'relief': tk.RAISED, 'cursor': 'hand2', 'bd': 2, 'padx': 12, 'pady': 4,
+                          'highlightbackground': '#ff0040', 'highlightthickness': 1}
         
         for idx, (name, file) in enumerate(self.json_files.items()):
             btn = tk.Button(button_grid, text=name, 
                           command=lambda f=file: self.load_specific_file(f),
                           **btn_style_large)
-            btn.grid(row=0, column=idx, padx=8, pady=5, sticky='ew')
+            btn.grid(row=0, column=idx, padx=3, pady=0, sticky='ew')
             button_grid.grid_columnconfigure(idx, weight=1)
             self.file_buttons[file] = btn
         
@@ -153,23 +153,23 @@ class JSONEditor:
                      'activebackground': '#cc0033', 'activeforeground': '#000000',
                      'relief': tk.RAISED, 'cursor': 'hand2', 'bd': 2}
         
-        tk.Button(action_frame, text="+ ADD", command=self.add_element, width=15, **btn_style).pack(side=tk.LEFT, padx=(0, 10))
-        tk.Button(action_frame, text="✏ EDIT", command=self.edit_element, width=15, **btn_style).pack(side=tk.LEFT, padx=(0, 10))
-        tk.Button(action_frame, text="🗑 DELETE", command=self.delete_element, width=15, **btn_style).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(action_frame, text="+ ADD", command=self.add_element, width=10, **btn_style).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(action_frame, text="✏ EDIT", command=self.edit_element, width=10, **btn_style).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(action_frame, text="🗑 DELETE", command=self.delete_element, width=10, **btn_style).pack(side=tk.LEFT, padx=(0, 8))
         
         # Status bar con estilo
         self.status_var = tk.StringVar()
         self.status_var.set("READY // SELECT A FILE TO BEGIN")
         status_bar = tk.Label(main_frame, textvariable=self.status_var, 
-                            font=('Orbitron', 9), bg='#0a0a0a', fg='#ff0040', 
-                            relief=tk.FLAT, pady=10)
+                            font=('Orbitron', 7), bg='#0a0a0a', fg='#ff0040', 
+                            relief=tk.FLAT, pady=2)
         status_bar.pack(fill=tk.X)
         
         # Indicador de cambios sin guardar
         self.unsaved_label = tk.Label(main_frame, text="", 
-                                     font=('Orbitron', 10, 'bold'), 
+                                     font=('Orbitron', 7, 'bold'), 
                                      bg='#0a0a0a', fg='#ff0040')
-        self.unsaved_label.pack(fill=tk.X, pady=(5, 0))
+        self.unsaved_label.pack(fill=tk.X, pady=(1, 0))
     
     def create_visual_view(self):
         # Scrollbars
@@ -550,15 +550,33 @@ class JSONEditor:
         
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
     
+    def _show_cert_fallback(self, x_pos, y_pos, card_width, cert, idx):
+        """Mostrar fallback con primera letra del issuer"""
+        issuer = cert.get('issuer', '')
+        first_letter = issuer[0].upper() if issuer else '?'
+        self.visual_canvas.create_oval(
+            x_pos + card_width - 55, y_pos + 10,
+            x_pos + card_width - 25, y_pos + 40,
+            fill='#1a0a0a', outline='#ff0040', width=2,
+            tags=('card', f'cert_{idx}')
+        )
+        self.visual_canvas.create_text(
+            x_pos + card_width - 40, y_pos + 25,
+            text=first_letter,
+            font=('Orbitron', 16, 'bold'),
+            fill='#ff0040',
+            tags=('card', f'cert_{idx}')
+        )
+    
     def create_certifications_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 260
-        card_height = 140
+        card_width = 300
+        card_height = 130
         gap = 12
         
         for idx, cert in enumerate(self.current_data):
-            if idx > 0 and idx % 6 == 0:
+            if idx > 0 and idx % 5 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
@@ -569,7 +587,7 @@ class JSONEditor:
                 tags=('card', f'cert_{idx}')
             )
             
-            # Icon image - usar badge si existe, sino usar icon
+            # Icono o badge
             badge_url = cert.get('badge', '')
             icon_name = cert.get('icon', '')
             
@@ -674,24 +692,6 @@ class JSONEditor:
                         self._show_cert_fallback(x_pos, y_pos, card_width, cert, idx)
                 else:
                     self._show_cert_fallback(x_pos, y_pos, card_width, cert, idx)
-    
-    def _show_cert_fallback(self, x_pos, y_pos, card_width, cert, idx):
-        """Mostrar fallback con primera letra del issuer"""
-        issuer = cert.get('issuer', '')
-        first_letter = issuer[0].upper() if issuer else '?'
-        self.visual_canvas.create_oval(
-            x_pos + card_width - 55, y_pos + 10,
-            x_pos + card_width - 25, y_pos + 40,
-            fill='#1a0a0a', outline='#ff0040', width=2,
-            tags=('card', f'cert_{idx}')
-        )
-        self.visual_canvas.create_text(
-            x_pos + card_width - 40, y_pos + 25,
-            text=first_letter,
-            font=('Orbitron', 16, 'bold'),
-            fill='#ff0040',
-            tags=('card', f'cert_{idx}')
-        )
             
             # Name con wrapping
             self.visual_canvas.create_text(
@@ -1228,11 +1228,11 @@ class JSONEditor:
                                insertbackground='#ff0040', font=('Orbitron', 10))
                 entry.pack(fill=tk.X)
             elif field_type == 'textarea':
-                entry = tk.Text(frame, height=4, width=50, bg='#1a0a0a', fg='#ff0040', 
+                entry = tk.Text(frame, height=8, width=50, bg='#1a0a0a', fg='#ff0040', 
                               insertbackground='#ff0040', font=('Orbitron', 10))
                 entry.pack(fill=tk.X)
             elif field_type == 'markdown':
-                entry = tk.Text(frame, height=15, width=80, bg='#1a0a0a', fg='#ff0040', 
+                entry = tk.Text(frame, height=30, width=80, bg='#1a0a0a', fg='#ff0040', 
                               insertbackground='#ff0040', font=('Orbitron', 10))
                 entry.pack(fill=tk.BOTH, expand=True)
             elif field_type == 'number':
