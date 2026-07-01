@@ -1,9 +1,9 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BookOpen } from "lucide-react";
 
-export const CertificationsMarquee = ({ items }: { items: any[] }) => {
+export const CertificationsMarquee = ({ items, posts }: { items: any[]; posts?: any[] }) => {
   // Duplicamos los items para crear el efecto infinito sin saltos
   const doubledItems = [...items, ...items, ...items];
 
@@ -21,9 +21,9 @@ export const CertificationsMarquee = ({ items }: { items: any[] }) => {
         </Link>
       </div>
       
-      <div className="relative flex">
+      <div className="relative flex overflow-hidden">
         <motion.div
-          className="flex gap-20 items-center whitespace-nowrap"
+          className="flex gap-10 sm:gap-20 items-center whitespace-nowrap"
           animate={{ x: ["0%", "-33.33%"] }}
           transition={{
             duration: 30,
@@ -31,34 +31,48 @@ export const CertificationsMarquee = ({ items }: { items: any[] }) => {
             ease: "linear",
           }}
         >
-          {doubledItems.map((cert, idx) => (
-            <div key={idx} className="flex items-center gap-6 group">
-              {cert.badge ? (
-                <img
-                  src={cert.badge}
-                  alt={cert.name}
-                  className="h-16 w-auto object-contain grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
-                />
-              ) : (
-                <>
-                  <div className="h-12 w-12 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                    <img
-                      src={`/certifications/${cert.icon}.svg`}
-                      alt={cert.name}
-                      className="h-10 w-10 object-contain"
-                      onError={(e) => {
-                        console.error(`Error loading image: /certifications/${cert.icon}.svg`);
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
-                  </div>
-                  <span className="text-3xl font-bold tracking-tighter text-white/20 group-hover:text-white transition-colors duration-500 uppercase">
-                    {cert.name}
-                  </span>
-                </>
-              )}
-            </div>
-          ))}
+          {doubledItems.map((cert, idx) => {
+            const relatedPost = posts?.find((post: any) => post.id === cert.relatedPostId);
+            return (
+              <div key={idx} className="flex items-center gap-6 group">
+                {cert.badge ? (
+                  <img
+                    src={cert.badge}
+                    alt={cert.name}
+                    className="h-16 w-auto object-contain grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
+                  />
+                ) : (
+                  <>
+                    <div className="h-12 w-12 grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                      <img
+                        src={`/certifications/${cert.icon}.svg`}
+                        alt={cert.name}
+                        className="h-10 w-10 object-contain"
+                        onError={(e) => {
+                          console.error(`Error loading image: /certifications/${cert.icon}.svg`);
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-3xl font-bold tracking-tighter text-white/20 group-hover:text-white transition-colors duration-500 uppercase">
+                        {cert.name}
+                      </span>
+                      {relatedPost && (
+                        <Link
+                          href={`/blog/${relatedPost.slug}`}
+                          className="inline-flex items-center gap-1 text-xs text-white/40 group-hover:text-white/60 transition-colors mt-1"
+                        >
+                          <BookOpen className="h-3 w-3" />
+                          <span>Leer artículo</span>
+                        </Link>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

@@ -23,10 +23,10 @@ export default async function Home() {
   return (
     <div className="flex flex-col">
       <Hero />
-      <ProjectsWall projects={allProjects} />
+      <ProjectsWall projects={allProjects} posts={postsData} />
       <EditorialServices services={allServices} />
-      <CertificationsMarquee items={certs.map(c => ({ name: c.name, icon: c.icon }))} />
-      <SecondaryProjects />
+      <CertificationsMarquee items={certs} posts={postsData} />
+      <SecondaryProjects posts={postsData} />
       <BlogSlider posts={latestPosts} />
       <Contact />
     </div>

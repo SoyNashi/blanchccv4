@@ -2,20 +2,22 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { BookOpen } from "lucide-react";
 
-export const ProjectsWall = ({ projects }: { projects: any[] }) => {
+export const ProjectsWall = ({ projects, posts }: { projects: any[]; posts?: any[] }) => {
   return (
     <section id="projects" className="bg-background py-20">
       <div className="flex flex-col gap-40">
         {projects.map((project, index) => (
-          <ProjectItem key={project.id} project={project} index={index} />
+          <ProjectItem key={project.id} project={project} index={index} posts={posts} />
         ))}
       </div>
     </section>
   );
 };
 
-const ProjectItem = ({ project, index }: { project: any; index: number }) => {
+const ProjectItem = ({ project, index, posts }: { project: any; index: number; posts?: any[] }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -25,6 +27,9 @@ const ProjectItem = ({ project, index }: { project: any; index: number }) => {
   const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 0.9]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+
+  // Encontrar los posts asociados
+  const relatedPosts = posts?.filter((post: any) => project.relatedPostIds?.includes(post.id)) || [];
 
   return (
     <motion.div
@@ -73,6 +78,28 @@ const ProjectItem = ({ project, index }: { project: any; index: number }) => {
               </div>
             ))}
           </motion.div>
+
+          {relatedPosts.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="mt-4 flex flex-wrap gap-2"
+            >
+              {relatedPosts.map((post: any) => (
+                <Link
+                  key={post.id}
+                  href={`/blog/${post.slug}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors group"
+                >
+                  <BookOpen className="h-4 w-4 text-white/60 group-hover:text-white" />
+                  <span className="text-sm font-medium text-white/60 group-hover:text-white">
+                    {post.title}
+                  </span>
+                </Link>
+              ))}
+            </motion.div>
+          )}
         </div>
 
         <motion.div

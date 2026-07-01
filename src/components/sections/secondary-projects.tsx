@@ -1,10 +1,11 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronRight, ArrowUpRight } from "lucide-react";
+import { ChevronDown, ChevronRight, ArrowUpRight, BookOpen } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 import secondaryProjects from "@/data/secondary-projects.json";
 
-export const SecondaryProjects = () => {
+export const SecondaryProjects = ({ posts }: { posts?: any[] }) => {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
   return (
@@ -51,41 +52,61 @@ export const SecondaryProjects = () => {
                     className="border-t border-white/5"
                   >
                     <div className="p-6 space-y-4">
-                      {projects.map((project: any, projectIndex: number) => (
-                        <motion.div
-                          key={project.id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: projectIndex * 0.1 }}
-                          className="bg-card border border-white/5 rounded-xl p-6 hover:border-white/10 transition-colors"
-                        >
-                          <div className="flex items-start justify-between mb-4">
-                            <div>
-                              <h4 className="text-xl font-bold text-white mb-2">{project.name}</h4>
-                              <p className="text-muted-foreground">{project.description}</p>
-                            </div>
-                            <a
-                              href={project.link}
-                              className="h-10 w-10 flex items-center justify-center rounded-full border border-white/10 text-white hover:bg-white hover:text-black transition-all"
-                            >
-                              <ArrowUpRight className="h-5 w-5" />
-                            </a>
-                          </div>
-                          
-                          <p className="text-sm text-white/60 mb-4">{project.details}</p>
-                          
-                          <div className="flex flex-wrap gap-2">
-                            {project.tech.map((tech: string) => (
-                              <span
-                                key={tech}
-                                className="px-3 py-1 bg-white/5 rounded-full text-xs font-mono text-white/80"
+                      {projects.map((project: any, projectIndex: number) => {
+                        const relatedPosts = posts?.filter((post: any) => project.relatedPostIds?.includes(post.id)) || [];
+                        return (
+                          <motion.div
+                            key={project.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: projectIndex * 0.1 }}
+                            className="bg-card border border-white/5 rounded-xl p-6 hover:border-white/10 transition-colors"
+                          >
+                            <div className="flex items-start justify-between mb-4">
+                              <div>
+                                <h4 className="text-xl font-bold text-white mb-2">{project.name}</h4>
+                                <p className="text-muted-foreground">{project.description}</p>
+                              </div>
+                              <a
+                                href={project.link}
+                                className="h-10 w-10 flex items-center justify-center rounded-full border border-white/10 text-white hover:bg-white hover:text-black transition-all"
                               >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </motion.div>
-                      ))}
+                                <ArrowUpRight className="h-5 w-5" />
+                              </a>
+                            </div>
+                            
+                            <p className="text-sm text-white/60 mb-4">{project.details}</p>
+                            
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {project.tech.map((tech: string) => (
+                                <span
+                                  key={tech}
+                                  className="px-3 py-1 bg-white/5 rounded-full text-xs font-mono text-white/80"
+                                >
+                                  {tech}
+                                </span>
+                              ))}
+                            </div>
+
+                            {relatedPosts.length > 0 && (
+                              <div className="flex flex-wrap gap-2">
+                                {relatedPosts.map((post: any) => (
+                                  <Link
+                                    key={post.id}
+                                    href={`/blog/${post.slug}`}
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors group text-sm"
+                                  >
+                                    <BookOpen className="h-3.5 w-3.5 text-white/60 group-hover:text-white" />
+                                    <span className="text-white/60 group-hover:text-white">
+                                      {post.title}
+                                    </span>
+                                  </Link>
+                                ))}
+                              </div>
+                            )}
+                          </motion.div>
+                        );
+                      })}
                     </div>
                   </motion.div>
                 )}

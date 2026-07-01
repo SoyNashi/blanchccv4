@@ -19,20 +19,20 @@ export const Contact = () => {
         
         <Magnetic>
           <a href="mailto:nil@blanch.cc">
-            <h2 className="text-huge font-bold tracking-tighter text-white mb-12 cursor-pointer hover:text-white/80 transition-colors">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-huge font-bold tracking-tighter text-white mb-12 cursor-pointer hover:text-white/80 transition-colors break-words px-4">
               NIL@BLANCH.CC
             </h2>
           </a>
         </Magnetic>
         
-        <div className="flex gap-8">
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-8">
           {SOCIAL_LINKS.map((link) => (
             <Magnetic key={link.name}>
               <a
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors p-4"
+                className="text-sm font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors p-2 sm:p-4"
               >
                 {link.name}
               </a>

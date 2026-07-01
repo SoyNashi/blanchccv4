@@ -67,6 +67,17 @@
   overflow-x: hidden;
 }
 
+/* Prevent horizontal scroll on mobile */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
 /* Typography Enhancements */
 h1, h2, h3, h4, h5, h6 {
   @apply tracking-tight font-bold;

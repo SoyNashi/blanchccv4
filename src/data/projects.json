@@ -4,25 +4,43 @@
     "title": "Blau360",
     "description": "Plataforma integral de gestión empresarial con análisis de datos en tiempo real y dashboards personalizados.",
     "image": "/images/blau360.jpg",
-    "tags": ["React", "Node.js", "TypeScript", "PostgreSQL"],
-    "tech": [
-      {"label": "React", "value": "react"},
-      {"label": "Node.js", "value": "nodejs"},
-      {"label": "TypeScript", "value": "typescript"}
+    "tags": [
+      "React",
+      "Node.js",
+      "TypeScript",
+      "PostgreSQL"
     ],
     "color": "#3B82F6",
-    "order": 1
+    "order": 1,
+    "relatedPostIds": [
+      ""
+    ],
+    "tech": []
   },
   {
     "id": "2",
     "title": "Bastet",
     "description": "Sistema de automatización de procesos con IA para optimizar flujos de trabajo empresariales.",
     "image": "/images/bastet.jpg",
-    "tags": ["Python", "TensorFlow", "FastAPI", "Docker"],
+    "tags": [
+      "Python",
+      "TensorFlow",
+      "FastAPI",
+      "Docker"
+    ],
     "tech": [
-      {"label": "Python", "value": "python"},
-      {"label": "TensorFlow", "value": "tensorflow"},
-      {"label": "FastAPI", "value": "fastapi"}
+      {
+        "label": "Python",
+        "value": "python"
+      },
+      {
+        "label": "TensorFlow",
+        "value": "tensorflow"
+      },
+      {
+        "label": "FastAPI",
+        "value": "fastapi"
+      }
     ],
     "color": "#10B981",
     "order": 2
