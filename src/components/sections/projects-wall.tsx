@@ -30,6 +30,22 @@ const ProjectItem = ({ project, index, posts }: { project: any; index: number; p
 
   // Encontrar los posts asociados
   const relatedPosts = posts?.filter((post: any) => project.relatedPostIds?.includes(post.id)) || [];
+  
+  // Agrupar posts por series
+  const postsBySeries = relatedPosts.reduce((acc: any, post: any) => {
+    if (post.series) {
+      if (!acc[post.series]) {
+        acc[post.series] = [];
+      }
+      acc[post.series].push(post);
+    } else {
+      if (!acc['individual']) {
+        acc['individual'] = [];
+      }
+      acc['individual'].push(post);
+    }
+    return acc;
+  }, {});
 
   return (
     <motion.div
@@ -86,15 +102,17 @@ const ProjectItem = ({ project, index, posts }: { project: any; index: number; p
               transition={{ duration: 0.8, delay: 0.5 }}
               className="mt-4 flex flex-wrap gap-2"
             >
-              {relatedPosts.map((post: any) => (
+              {Object.entries(postsBySeries).map(([seriesName, seriesPosts]: [string, any]) => (
                 <Link
-                  key={post.id}
-                  href={`/blog/${post.slug}`}
+                  key={seriesName}
+                  href={seriesName === 'individual' ? `/blog/${seriesPosts[0].slug}` : `/blog/series/${seriesName.toLowerCase().replace(/\s+/g, '-')}`}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors group"
                 >
                   <BookOpen className="h-4 w-4 text-white/60 group-hover:text-white" />
                   <span className="text-sm font-medium text-white/60 group-hover:text-white">
-                    {post.title}
+                    {seriesName === 'individual' 
+                      ? seriesPosts[0].title 
+                      : `${seriesName} (${seriesPosts.length} posts)`}
                   </span>
                 </Link>
               ))}

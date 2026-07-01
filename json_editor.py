@@ -130,6 +130,13 @@ class JSONEditor:
                            'activebackground': self.colors['bg_hover'], 'activeforeground': self.colors['text_primary'],
                            'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
         
+        btn_style_primary = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['accent'], 'fg': '#ffffff', 
+                           'activebackground': '#1f6feb', 'activeforeground': '#ffffff',
+                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
+        
+        add_btn = tk.Button(action_btn_frame, text="+ Add New", command=self.add_element, **btn_style_primary)
+        add_btn.pack(side=tk.LEFT, padx=(0, 10))
+        
         save_btn = tk.Button(action_btn_frame, text="Save", command=self.save_file, **btn_style_action)
         save_btn.pack(side=tk.LEFT, padx=(0, 10))
         
@@ -172,22 +179,6 @@ class JSONEditor:
         # Línea decorativa
         tk.Frame(main_frame, bg=self.colors['border'], height=1).pack(fill=tk.X, pady=(25, 20))
         
-        # Botones de acción
-        action_frame = tk.Frame(main_frame, bg=self.colors['bg'])
-        action_frame.pack(fill=tk.X, pady=(0, 20))
-        
-        btn_style_primary = {'font': ('SF Pro Display', 10, 'bold'), 'bg': self.colors['accent'], 'fg': '#ffffff', 
-                     'activebackground': '#1f6feb', 'activeforeground': '#ffffff',
-                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 20, 'pady': 10}
-        
-        btn_style_danger = {'font': ('SF Pro Display', 10, 'bold'), 'bg': self.colors['error'], 'fg': '#ffffff', 
-                     'activebackground': '#da3633', 'activeforeground': '#ffffff',
-                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 20, 'pady': 10}
-        
-        tk.Button(action_frame, text="+ Add", command=self.add_element, width=12, **btn_style_primary).pack(side=tk.LEFT, padx=(0, 8))
-        tk.Button(action_frame, text="Edit", command=self.edit_element, width=12, **btn_style_primary).pack(side=tk.LEFT, padx=(0, 8))
-        tk.Button(action_frame, text="Delete", command=self.delete_element, width=12, **btn_style_danger).pack(side=tk.LEFT, padx=(0, 8))
-        
         # Status bar con estilo
         self.status_var = tk.StringVar()
         self.status_var.set("Ready — Select a file to begin")
@@ -201,6 +192,21 @@ class JSONEditor:
                                      font=('SF Pro Display', 9, 'bold'), 
                                      bg=self.colors['bg'], fg=self.colors['warning'])
         self.unsaved_label.pack(fill=tk.X, pady=(2, 0))
+        
+        # Botones de acción - abajo a la izquierda (Edit y Delete)
+        action_frame = tk.Frame(main_frame, bg=self.colors['bg'])
+        action_frame.pack(fill=tk.X, side=tk.BOTTOM, pady=(0, 20))
+        
+        btn_style_primary = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['accent'], 'fg': '#ffffff', 
+                     'activebackground': '#1f6feb', 'activeforeground': '#ffffff',
+                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
+        
+        btn_style_danger = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['error'], 'fg': '#ffffff', 
+                     'activebackground': '#da3633', 'activeforeground': '#ffffff',
+                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
+        
+        tk.Button(action_frame, text="Edit", command=self.edit_element, width=12, **btn_style_primary).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(action_frame, text="Delete", command=self.delete_element, width=12, **btn_style_danger).pack(side=tk.LEFT, padx=(0, 8))
     
     def create_visual_view(self):
         # Scrollbars
@@ -1103,6 +1109,11 @@ class JSONEditor:
         self.edit_element()
     
     def add_element(self):
+        # Para ideas.json, permitir crear el archivo si no existe
+        if self.current_file == 'ideas.json' and not self.current_data:
+            self.current_data = []
+            self.current_file = 'ideas.json'
+        
         if not self.current_data:
             messagebox.showwarning("Advertencia", "Carga un archivo primero")
             return
@@ -1477,6 +1488,15 @@ class JSONEditor:
                 entry.pack(fill=tk.X, ipady=4)
                 self.editor_entries[field] = (var, 'select')
                 continue
+            elif field_type == 'select_post':
+                var = tk.StringVar()
+                posts_list = self.get_existing_posts()
+                values = ['[SIN POST ASOCIADO]'] + posts_list + [''] if posts_list else ['[SIN POST ASOCIADO]', '']
+                entry = ttk.Combobox(frame, textvariable=var, values=values, 
+                                   state='readonly', width=47, font=('SF Pro Display', 10))
+                entry.pack(fill=tk.X, ipady=4)
+                self.editor_entries[field] = (var, 'select_post')
+                continue
             elif field_type == 'select_posts_multiple':
                 posts_list = self.get_existing_posts()
                 if posts_list:
@@ -1574,6 +1594,10 @@ class JSONEditor:
             new_category = simpledialog.askstring("New Category", "Enter the new category name:")
             if new_category:
                 var.set(new_category)
+                # Crear la nueva categoría en el JSON si no existe
+                if isinstance(self.current_data, dict) and new_category not in self.current_data:
+                    self.current_data[new_category] = []
+                    self.mark_unsaved()
 
     def get_existing_posts(self):
         """Obtener lista de posts publicados para el selector"""
