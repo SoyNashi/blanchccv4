@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 from datetime import datetime
 from PIL import Image, ImageTk
+import subprocess
 
 class JSONEditor:
     def __init__(self, root):
@@ -46,6 +47,7 @@ class JSONEditor:
         # Ruta base del proyecto
         self.base_path = Path(__file__).parent / 'src' / 'data'
         self.public_path = Path(__file__).parent / 'public'
+        self.project_root = Path(__file__).parent
         self.cert_images = {}
         
         # Archivos JSON disponibles
@@ -54,7 +56,8 @@ class JSONEditor:
             'Posts': 'posts.json',
             'Proyectos': 'projects.json',
             'Proyectos Secundarios': 'secondary-projects.json',
-            'Servicios': 'services.json'
+            'Servicios': 'services.json',
+            'Ideas': 'ideas.json'
         }
         
         self.current_data = None
@@ -442,6 +445,8 @@ class JSONEditor:
             self.create_services_view()
         elif self.current_file == 'secondary-projects.json':
             self.create_secondary_projects_view()
+        elif self.current_file == 'ideas.json':
+            self.create_ideas_view()
     
     def create_posts_view(self):
         y_pos = 20
@@ -775,6 +780,101 @@ class JSONEditor:
         
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
     
+    def create_ideas_view(self):
+        y_pos = 20
+        x_pos = 20
+        card_width = 350
+        card_height = 180
+        gap = 15
+        
+        for idx, idea in enumerate(self.current_data):
+            if idx > 0 and idx % 4 == 0:
+                x_pos = 20
+                y_pos += card_height + gap
+            
+            # Card background
+            self.visual_canvas.create_rectangle(
+                x_pos, y_pos, x_pos + card_width, y_pos + card_height,
+                fill=self.colors['bg_card'], outline=self.colors['border'], width=1,
+                tags=('card', f'idea_{idx}')
+            )
+            
+            # Title
+            self.visual_canvas.create_text(
+                x_pos + 15, y_pos + 15,
+                text=idea.get('title', 'Sin título'),
+                font=('SF Pro Display', 12, 'bold'),
+                fill=self.colors['text_primary'], anchor='nw',
+                width=card_width - 30,
+                tags=('card', f'idea_{idx}')
+            )
+            
+            # Category badge
+            category = idea.get('category', '')
+            if category:
+                badge_width = len(category) * 7 + 24
+                self.visual_canvas.create_rectangle(
+                    x_pos + 15, y_pos + 45, x_pos + 15 + badge_width, y_pos + 65,
+                    fill=self.colors['accent'], outline=self.colors['accent'],
+                    tags=('card', f'idea_{idx}')
+                )
+                self.visual_canvas.create_text(
+                    x_pos + 27, y_pos + 47,
+                    text=category.upper(),
+                    font=('SF Pro Display', 8, 'bold'),
+                    fill='#ffffff', anchor='nw',
+                    tags=('card', f'idea_{idx}')
+                )
+            
+            # Main idea (truncated)
+            main_idea = idea.get('main_idea', '')
+            if main_idea:
+                self.visual_canvas.create_text(
+                    x_pos + 15, y_pos + 75,
+                    text=main_idea[:100] + '...' if len(main_idea) > 100 else main_idea,
+                    font=('SF Pro Display', 10),
+                    fill=self.colors['text_secondary'], anchor='nw',
+                    width=card_width - 30,
+                    tags=('card', f'idea_{idx}')
+                )
+            
+            # Technical level
+            tech_level = idea.get('technical_level', '')
+            if tech_level:
+                self.visual_canvas.create_text(
+                    x_pos + 15, y_pos + card_height - 25,
+                    text=f"Level: {tech_level}",
+                    font=('SF Pro Display', 9),
+                    fill=self.colors['text_secondary'], anchor='nw',
+                    tags=('card', f'idea_{idx}')
+                )
+            
+            # Created date
+            created_at = idea.get('created_at', '')
+            if created_at:
+                self.visual_canvas.create_text(
+                    x_pos + card_width - 15, y_pos + card_height - 25,
+                    text=created_at[:10] if created_at else '',
+                    font=('SF Pro Display', 8),
+                    fill=self.colors['text_secondary'], anchor='ne',
+                    tags=('card', f'idea_{idx}')
+                )
+            
+            # Prompt indicator
+            if idea.get('generated_prompt'):
+                self.visual_canvas.create_text(
+                    x_pos + card_width - 25, y_pos + 15,
+                    text="📝",
+                    font=('SF Pro Display', 16),
+                    fill=self.colors['success'], anchor='ne',
+                    tags=('card', f'idea_{idx}')
+                )
+            
+            self.visual_elements.append({'type': 'idea', 'index': idx, 'data': idea, 'x': x_pos, 'y': y_pos, 'width': card_width, 'height': card_height})
+            x_pos += card_width + gap
+        
+        self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
+    
     def create_services_view(self):
         y_pos = 20
         x_pos = 20
@@ -1094,12 +1194,61 @@ class JSONEditor:
             
             self.unsaved_changes = False
             self.unsaved_label.config(text="")
-            messagebox.showinfo("Éxito", f"Archivo guardado: {self.current_file}")
             self.status_var.set(f"Archivo guardado: {self.current_file}")
+            
+            # Hacer git commit y push automáticamente
+            self.git_commit_and_push()
+            
+            messagebox.showinfo("Éxito", f"Archivo guardado y publicado: {self.current_file}")
             
         except Exception as e:
             messagebox.showerror("Error", f"Error al guardar archivo: {str(e)}")
             self.status_var.set("Error al guardar archivo")
+    
+    def git_commit_and_push(self):
+        """Hacer git commit y push seguro usando las credenciales ya configuradas"""
+        try:
+            # Cambiar al directorio del proyecto
+            import os
+            os.chdir(self.project_root)
+            
+            # Verificar si hay cambios
+            result = subprocess.run(['git', 'status', '--porcelain'], 
+                                  capture_output=True, text=True)
+            
+            if not result.stdout.strip():
+                self.status_var.set("No hay cambios para commit")
+                return
+            
+            # Agregar solo archivos JSON seguros (excluyendo ideas.json que está en .gitignore)
+            json_files_to_add = []
+            for json_file in ['posts.json', 'projects.json', 'secondary-projects.json', 
+                            'certifications.json', 'services.json']:
+                file_path = self.base_path / json_file
+                if file_path.exists():
+                    json_files_to_add.append(str(file_path))
+            
+            if json_files_to_add:
+                # Agregar archivos específicos
+                subprocess.run(['git', 'add'] + json_files_to_add, check=True)
+                
+                # Crear commit con mensaje descriptivo
+                timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                commit_message = f"Update {self.current_file} - {timestamp}"
+                subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+                
+                # Push al remoto
+                subprocess.run(['git', 'push'], check=True)
+                
+                self.status_var.set("Cambios publicados a Git")
+            else:
+                self.status_var.set("No hay archivos JSON para commit")
+                
+        except subprocess.CalledProcessError as e:
+            self.status_var.set(f"Error en Git: {str(e)}")
+            # No mostrar messagebox para no interrumpir el flujo
+        except Exception as e:
+            self.status_var.set(f"Error inesperado en Git: {str(e)}")
     
     def mark_unsaved(self):
         self.unsaved_changes = True
@@ -1236,6 +1385,10 @@ class JSONEditor:
                 if 'series' in post and post['series']:
                     existing_series.add(post['series'])
         
+        # Categorías y niveles técnicos para ideas
+        idea_categories = ['Development', 'Design', 'Tutorial', 'Case Study', 'Opinion']
+        tech_levels = ['Beginner', 'Intermediate', 'Advanced', 'Expert']
+        
         # Crear frame para 2 columnas
         columns_frame = tk.Frame(self.editor_scrollable_frame, bg='#0a0a0a')
         columns_frame.pack(fill=tk.BOTH, expand=True, padx=15, pady=8)
@@ -1296,11 +1449,16 @@ class JSONEditor:
                 continue
             elif field_type == 'select':
                 var = tk.StringVar()
-                values = ['[Create new...]'] + list(existing_categories) + [''] if existing_categories else ['[Create new...]', '']
+                # Para ideas.json, usar categorías predefinidas
+                if self.current_file == 'ideas.json' and field == 'category':
+                    values = idea_categories + ['']
+                else:
+                    values = ['[Create new...]'] + list(existing_categories) + [''] if existing_categories else ['[Create new...]', '']
                 entry = ttk.Combobox(frame, textvariable=var, values=values, 
                                    state='readonly', width=47, font=('SF Pro Display', 10))
                 entry.pack(fill=tk.X, ipady=4)
-                entry.bind('<<ComboboxSelected>>', lambda e, f=field, v=var: self.on_category_selected(f, v))
+                if self.current_file != 'ideas.json':
+                    entry.bind('<<ComboboxSelected>>', lambda e, f=field, v=var: self.on_category_selected(f, v))
                 self.editor_entries[field] = (var, 'select')
                 continue
             elif field_type == 'select_series':
@@ -1311,6 +1469,13 @@ class JSONEditor:
                 entry.pack(fill=tk.X, ipady=4)
                 entry.bind('<<ComboboxSelected>>', lambda e, f=field, v=var: self.on_series_selected(f, v))
                 self.editor_entries[field] = (var, 'select_series')
+                continue
+            elif field_type == 'select' and field == 'technical_level':
+                var = tk.StringVar(value='Intermediate')
+                entry = ttk.Combobox(frame, textvariable=var, values=tech_levels, 
+                                   state='readonly', width=47, font=('SF Pro Display', 10))
+                entry.pack(fill=tk.X, ipady=4)
+                self.editor_entries[field] = (var, 'select')
                 continue
             elif field_type == 'select_posts_multiple':
                 posts_list = self.get_existing_posts()
@@ -1499,6 +1664,18 @@ class JSONEditor:
                 'description': 'textarea',
                 'order': 'number'
             }
+        elif self.current_file == 'ideas.json':
+            return {
+                'id': 'text',
+                'title': 'text',
+                'category': 'select',
+                'main_idea': 'textarea',
+                'key_points': 'textarea',
+                'target_audience': 'text',
+                'technical_level': 'select',
+                'additional_notes': 'textarea',
+                'generated_prompt': 'textarea'
+            }
         return {}
     
     def save_editor(self):
@@ -1629,6 +1806,265 @@ class JSONEditor:
         self.notebook.select(0)  # Volver al dashboard
         self.editor_mode = None
         self.editor_element = None
+    
+    def load_ideas(self):
+        """Cargar ideas desde el archivo JSON"""
+        try:
+            if self.ideas_file.exists():
+                with open(self.ideas_file, 'r', encoding='utf-8') as f:
+                    self.ideas_data = json.load(f)
+            else:
+                self.ideas_data = []
+        except:
+            self.ideas_data = []
+        
+        self.update_ideas_listbox()
+    
+    def save_ideas_to_file(self):
+        """Guardar ideas al archivo JSON"""
+        try:
+            with open(self.ideas_file, 'w', encoding='utf-8') as f:
+                json.dump(self.ideas_data, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            messagebox.showerror("Error", f"Error saving ideas: {str(e)}")
+    
+    def update_ideas_listbox(self):
+        """Actualizar el listbox con las ideas guardadas"""
+        self.ideas_listbox.delete(0, tk.END)
+        for idea in self.ideas_data:
+            title = idea.get('title', 'Untitled')
+            category = idea.get('category', '')
+            display_text = f"{title} [{category}]" if category else title
+            self.ideas_listbox.insert(tk.END, display_text)
+    
+    def new_idea(self):
+        """Crear nueva idea"""
+        self.current_idea_id = None
+        self.idea_title_entry.delete(0, tk.END)
+        self.idea_category_var.set('')
+        self.idea_main_text.delete(1.0, tk.END)
+        self.idea_points_text.delete(1.0, tk.END)
+        self.idea_audience_entry.delete(0, tk.END)
+        self.idea_tech_level_var.set('Intermediate')
+        self.idea_notes_text.delete(1.0, tk.END)
+        self.prompt_text.delete(1.0, tk.END)
+        self.ideas_listbox.selection_clear(0, tk.END)
+    
+    def delete_idea(self):
+        """Eliminar idea seleccionada"""
+        selection = self.ideas_listbox.curselection()
+        if not selection:
+            messagebox.showwarning("Warning", "Select an idea to delete")
+            return
+        
+        idx = selection[0]
+        if idx < len(self.ideas_data):
+            del self.ideas_data[idx]
+            self.save_ideas_to_file()
+            self.update_ideas_listbox()
+            self.new_idea()
+    
+    def on_idea_selected(self, event):
+        """Cuando se selecciona una idea de la lista"""
+        selection = self.ideas_listbox.curselection()
+        if not selection:
+            return
+        
+        idx = selection[0]
+        if idx < len(self.ideas_data):
+            idea = self.ideas_data[idx]
+            self.current_idea_id = idx
+            
+            self.idea_title_entry.delete(0, tk.END)
+            self.idea_title_entry.insert(0, idea.get('title', ''))
+            
+            self.idea_category_var.set(idea.get('category', ''))
+            
+            self.idea_main_text.delete(1.0, tk.END)
+            self.idea_main_text.insert(1.0, idea.get('main_idea', ''))
+            
+            self.idea_points_text.delete(1.0, tk.END)
+            self.idea_points_text.insert(1.0, idea.get('key_points', ''))
+            
+            self.idea_audience_entry.delete(0, tk.END)
+            self.idea_audience_entry.insert(0, idea.get('target_audience', ''))
+            
+            self.idea_tech_level_var.set(idea.get('technical_level', 'Intermediate'))
+            
+            self.idea_notes_text.delete(1.0, tk.END)
+            self.idea_notes_text.insert(1.0, idea.get('additional_notes', ''))
+            
+            self.prompt_text.delete(1.0, tk.END)
+            if idea.get('generated_prompt'):
+                self.prompt_text.insert(1.0, idea['generated_prompt'])
+    
+    def save_idea(self):
+        """Guardar la idea actual"""
+        title = self.idea_title_entry.get().strip()
+        if not title:
+            messagebox.showwarning("Warning", "Title is required")
+            return
+        
+        idea_data = {
+            'title': title,
+            'category': self.idea_category_var.get(),
+            'main_idea': self.idea_main_text.get(1.0, tk.END).strip(),
+            'key_points': self.idea_points_text.get(1.0, tk.END).strip(),
+            'target_audience': self.idea_audience_entry.get().strip(),
+            'technical_level': self.idea_tech_level_var.get(),
+            'additional_notes': self.idea_notes_text.get(1.0, tk.END).strip(),
+            'generated_prompt': self.prompt_text.get(1.0, tk.END).strip(),
+            'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        
+        if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+            # Actualizar idea existente
+            self.ideas_data[self.current_idea_id] = idea_data
+        else:
+            # Crear nueva idea
+            self.ideas_data.append(idea_data)
+            self.current_idea_id = len(self.ideas_data) - 1
+        
+        self.save_ideas_to_file()
+        self.update_ideas_listbox()
+        messagebox.showinfo("Success", "Idea saved successfully")
+    
+    def generate_ai_prompt(self):
+        """Generar prompt optimizado para IA"""
+        title = self.idea_title_entry.get().strip()
+        category = self.idea_category_var.get()
+        main_idea = self.idea_main_text.get(1.0, tk.END).strip()
+        key_points = self.idea_points_text.get(1.0, tk.END).strip()
+        audience = self.idea_audience_entry.get().strip()
+        tech_level = self.idea_tech_level_var.get()
+        notes = self.idea_notes_text.get(1.0, tk.END).strip()
+        
+        if not title or not main_idea:
+            messagebox.showwarning("Warning", "Title and Main Idea are required")
+            return
+        
+        # Generar prompt estructurado
+        prompt = f"""You are an expert technical blog writer specializing in {category.lower()} content. Write a comprehensive blog post with the following specifications:
+
+TITLE: {title}
+
+CATEGORY: {category}
+
+TARGET AUDIENCE: {audience if audience else 'Developers and tech enthusiasts'}
+
+TECHNICAL LEVEL: {tech_level}
+
+MAIN CONCEPT:
+{main_idea}
+
+KEY POINTS TO COVER:
+{key_points}
+
+ADDITIONAL CONTEXT:
+{notes if notes else 'None provided'}
+
+REQUIREMENTS:
+1. Write in a professional yet engaging tone suitable for a technical blog
+2. Include practical code examples where applicable
+3. Structure with clear headings and subheadings
+4. Include a compelling introduction and conclusion
+5. Add relevant technical keywords for SEO
+6. Estimate reading time based on word count
+7. Suggest 5-8 relevant keywords/tags
+8. Keep paragraphs concise and readable
+9. Use markdown formatting for code blocks and emphasis
+10. Include a brief description (2-3 sentences) for the post preview
+
+OUTPUT FORMAT:
+Please provide the response in the following JSON structure:
+{{
+  "title": "{title}",
+  "slug": "url-friendly-slug",
+  "category": "{category}",
+  "description": "Brief 2-3 sentence description",
+  "content": "Full markdown content with proper formatting",
+  "keywords": ["keyword1", "keyword2", ...],
+  "readingTime": estimated_minutes,
+  "wordCount": estimated_words,
+  "featured": false,
+  "published": true,
+  "createdAt": "{datetime.now().strftime('%Y-%m-%d')}"
+}}
+
+Focus on creating content that is technically accurate, well-structured, and valuable to {tech_level.lower()} level developers."""
+        
+        self.prompt_text.delete(1.0, tk.END)
+        self.prompt_text.insert(1.0, prompt)
+        
+        # Guardar el prompt en la idea actual
+        if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+            self.ideas_data[self.current_idea_id]['generated_prompt'] = prompt
+            self.save_ideas_to_file()
+    
+    def copy_prompt(self):
+        """Copiar el prompt al clipboard"""
+        prompt = self.prompt_text.get(1.0, tk.END).strip()
+        if prompt:
+            self.root.clipboard_clear()
+            self.root.clipboard_append(prompt)
+            messagebox.showinfo("Success", "Prompt copied to clipboard")
+        else:
+            messagebox.showwarning("Warning", "No prompt to copy")
+    
+    def convert_to_post(self):
+        """Convertir la idea en un post real"""
+        title = self.idea_title_entry.get().strip()
+        if not title:
+            messagebox.showwarning("Warning", "Title is required")
+            return
+        
+        # Cargar posts existentes
+        try:
+            posts_path = self.base_path / 'posts.json'
+            if posts_path.exists():
+                with open(posts_path, 'r', encoding='utf-8') as f:
+                    posts_data = json.load(f)
+            else:
+                posts_data = []
+        except:
+            posts_data = []
+        
+        # Crear nuevo post desde la idea
+        new_post = {
+            'id': str(len(posts_data) + 1),
+            'slug': title.lower().replace(' ', '-').replace('/', '-'),
+            'title': title,
+            'category': self.idea_category_var.get(),
+            'description': self.idea_main_text.get(1.0, tk.END).strip()[:200] + '...',
+            'content': self.idea_main_text.get(1.0, tk.END).strip() + '\n\n' + self.idea_points_text.get(1.0, tk.END).strip(),
+            'createdAt': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'keywords': [],
+            'readingTime': 5,
+            'wordCount': 1000,
+            'featured': False,
+            'published': False,
+            'series': None,
+            'seriesOrder': None,
+            'seriesPartTitle': None
+        }
+        
+        posts_data.append(new_post)
+        
+        # Guardar posts
+        try:
+            with open(posts_path, 'w', encoding='utf-8') as f:
+                json.dump(posts_data, f, indent=2, ensure_ascii=False)
+            messagebox.showinfo("Success", f"Post created successfully! You can now edit it in the Posts section.")
+            
+            # Opcional: eliminar la idea después de convertirla
+            if messagebox.askyesno("Delete Idea?", "Delete this idea after converting to post?"):
+                if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+                    del self.ideas_data[self.current_idea_id]
+                    self.save_ideas_to_file()
+                    self.update_ideas_listbox()
+                    self.new_idea()
+        except Exception as e:
+            messagebox.showerror("Error", f"Error creating post: {str(e)}")
 
 
 if __name__ == "__main__":

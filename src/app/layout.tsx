@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { Dock } from "@/components/ui/dock";
+import { DockWrapper } from "@/components/ui/dock-wrapper";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -32,7 +32,7 @@ export default function RootLayout({
         <main className="relative flex min-h-screen flex-col">
           {children}
         </main>
-        <Dock />
+        <DockWrapper />
       </body>
     </html>
   );
