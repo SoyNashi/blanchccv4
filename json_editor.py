@@ -416,8 +416,27 @@ class JSONEditor:
             self.notebook.select(1)
             
         except FileNotFoundError:
-            messagebox.showerror("Error", f"No se encontró el archivo: {file_path}")
-            self.status_var.set("Error: Archivo no encontrado")
+            # Para ideas.json, crear el archivo si no existe
+            if json_file == 'ideas.json':
+                self.current_data = []
+                self.current_file = json_file
+                self.update_visual_view()
+                self.update_text_editor()
+                self.status_var.set(f"Archivo creado: {json_file}")
+                self.unsaved_changes = False
+                self.unsaved_label.config(text="")
+                
+                # Actualizar botones para mostrar el archivo activo
+                for file, btn in self.file_buttons.items():
+                    if file == json_file:
+                        btn.config(bg=self.colors['accent'], fg='#ffffff', activebackground='#1f6feb')
+                    else:
+                        btn.config(bg=self.colors['bg_card'], fg=self.colors['text_secondary'], activebackground=self.colors['bg_hover'])
+                
+                self.notebook.select(1)
+            else:
+                messagebox.showerror("Error", f"No se encontró el archivo: {file_path}")
+                self.status_var.set("Error: Archivo no encontrado")
         except json.JSONDecodeError:
             messagebox.showerror("Error", f"Error al decodificar JSON: {file_path}")
             self.status_var.set("Error: JSON inválido")
@@ -789,8 +808,8 @@ class JSONEditor:
     def create_ideas_view(self):
         y_pos = 20
         x_pos = 20
-        card_width = 350
-        card_height = 180
+        card_width = 400
+        card_height = 120
         gap = 15
         
         for idx, idea in enumerate(self.current_data):
@@ -805,80 +824,40 @@ class JSONEditor:
                 tags=('card', f'idea_{idx}')
             )
             
-            # Title
-            self.visual_canvas.create_text(
-                x_pos + 15, y_pos + 15,
-                text=idea.get('title', 'Sin título'),
-                font=('SF Pro Display', 12, 'bold'),
-                fill=self.colors['text_primary'], anchor='nw',
-                width=card_width - 30,
-                tags=('card', f'idea_{idx}')
-            )
-            
-            # Category badge
-            category = idea.get('category', '')
-            if category:
-                badge_width = len(category) * 7 + 24
-                self.visual_canvas.create_rectangle(
-                    x_pos + 15, y_pos + 45, x_pos + 15 + badge_width, y_pos + 65,
-                    fill=self.colors['accent'], outline=self.colors['accent'],
-                    tags=('card', f'idea_{idx}')
-                )
+            # Content (truncated)
+            content = idea.get('content', '')
+            if content:
+                truncated = content[:150] + '...' if len(content) > 150 else content
                 self.visual_canvas.create_text(
-                    x_pos + 27, y_pos + 47,
-                    text=category.upper(),
-                    font=('SF Pro Display', 8, 'bold'),
-                    fill='#ffffff', anchor='nw',
-                    tags=('card', f'idea_{idx}')
-                )
-            
-            # Main idea (truncated)
-            main_idea = idea.get('main_idea', '')
-            if main_idea:
-                self.visual_canvas.create_text(
-                    x_pos + 15, y_pos + 75,
-                    text=main_idea[:100] + '...' if len(main_idea) > 100 else main_idea,
-                    font=('SF Pro Display', 10),
-                    fill=self.colors['text_secondary'], anchor='nw',
+                    x_pos + 15, y_pos + 15,
+                    text=truncated,
+                    font=('SF Pro Display', 11),
+                    fill=self.colors['text_primary'], anchor='nw',
                     width=card_width - 30,
                     tags=('card', f'idea_{idx}')
                 )
-            
-            # Technical level
-            tech_level = idea.get('technical_level', '')
-            if tech_level:
+            else:
                 self.visual_canvas.create_text(
-                    x_pos + 15, y_pos + card_height - 25,
-                    text=f"Level: {tech_level}",
-                    font=('SF Pro Display', 9),
+                    x_pos + 15, y_pos + 15,
+                    text="Idea vacía...",
+                    font=('SF Pro Display', 11),
                     fill=self.colors['text_secondary'], anchor='nw',
                     tags=('card', f'idea_{idx}')
                 )
             
-            # Created date
-            created_at = idea.get('created_at', '')
-            if created_at:
-                self.visual_canvas.create_text(
-                    x_pos + card_width - 15, y_pos + card_height - 25,
-                    text=created_at[:10] if created_at else '',
-                    font=('SF Pro Display', 8),
-                    fill=self.colors['text_secondary'], anchor='ne',
-                    tags=('card', f'idea_{idx}')
-                )
-            
-            # Prompt indicator
-            if idea.get('generated_prompt'):
-                self.visual_canvas.create_text(
-                    x_pos + card_width - 25, y_pos + 15,
-                    text="📝",
-                    font=('SF Pro Display', 16),
-                    fill=self.colors['success'], anchor='ne',
-                    tags=('card', f'idea_{idx}')
-                )
+            # Date indicator
+            self.visual_canvas.create_text(
+                x_pos + card_width - 15, y_pos + card_height - 15,
+                text=f"#{idx + 1}",
+                font=('SF Pro Display', 10, 'bold'),
+                fill=self.colors['accent'], anchor='se',
+                tags=('card', f'idea_{idx}')
+            )
             
             self.visual_elements.append({'type': 'idea', 'index': idx, 'data': idea, 'x': x_pos, 'y': y_pos, 'width': card_width, 'height': card_height})
             x_pos += card_width + gap
         
+        # Update scroll region
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
     
     def create_services_view(self):
@@ -1074,8 +1053,56 @@ class JSONEditor:
                                 pass
     
     def on_canvas_double_click(self, event):
-        if self.selected_element:
-            self.edit_element()
+        # Encontrar elemento clickeado
+        x, y = event.x, event.y
+        clicked_items = self.visual_canvas.find_overlapping(x, y, x+1, y+1)
+        
+        if clicked_items:
+            # Obtener tags del elemento clickeado
+            tags = self.visual_canvas.gettags(clicked_items[0])
+            if 'card' in tags:
+                # Extraer índice y categoría del elemento
+                for tag in tags:
+                    if tag.startswith('secproj_'):
+                        # Formato: secproj_category_idx
+                        parts = tag.split('_')
+                        if len(parts) >= 3:
+                            try:
+                                category = parts[1]
+                                idx = int(parts[2])
+                                # Encontrar el elemento correspondiente en la estructura anidada
+                                if isinstance(self.current_data, dict) and category in self.current_data:
+                                    projects = self.current_data[category]
+                                    if isinstance(projects, list) and idx < len(projects):
+                                        element_data = projects[idx]
+                                        self.selected_element = {
+                                            'type': 'secproj',
+                                            'index': idx,
+                                            'category': category,
+                                            'data': element_data,
+                                            'x': 0,
+                                            'y': 0,
+                                            'width': 0,
+                                            'height': 0
+                                        }
+                                        self.edit_element()
+                                        break
+                            except (ValueError, IndexError):
+                                pass
+                    elif '_' in tag and not tag.startswith('secproj_'):
+                        # Para otros tipos (post, project, cert, service, idea)
+                        parts = tag.split('_')
+                        if len(parts) >= 2:
+                            try:
+                                idx = int(parts[-1])
+                                # Encontrar el elemento correspondiente
+                                for element in self.visual_elements:
+                                    if element['index'] == idx:
+                                        self.selected_element = element
+                                        self.edit_element()
+                                        break
+                            except ValueError:
+                                pass
     
     def highlight_selected(self, element):
         # Remover highlight anterior
@@ -1109,14 +1136,13 @@ class JSONEditor:
         self.edit_element()
     
     def add_element(self):
-        # Para ideas.json, permitir crear el archivo si no existe
-        if self.current_file == 'ideas.json' and not self.current_data:
-            self.current_data = []
-            self.current_file = 'ideas.json'
+        # Si no hay archivo cargado, cargar ideas.json por defecto
+        if not self.current_file:
+            self.load_specific_file('ideas.json')
         
+        # Si después de cargar no hay datos, inicializar como array vacío
         if not self.current_data:
-            messagebox.showwarning("Advertencia", "Carga un archivo primero")
-            return
+            self.current_data = []
         
         self.editor_mode = 'add'
         self.editor_element = None
@@ -1432,7 +1458,9 @@ class JSONEditor:
                                insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
                 entry.pack(fill=tk.X, ipady=8)
             elif field_type == 'textarea':
-                entry = tk.Text(frame, height=8, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
+                # Para ideas.json, hacer el textarea más grande
+                textarea_height = 25 if self.current_file == 'ideas.json' else 8
+                entry = tk.Text(frame, height=textarea_height, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
                               insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
                 entry.pack(fill=tk.X)
             elif field_type == 'markdown':
@@ -1452,7 +1480,11 @@ class JSONEditor:
                               insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
                 entry.pack(fill=tk.X)
             elif field_type == 'boolean':
-                var = tk.StringVar(value='false')
+                # Inicializar con el valor del elemento si estamos editando
+                default_value = 'false'
+                if element and field in element:
+                    default_value = 'true' if element[field] else 'false'
+                var = tk.StringVar(value=default_value)
                 entry = ttk.Combobox(frame, textvariable=var, values=['true', 'false'], 
                                    state='readonly', width=47, font=('SF Pro Display', 10))
                 entry.pack(fill=tk.X, ipady=4)
@@ -1500,26 +1532,32 @@ class JSONEditor:
             elif field_type == 'select_posts_multiple':
                 posts_list = self.get_existing_posts()
                 if posts_list:
-                    # Frame para el listbox con scroll
-                    listbox_frame = tk.Frame(frame, bg=self.colors['bg'])
-                    listbox_frame.pack(fill=tk.X, pady=5)
+                    # Frame para checkboxes con scroll
+                    checkbox_frame = tk.Frame(frame, bg=self.colors['bg'])
+                    checkbox_frame.pack(fill=tk.X, pady=5)
                     
-                    scrollbar = tk.Scrollbar(listbox_frame)
+                    scrollbar = tk.Scrollbar(checkbox_frame)
                     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
                     
-                    listbox = tk.Listbox(listbox_frame, selectmode=tk.MULTIPLE, 
-                                        bg=self.colors['bg_card'], fg=self.colors['text_primary'],
-                                        font=('SF Pro Display', 10), relief=tk.FLAT, bd=0,
-                                        highlightthickness=1, highlightbackground=self.colors['border'],
-                                        yscrollcommand=scrollbar.set, height=6)
-                    listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-                    scrollbar.config(command=listbox.yview)
+                    checkbox_container = tk.Frame(checkbox_frame, bg=self.colors['bg'])
+                    checkbox_container.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+                    scrollbar.config(command=checkbox_container.yview)
                     
-                    # Agregar posts al listbox
-                    for post in posts_list:
-                        listbox.insert(tk.END, post)
+                    # Crear checkboxes para cada post
+                    checkboxes = {}
+                    for idx, post in enumerate(posts_list):
+                        # Extraer ID del formato "Título | ID"
+                        post_id = post.split(' | ')[-1].strip() if ' | ' in post else post
+                        var = tk.BooleanVar()
+                        cb = tk.Checkbutton(checkbox_container, text=post, variable=var,
+                                          bg=self.colors['bg'], fg=self.colors['text_primary'],
+                                          font=('SF Pro Display', 10), selectcolor=self.colors['accent'],
+                                          activebackground=self.colors['bg'], activeforeground=self.colors['accent'],
+                                          relief=tk.FLAT, bd=0, anchor='w')
+                        cb.pack(fill=tk.X, padx=5, pady=2)
+                        checkboxes[post_id] = var
                     
-                    self.editor_entries[field] = (listbox, 'select_posts_multiple')
+                    self.editor_entries[field] = (checkboxes, 'select_posts_multiple')
                 else:
                     tk.Label(frame, text="No posts available", font=('SF Pro Display', 10),
                            bg=self.colors['bg'], fg=self.colors['text_secondary']).pack()
@@ -1539,19 +1577,30 @@ class JSONEditor:
             
             self.editor_entries[field] = (entry, field_type)
         
+        # Manejar selección de post para certificaciones
+        if element and 'relatedPostId' in element and element['relatedPostId']:
+            if 'relatedPostId' in self.editor_entries:
+                var, field_type = self.editor_entries['relatedPostId']
+                if var and field_type == 'select_post':
+                    # Buscar el post en la lista y seleccionarlo
+                    posts_list = self.get_existing_posts()
+                    post_id = element['relatedPostId']
+                    for post in posts_list:
+                        if post_id in post:
+                            var.set(post)
+                            break
+                    if not var.get():
+                        var.set('[SIN POST ASOCIADO]')
+        
         # Manejar selección múltiple de posts para edición
         if element and 'relatedPostIds' in element and element['relatedPostIds']:
             if 'relatedPostIds' in self.editor_entries:
-                listbox, field_type = self.editor_entries['relatedPostIds']
-                if listbox and field_type == 'select_posts_multiple':
-                    # Deseleccionar todo primero
-                    listbox.selection_clear(0, tk.END)
-                    # Seleccionar los posts que ya están asociados
-                    for idx in range(listbox.size()):
-                        post_text = listbox.get(idx)
-                        post_id = post_text.split('ID: ')[-1].strip() if 'ID: ' in post_text else None
-                        if post_id and post_id in element['relatedPostIds']:
-                            listbox.selection_set(idx)
+                checkboxes, field_type = self.editor_entries['relatedPostIds']
+                if checkboxes and field_type == 'select_posts_multiple':
+                    # Marcar los checkboxes de los posts que ya están asociados
+                    for post_id, var in checkboxes.items():
+                        if post_id in element['relatedPostIds']:
+                            var.set(True)
         
         # Categoría para secondary-projects
         if self.current_file == 'secondary-projects.json' and not element:
@@ -1600,7 +1649,7 @@ class JSONEditor:
                     self.mark_unsaved()
 
     def get_existing_posts(self):
-        """Obtener lista de posts publicados para el selector"""
+        """Obtener lista de todos los posts para el selector"""
         posts_list = []
         try:
             posts_path = self.base_path / 'posts.json'
@@ -1609,10 +1658,10 @@ class JSONEditor:
                     posts_data = json.load(f)
                     if isinstance(posts_data, list):
                         for post in posts_data:
-                            if post.get('published', True):
-                                post_id = post.get('id', '')
-                                post_title = post.get('title', 'Sin título')
-                                posts_list.append(f"{post_title} | ID: {post_id}")
+                            post_id = post.get('id', '')
+                            post_title = post.get('title', 'Sin título')
+                            # Formato simple: Título | ID
+                            posts_list.append(f"{post_title} | {post_id}")
         except Exception as e:
             print(f"Error loading posts: {e}")
         return posts_list
@@ -1690,15 +1739,7 @@ class JSONEditor:
             }
         elif self.current_file == 'ideas.json':
             return {
-                'id': 'text',
-                'title': 'text',
-                'category': 'select',
-                'main_idea': 'textarea',
-                'key_points': 'textarea',
-                'target_audience': 'text',
-                'technical_level': 'select',
-                'additional_notes': 'textarea',
-                'generated_prompt': 'textarea'
+                'content': 'textarea'
             }
         return {}
     
@@ -1739,14 +1780,11 @@ class JSONEditor:
                 if field == 'relatedPostId' and value == '[No related post]':
                     value = None
             elif field_type == 'select_posts_multiple':
-                # Extraer los IDs de los posts seleccionados del listbox
+                # Extraer los IDs de los posts seleccionados de los checkboxes
                 if entry:
-                    selected_indices = entry.curselection()
                     post_ids = []
-                    for idx in selected_indices:
-                        post_text = entry.get(idx)
-                        if 'ID: ' in post_text:
-                            post_id = post_text.split('ID: ')[-1].strip()
+                    for post_id, var in entry.items():
+                        if var.get():
                             post_ids.append(post_id)
                     value = post_ids if post_ids else []
                 else:
