@@ -3,7 +3,7 @@
     "id": "1",
     "title": "Blau360",
     "description": "Plataforma integral de gestión empresarial con análisis de datos en tiempo real y dashboards personalizados.",
-    "image": "/images/blau360.jpg",
+    "image": "/images/blau360.png",
     "tags": [
       "React",
       "Node.js",
@@ -21,7 +21,7 @@
     "id": "2",
     "title": "Bastet",
     "description": "Sistema de automatización de procesos con IA para optimizar flujos de trabajo empresariales.",
-    "image": "/images/bastet.jpg",
+    "image": "/images/bastet.png",
     "tags": [
       "Python",
       "TensorFlow",
