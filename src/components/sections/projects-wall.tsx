@@ -122,7 +122,7 @@ const ProjectItem = ({ project, index, posts }: { project: any; index: number; p
 
         <motion.div
           style={{ y, scale }}
-          className={`order-1 flex aspect-[4/5] w-full overflow-hidden bg-muted lg:aspect-square ${index % 2 === 0 ? "lg:order-2" : "lg:order-1"}`}
+          className={`order-1 flex aspect-[4/5] w-full overflow-hidden lg:aspect-square ${index % 2 === 0 ? "lg:order-2" : "lg:order-1"}`}
         >
           <div className="relative h-full w-full grayscale transition-all duration-700 hover:grayscale-0">
             <Image
