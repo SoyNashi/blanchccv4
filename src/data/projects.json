@@ -8,14 +8,14 @@
       "React",
       "Node.js",
       "TypeScript",
-      "PostgreSQL"
+      "Vite"
     ],
+    "tech": [],
     "color": "#3B82F6",
     "order": 1,
     "relatedPostIds": [
       ""
-    ],
-    "tech": []
+    ]
   },
   {
     "id": "2",
