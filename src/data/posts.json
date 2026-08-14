@@ -57,7 +57,7 @@
     "readingTime": 5,
     "wordCount": 1000,
     "featured": false,
-    "published": false,
+    "published": true,
     "series": null,
     "seriesOrder": 1,
     "seriesPartTitle": "Base64: La Guía Definitiva"
