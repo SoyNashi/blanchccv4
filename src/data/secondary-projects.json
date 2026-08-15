@@ -13,21 +13,7 @@
     }
   ],
   "Brand Strategy": [],
-  "Open Source": [
-    {
-      "id": "5",
-      "name": "Core System",
-      "description": "Librería de componentes internos optimizados para alto rendimiento.",
-      "details": "Sistema de componentes UI reutilizables con TypeScript, documentación automática y tests unitarios.",
-      "tech": [
-        "TypeScript",
-        "React",
-        "Storybook",
-        "Jest"
-      ],
-      "link": "#"
-    }
-  ],
+  "Open Source": [],
   "Engineering": [
     {
       "id": "6",
