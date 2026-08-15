@@ -14,19 +14,5 @@
   ],
   "Brand Strategy": [],
   "Open Source": [],
-  "Engineering": [
-    {
-      "id": "6",
-      "name": "Data Flow",
-      "description": "Pipeline de datos automatizado para análisis de publicidad exterior.",
-      "details": "Sistema ETL para procesamiento de datos de publicidad exterior con visualización en tiempo real y reportes automáticos.",
-      "tech": [
-        "Python",
-        "Apache Airflow",
-        "Docker",
-        "Grafana"
-      ],
-      "link": "#"
-    }
-  ]
+  "Engineering": []
 }
