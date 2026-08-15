@@ -10,6 +10,18 @@
       ],
       "link": "https://argentonabocs.cat",
       "relatedPostIds": []
+    },
+    {
+      "id": "",
+      "name": "Instint Global",
+      "description": "Junto con Blau360 y sus servidores, Insint Global usa tecnologia Vite, un sistema mullti idioma i un diseño pensado en la elegancia del restaurante.",
+      "details": "",
+      "tech": [
+        "Vite"
+      ],
+      "link": "https://instintglobal.com",
+      "relatedPostIds": [],
+      "category": "Web Platforms"
     }
   ],
   "Brand Strategy": [],
