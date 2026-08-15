@@ -61,5 +61,32 @@
     "series": null,
     "seriesOrder": 1,
     "seriesPartTitle": "Base64: La Guía Definitiva"
+  },
+  {
+    "id": "",
+    "slug": "hello-world-blanch-cc",
+    "title": "Hello World: Bienvenidos a Blanch.cc",
+    "category": "NEWS",
+    "description": "Bienvenidos a Blanch.cc, mi rincón en internet donde cuento lo que descubro, lo que aprendo y lo que me apasiona. Soy Nil Blanch, un aficionado a la informática que no se cansa de explorar. Aquí no hay expertos, solo curiosidad y ganas de compartir.",
+    "content": "# Hello World: Bienvenidos a Blanch.cc\n\n¡Hola, mundo! Soy **Nil Blanch**, y esto es **Blanch.cc**, mi espacio en internet para **contar mis cosas**. No soy un experto, ni pretendo serlo. Solo soy un **aficionado a la informática** que estudia desarrollo de aplicaciones y no para de descubrir cosas nuevas cada día.\n\n---\n\n## ¿Por qué Blanch.cc?\n\nPorque **Blanch** es mi apellido, y así puedo tener un correo molón como **nil@blanch.cc**. Si alguien más se apellida Blanch y quiere una cuenta, **le doy una redirección gratis** (eso sí, tendré que verificar que somos familia, jajaja). Pero más allá del nombre, este blog es mi forma de **compartir lo que aprendo**, aunque sea algo que todo el mundo ya sepa. **No importa si llego tarde**: esto es mi blog, y publico lo que quiera.\n\n---\n\n## ¿Qué vas a encontrar aquí?\n\nAquí no hay reglas. No es un blog para **\"aprender y crear\"** (aunque a veces lo harás). Es un sitio donde **cuento mis cosas**, mis descubrimientos y mis experimentos. Puede ser:\n\n- **Trucos de desarrollo** que me han salvado el día.\n- **Reflexiones frikis** sobre informática, tecnología o lo que se me pase por la cabeza.\n- **Proyectos personales** que estoy probando, aunque no sean perfectos.\n- **Cualquier cosa que me apetezca compartir**, porque al fin y al cabo, **esto es mi espacio**.\n\nSi sabes algo que yo no, genial. Si yo sé algo que tú no, mejor. **Aquí no hay jerarquías**, solo **pasión por descubrir**.\n\n---\n\n## Un poco sobre mí\n\nSoy **Nil Blanch**, un estudiante de desarrollo de aplicaciones que cree que **la informática no es solo lo que te enseñan en clase**. Es **todo lo que descubres por tu cuenta**, por curiosidad, por aburrimiento o por las ganas de resolver un problema.\n\nNo soy el mejor programador, ni el más rápido, ni el más experto. Pero **me encanta aprender**, y si algo me ha llamado la atención, lo escribiré aquí. **Sin filtros, sin pretensiones**.\n\n---\n## ¿Por qué \"Hello World\"?\n\nPorque **todo empieza con un \"Hello World\"**. Es el primer paso, el primer código, el primer **\"hola, aquí estoy\"**. Y este blog es mi **\"Hello World\"** en el mundo de compartir lo que me apasiona.\n\n---\n## ¿Cómo puedes participar?\n\nSi te gusta lo que lees, **genial**. Si no, **también**. Pero si quieres, puedes:\n\n- **Dejar un comentario** (aunque sea para decirme que estoy equivocado).\n- **Compartir** lo que te parezca interesante.\n- **Contactarme** si tienes dudas, sugerencias o simplemente ganas de hablar de informática.\n\n---\n## Próximos pasos\n\nNo tengo un calendario de publicaciones, ni un plan fijo. Publicaré **cuando tenga algo que contar**, ya sea:\n\n- **Cómo usar Base64 para incrustar imágenes en correos** (sí, lo sé, no es nuevo, pero a mí me salvó el día).\n- **Mis experimentos con desarrollo de aplicaciones**.\n- **Cualquier cosa que me parezca interesante en el momento**.\n\n---\n## Gracias por estar aquí\n\nNo prometo ser el mejor blog del mundo, ni el más técnico, ni el más profesional. **Solo prometo ser auténtico**. Si te gusta, bien. Si no, también. Pero si te quedas, **gracias por acompañarme en este viaje**.\n\n---\n*¡Nos leemos pronto!*\n**— Nil Blanch**",
+    "createdAt": "2026-08-15T14:59:52.856363",
+    "keywords": [
+      "Blanch.cc",
+      "Nil Blanch",
+      "Informática",
+      "Desarrollo de aplicaciones",
+      "Aprendizaje autodidacta",
+      "Descubrimiento",
+      "Blog personal",
+      "Friki",
+      "Hello World"
+    ],
+    "readingTime": 3,
+    "wordCount": 528,
+    "featured": false,
+    "published": true,
+    "series": null,
+    "seriesOrder": 0,
+    "seriesPartTitle": ""
   }
 ]
