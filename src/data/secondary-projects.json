@@ -12,21 +12,7 @@
       "relatedPostIds": []
     }
   ],
-  "Brand Strategy": [
-    {
-      "id": "4",
-      "name": "Instint Global",
-      "description": "Estrategia digital y presencia online para marca de lifestyle.",
-      "details": "Rediseño completo de marca digital, desarrollo de sitio web corporativo y estrategia de contenido para redes sociales.",
-      "tech": [
-        "Webflow",
-        "Figma",
-        "SEO",
-        "Analytics"
-      ],
-      "link": "#"
-    }
-  ],
+  "Brand Strategy": [],
   "Open Source": [
     {
       "id": "5",
