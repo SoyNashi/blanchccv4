@@ -1188,6 +1188,7 @@ class JSONEditor:
                             self.update_visual_view()
                             self.update_text_editor()
                             self.mark_unsaved()
+                            self.save_file()
                             self.status_var.set("Elemento eliminado")
                             self.selected_element = None
                             self.visual_canvas.delete('highlight')
@@ -1204,6 +1205,7 @@ class JSONEditor:
                     self.update_visual_view()
                     self.update_text_editor()
                     self.mark_unsaved()
+                    self.save_file()
                     self.status_var.set("Elemento eliminado")
                     self.selected_element = None
                     self.visual_canvas.delete('highlight')
@@ -1233,10 +1235,11 @@ class JSONEditor:
             self.unsaved_label.config(text="")
             self.status_var.set(f"Archivo guardado: {self.current_file}")
             
-            # Hacer git commit y push automáticamente
-            self.git_commit_and_push()
+            # Hacer git commit y push automáticamente en background
+            import threading
+            threading.Thread(target=self.git_commit_and_push, daemon=True).start()
             
-            messagebox.showinfo("Éxito", f"Archivo guardado y publicado: {self.current_file}")
+            messagebox.showinfo("Éxito", f"Archivo guardado: {self.current_file}")
             
         except Exception as e:
             messagebox.showerror("Error", f"Error al guardar archivo: {str(e)}")
@@ -1453,9 +1456,11 @@ class JSONEditor:
                            bg=self.colors['bg'], fg=self.colors['text_primary'])
             label.pack(anchor=tk.W)
             
-            if field_type == 'text':
-                entry = tk.Entry(frame, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
-                               insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
+            if field_type == 'text' or field_type == 'readonly':
+                state = 'readonly' if field_type == 'readonly' else 'normal'
+                bg_color = self.colors['bg_hover'] if field_type == 'readonly' else self.colors['bg_card']
+                entry = tk.Entry(frame, width=50, bg=bg_color, fg=self.colors['text_secondary'], 
+                               insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0, state=state)
                 entry.pack(fill=tk.X, ipady=8)
             elif field_type == 'textarea':
                 # Para ideas.json, hacer el textarea más grande
@@ -1470,6 +1475,10 @@ class JSONEditor:
             elif field_type == 'number':
                 entry = tk.Entry(frame, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
                                insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
+                entry.pack(fill=tk.X, ipady=8)
+            elif field_type == 'readonly_number':
+                entry = tk.Entry(frame, width=50, bg=self.colors['bg_hover'], fg=self.colors['text_secondary'], 
+                               insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0, state='readonly')
                 entry.pack(fill=tk.X, ipady=8)
             elif field_type == 'color':
                 entry = tk.Entry(frame, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
@@ -1532,16 +1541,12 @@ class JSONEditor:
             elif field_type == 'select_posts_multiple':
                 posts_list = self.get_existing_posts()
                 if posts_list:
-                    # Frame para checkboxes con scroll
+                    # Frame para checkboxes
                     checkbox_frame = tk.Frame(frame, bg=self.colors['bg'])
                     checkbox_frame.pack(fill=tk.X, pady=5)
                     
-                    scrollbar = tk.Scrollbar(checkbox_frame)
-                    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-                    
                     checkbox_container = tk.Frame(checkbox_frame, bg=self.colors['bg'])
-                    checkbox_container.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-                    scrollbar.config(command=checkbox_container.yview)
+                    checkbox_container.pack(fill=tk.BOTH, expand=True)
                     
                     # Crear checkboxes para cada post
                     checkboxes = {}
@@ -1693,16 +1698,16 @@ class JSONEditor:
             }
         elif self.current_file == 'posts.json':
             return {
-                'id': 'text',
+                'id': 'readonly',
                 'slug': 'text',
                 'title': 'text',
                 'category': 'select',
                 'description': 'textarea',
                 'content': 'markdown',
-                'createdAt': 'text',
+                'createdAt': 'readonly',
                 'keywords': 'array',
-                'readingTime': 'number',
-                'wordCount': 'number',
+                'readingTime': 'readonly',
+                'wordCount': 'readonly',
                 'featured': 'boolean',
                 'published': 'boolean',
                 'series': 'select_series',
@@ -1711,7 +1716,7 @@ class JSONEditor:
             }
         elif self.current_file == 'projects.json':
             return {
-                'id': 'text',
+                'id': 'readonly',
                 'title': 'text',
                 'description': 'textarea',
                 'image': 'text',
@@ -1722,7 +1727,7 @@ class JSONEditor:
             }
         elif self.current_file == 'secondary-projects.json':
             return {
-                'id': 'text',
+                'id': 'readonly',
                 'name': 'text',
                 'description': 'textarea',
                 'details': 'textarea',
@@ -1732,7 +1737,7 @@ class JSONEditor:
             }
         elif self.current_file == 'services.json':
             return {
-                'id': 'text',
+                'id': 'readonly',
                 'title': 'text',
                 'description': 'textarea',
                 'order': 'number'
@@ -1747,6 +1752,11 @@ class JSONEditor:
         result = {}
         
         for field, (entry, field_type) in self.editor_entries.items():
+            # Saltar campos readonly - mantener el valor original del elemento
+            if field_type == 'readonly' and self.editor_element and field in self.editor_element.get('data', {}):
+                result[field] = self.editor_element['data'][field]
+                continue
+            
             if field_type in ['textarea', 'markdown']:
                 value = entry.get(1.0, tk.END).strip()
             elif field_type == 'array':
@@ -1773,9 +1783,9 @@ class JSONEditor:
                 # Para category, asegurar que no sea None
                 if field == 'category' and value is None:
                     value = ''
-                # Para relatedPostId, extraer el ID del formato "Título | ID: xxx"
+                # Para relatedPostId, extraer el ID del formato "Título | ID"
                 if field == 'relatedPostId' and value and '|' in value:
-                    value = value.split('ID: ')[-1].strip()
+                    value = value.split('|')[-1].strip()
                 # Para select_post, manejar "[No related post]"
                 if field == 'relatedPostId' and value == '[No related post]':
                     value = None
@@ -1862,10 +1872,12 @@ class JSONEditor:
         self.update_visual_view()
         self.update_text_editor()
         self.mark_unsaved()
+        # Guardar automáticamente al archivo
+        self.save_file()
         self.cancel_editor()
     
     def cancel_editor(self):
-        self.notebook.select(0)  # Volver al dashboard
+        self.notebook.select(1)  # Volver a la vista visual
         self.editor_mode = None
         self.editor_element = None
     

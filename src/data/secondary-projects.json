@@ -27,21 +27,20 @@
       "link": "#"
     },
     {
-      "id": "",
-      "name": "Argentona Bocs",
-      "description": "Pagina web para el equipo ocal",
-      "details": "",
+      "id": "3",
+      "name": "Argentona Bocs Web",
+      "description": "Página web para el equipo local",
+      "details": "Sitio web desarrollado con WordPress para gestión de contenido y comunicación local.",
       "tech": [
-        "wordpress"
+        "WordPress"
       ],
-      "link": "argentonabocs.cat",
-      "relatedPostIds": [],
-      "category": "Web Platforms"
+      "link": "https://argentonabocs.cat",
+      "relatedPostIds": []
     }
   ],
   "Brand Strategy": [
     {
-      "id": "3",
+      "id": "4",
       "name": "Instint Global",
       "description": "Estrategia digital y presencia online para marca de lifestyle.",
       "details": "Rediseño completo de marca digital, desarrollo de sitio web corporativo y estrategia de contenido para redes sociales.",
@@ -56,7 +55,7 @@
   ],
   "Open Source": [
     {
-      "id": "4",
+      "id": "5",
       "name": "Core System",
       "description": "Librería de componentes internos optimizados para alto rendimiento.",
       "details": "Sistema de componentes UI reutilizables con TypeScript, documentación automática y tests unitarios.",
@@ -71,7 +70,7 @@
   ],
   "Engineering": [
     {
-      "id": "5",
+      "id": "6",
       "name": "Data Flow",
       "description": "Pipeline de datos automatizado para análisis de publicidad exterior.",
       "details": "Sistema ETL para procesamiento de datos de publicidad exterior con visualización en tiempo real y reportes automáticos.",

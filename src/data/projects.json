@@ -13,9 +13,7 @@
     "tech": [],
     "color": "#3B82F6",
     "order": 1,
-    "relatedPostIds": [
-      ""
-    ]
+    "relatedPostIds": []
   },
   {
     "id": "2",
@@ -43,6 +41,7 @@
       }
     ],
     "color": "#10B981",
-    "order": 2
+    "order": 2,
+    "relatedPostIds": []
   }
 ]
