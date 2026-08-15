@@ -14,6 +14,7 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showIndex, setShowIndex] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState<string>("date-desc");
   const postsPerPage = 12;
 
   // Obtener categorías únicas
@@ -41,9 +42,9 @@ export default function BlogPage() {
     seriesPosts.sort((a, b) => (a.seriesOrder || 0) - (b.seriesOrder || 0));
   });
 
-  // Filtrar posts
+  // Filtrar y ordenar posts
   const filteredPosts = useMemo(() => {
-    return posts.filter(post => {
+    let filtered = posts.filter(post => {
       if (!post.published) return false;
       
       const matchesSearch = searchQuery === "" || 
@@ -55,7 +56,25 @@ export default function BlogPage() {
       
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+
+    // Ordenar posts
+    const [sortField, sortOrder] = sortBy.split('-');
+    filtered.sort((a, b) => {
+      let comparison = 0;
+      
+      if (sortField === 'date') {
+        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      } else if (sortField === 'title') {
+        comparison = a.title.localeCompare(b.title);
+      } else if (sortField === 'readingTime') {
+        comparison = a.readingTime - b.readingTime;
+      }
+      
+      return sortOrder === 'desc' ? -comparison : comparison;
+    });
+
+    return filtered;
+  }, [searchQuery, selectedCategory, sortBy]);
 
   // Paginación
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
@@ -66,7 +85,7 @@ export default function BlogPage() {
   // Resetear página cuando cambian filtros
   useMemo(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, sortBy]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -119,30 +138,29 @@ export default function BlogPage() {
                   className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-blue-500 transition-colors"
                 />
               </div>
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  onClick={() => setSelectedCategory("all")}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    selectedCategory === "all" 
-                      ? "bg-blue-500 text-white" 
-                      : "bg-white/5 text-white/70 hover:bg-white/10"
-                  }`}
+              <div className="flex gap-3">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
                 >
-                  Todos
-                </button>
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      selectedCategory === category 
-                        ? "bg-blue-500 text-white" 
-                        : "bg-white/5 text-white/70 hover:bg-white/10"
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
+                  <option value="all">Todas las categorías</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
+                >
+                  <option value="date-desc">Más recientes</option>
+                  <option value="date-asc">Más antiguos</option>
+                  <option value="title-asc">A-Z</option>
+                  <option value="title-desc">Z-A</option>
+                  <option value="readingTime-asc">Menos tiempo</option>
+                  <option value="readingTime-desc">Más tiempo</option>
+                </select>
               </div>
             </div>
           </div>
