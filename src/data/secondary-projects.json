@@ -1,19 +1,6 @@
 {
   "Web Platforms": [
     {
-      "id": "1",
-      "name": "Argentona Bocs",
-      "description": "Plataforma de gestión y comunicación para entidades locales.",
-      "details": "Desarrollado con Next.js y Node.js, incluye sistema de autenticación, gestión de usuarios y panel de administración en tiempo real.",
-      "tech": [
-        "Next.js",
-        "Node.js",
-        "PostgreSQL",
-        "Redis"
-      ],
-      "link": "#"
-    },
-    {
       "id": "3",
       "name": "Argentona Bocs Web",
       "description": "Página web para el equipo local",
