@@ -14,19 +14,6 @@
       "link": "#"
     },
     {
-      "id": "2",
-      "name": "E-commerce Pro",
-      "description": "Tienda online con pasarela de pagos integrada.",
-      "details": "Sistema completo de e-commerce con gestión de inventario, procesamiento de pagos con Stripe y panel de administración.",
-      "tech": [
-        "React",
-        "Node.js",
-        "Stripe",
-        "MongoDB"
-      ],
-      "link": "#"
-    },
-    {
       "id": "3",
       "name": "Argentona Bocs Web",
       "description": "Página web para el equipo local",
