@@ -134,6 +134,10 @@ class JSONEditor:
                            'activebackground': '#1f6feb', 'activeforeground': '#ffffff',
                            'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
         
+        btn_style_danger = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['error'], 'fg': '#ffffff', 
+                           'activebackground': '#da3633', 'activeforeground': '#ffffff',
+                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
+        
         add_btn = tk.Button(action_btn_frame, text="+ Add New", command=self.add_element, **btn_style_primary)
         add_btn.pack(side=tk.LEFT, padx=(0, 10))
         
@@ -142,6 +146,13 @@ class JSONEditor:
         
         refresh_btn = tk.Button(action_btn_frame, text="Refresh", command=self.refresh_file, **btn_style_secondary)
         refresh_btn.pack(side=tk.LEFT)
+        
+        # Botones de acción (Edit y Delete) - más visibles
+        edit_delete_frame = tk.Frame(selector_frame, bg=self.colors['bg'])
+        edit_delete_frame.pack(fill=tk.X, pady=(15, 0))
+        
+        tk.Button(edit_delete_frame, text="Edit Selected", command=self.edit_element, width=15, **btn_style_primary).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(edit_delete_frame, text="Delete Selected", command=self.delete_element, width=15, **btn_style_danger).pack(side=tk.LEFT)
         
         # Notebook para diferentes vistas
         self.notebook = ttk.Notebook(main_frame)
@@ -193,20 +204,6 @@ class JSONEditor:
                                      bg=self.colors['bg'], fg=self.colors['warning'])
         self.unsaved_label.pack(fill=tk.X, pady=(2, 0))
         
-        # Botones de acción - abajo a la izquierda (Edit y Delete)
-        action_frame = tk.Frame(main_frame, bg=self.colors['bg'])
-        action_frame.pack(fill=tk.X, side=tk.BOTTOM, pady=(0, 20))
-        
-        btn_style_primary = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['accent'], 'fg': '#ffffff', 
-                     'activebackground': '#1f6feb', 'activeforeground': '#ffffff',
-                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
-        
-        btn_style_danger = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['error'], 'fg': '#ffffff', 
-                     'activebackground': '#da3633', 'activeforeground': '#ffffff',
-                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
-        
-        tk.Button(action_frame, text="Edit", command=self.edit_element, width=12, **btn_style_primary).pack(side=tk.LEFT, padx=(0, 8))
-        tk.Button(action_frame, text="Delete", command=self.delete_element, width=12, **btn_style_danger).pack(side=tk.LEFT, padx=(0, 8))
     
     def create_visual_view(self):
         # Scrollbars

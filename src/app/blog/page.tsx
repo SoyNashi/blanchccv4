@@ -5,6 +5,7 @@ import posts from "@/data/posts.json";
 import BlogNavbar from "@/components/blog-navbar";
 import BlogFooter from "@/components/blog-footer";
 import { useState, useMemo } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type PostCategory = 'novedad' | 'alerta' | 'descubrimiento' | 'creacion' | 'seguridad' | 'malware';
 
@@ -12,6 +13,8 @@ export default function BlogPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showIndex, setShowIndex] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 12;
 
   // Obtener categorías únicas
   const categories = Array.from(new Set(posts.map(post => post.category as PostCategory))).filter(Boolean);
@@ -52,6 +55,17 @@ export default function BlogPage() {
       
       return matchesSearch && matchesCategory;
     });
+  }, [searchQuery, selectedCategory]);
+
+  // Paginación
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+  const startIndex = (currentPage - 1) * postsPerPage;
+  const endIndex = startIndex + postsPerPage;
+  const currentPosts = filteredPosts.slice(startIndex, endIndex);
+
+  // Resetear página cuando cambian filtros
+  useMemo(() => {
+    setCurrentPage(1);
   }, [searchQuery, selectedCategory]);
 
   return (
@@ -217,72 +231,134 @@ export default function BlogPage() {
 
           {/* Lista de Posts */}
           <div>
-            <h2 className="text-xl font-bold text-white mb-4">
-              Todos los artículos
-              <span className="text-muted-foreground ml-2">({filteredPosts.length})</span>
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-white">
+                Todos los artículos
+                <span className="text-muted-foreground ml-2">({filteredPosts.length})</span>
+              </h2>
+              
+              {totalPages > 1 && (
+                <div className="text-sm text-white/40">
+                  Página {currentPage} de {totalPages}
+                </div>
+              )}
+            </div>
 
             {filteredPosts.length === 0 ? (
               <div className="text-center py-12 text-white/40">
                 <p>No se encontraron artículos que coincidan con tu búsqueda.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredPosts.map((post) => (
-                  <Link 
-                    key={post.id} 
-                    href={`/blog/${post.slug}`} 
-                    id={`post-${post.id}`}
-                    className="group block bg-card border border-white/5 rounded-xl p-4 hover:border-white/20 transition-all"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold uppercase tracking-wider">
-                          {post.category}
-                        </span>
-                        {post.featured && <svg className="h-3 w-3 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>}
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {currentPosts.map((post) => (
+                    <Link 
+                      key={post.id} 
+                      href={`/blog/${post.slug}`} 
+                      id={`post-${post.id}`}
+                      className="group block bg-card border border-white/5 rounded-xl p-4 hover:border-white/20 transition-all"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold uppercase tracking-wider">
+                            {post.category}
+                          </span>
+                          {post.featured && <svg className="h-3 w-3 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                          </svg>}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-white/40">
+                          <span className="flex items-center gap-1">
+                            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {post.readingTime} min
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-white/40">
-                        <span className="flex items-center gap-1">
-                          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          {post.readingTime} min
+                      
+                      <h3 className="text-sm font-bold text-white mb-2 group-hover:text-blue-400 transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
+                      
+                      <p className="text-muted-foreground text-xs mb-3 line-clamp-2">
+                        {post.description}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {post.keywords.slice(0, 2).map(kw => (
+                          <span key={kw} className="px-2 py-0.5 bg-white/5 rounded text-xs text-white/60">
+                            #{kw}
+                          </span>
+                        ))}
+                        {post.keywords.length > 2 && (
+                          <span className="px-2 py-0.5 bg-white/5 rounded text-xs text-white/40">
+                            +{post.keywords.length - 2}
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-blue-400 font-medium group-hover:text-blue-300 transition-colors">
+                          Leer →
                         </span>
                       </div>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Paginación */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-4 mt-8">
+                    <button
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-lg text-white/70 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      Anterior
+                    </button>
+                    
+                    <div className="flex items-center gap-2">
+                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                        let pageNum;
+                        if (totalPages <= 5) {
+                          pageNum = i + 1;
+                        } else if (currentPage <= 3) {
+                          pageNum = i + 1;
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNum = totalPages - 4 + i;
+                        } else {
+                          pageNum = currentPage - 2 + i;
+                        }
+                        
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => setCurrentPage(pageNum)}
+                            className={`w-10 h-10 rounded-lg font-medium transition-colors ${
+                              currentPage === pageNum
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-white/5 text-white/70 hover:bg-white/10'
+                            }`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
                     </div>
                     
-                    <h3 className="text-base font-bold text-white mb-2 group-hover:text-blue-400 transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
-                    
-                    <p className="text-muted-foreground text-xs mb-3 line-clamp-2">
-                      {post.description}
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {post.keywords.slice(0, 3).map(kw => (
-                        <span key={kw} className="px-2 py-0.5 bg-white/5 rounded text-xs text-white/60">
-                          #{kw}
-                        </span>
-                      ))}
-                      {post.keywords.length > 3 && (
-                        <span className="px-2 py-0.5 bg-white/5 rounded text-xs text-white/40">
-                          +{post.keywords.length - 3}
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-blue-400 font-medium group-hover:text-blue-300 transition-colors">
-                        Leer →
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+                    <button
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-lg text-white/70 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Siguiente
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
