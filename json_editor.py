@@ -65,6 +65,17 @@ class JSONEditor:
         self.unsaved_changes = False
         self.showing_dashboard = True
         
+        # Archivo de ideas
+        self.ideas_file = self.base_path / 'ideas.json'
+        self.ideas_data = []
+        self.current_idea_id = None
+        
+        # Campos específicos para ideas
+        self.idea_post_data = {}
+        self.idea_project_data = {}
+        self.idea_certification_data = {}
+        self.idea_secondary_project_data = {}
+        
         self.create_ui()
         self.show_dashboard()
     
@@ -205,6 +216,13 @@ class JSONEditor:
         self.unsaved_label.pack(fill=tk.X, pady=(2, 0))
         
     
+    def create_visual_canvas(self):
+        """Recrear el canvas visual después de destruirlo"""
+        # Limpiar visual_frame primero
+        for widget in self.visual_frame.winfo_children():
+            widget.destroy()
+        self.create_visual_view()
+    
     def create_visual_view(self):
         # Scrollbars
         visual_scroll_y = ttk.Scrollbar(self.visual_frame)
@@ -251,6 +269,113 @@ class JSONEditor:
         self.text_editor.bind('<ButtonRelease-1>', lambda e: self.mark_unsaved())
         
         text_scroll.config(command=self.text_editor.yview)
+    
+    def create_ideas_interface(self):
+        """Crear interfaz específica para ideas"""
+        ideas_frame = tk.Frame(self.visual_frame, bg=self.colors['bg'])
+        ideas_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        
+        # Título
+        tk.Label(ideas_frame, text="IDEAS MANAGER", font=('SF Pro Display', 18, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['text_primary']).pack(pady=(0, 20))
+        
+        # Frame principal con 2 columnas
+        main_frame = tk.Frame(ideas_frame, bg=self.colors['bg'])
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Columna izquierda: Lista de ideas
+        left_frame = tk.Frame(main_frame, bg=self.colors['bg'], width=400)
+        left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 20))
+        
+        tk.Label(left_frame, text="Saved Ideas", font=('SF Pro Display', 12, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['text_primary']).pack(anchor=tk.W, pady=(0, 10))
+        
+        self.ideas_listbox = tk.Listbox(left_frame, bg=self.colors['bg_card'], fg=self.colors['text_primary'],
+                                        font=('SF Pro Display', 10), relief=tk.FLAT, bd=0,
+                                        selectbackground=self.colors['accent'], selectforeground='#ffffff')
+        self.ideas_listbox.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
+        self.ideas_listbox.bind('<<ListboxSelect>>', self.on_idea_selected)
+        
+        # Botones de ideas
+        ideas_btn_frame = tk.Frame(left_frame, bg=self.colors['bg'])
+        ideas_btn_frame.pack(fill=tk.X)
+        
+        btn_style_small = {'font': ('SF Pro Display', 10, 'bold'), 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'],
+                          'activebackground': self.colors['bg_hover'], 'activeforeground': self.colors['text_primary'],
+                          'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 16, 'pady': 8}
+        
+        tk.Button(ideas_btn_frame, text="New Idea", command=self.new_idea, **btn_style_small).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(ideas_btn_frame, text="Delete", command=self.delete_idea, **btn_style_small).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(ideas_btn_frame, text="Save", command=self.save_idea, **btn_style_small).pack(side=tk.LEFT)
+        
+        # Columna derecha: Editor de idea
+        right_frame = tk.Frame(main_frame, bg=self.colors['bg'])
+        right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        
+        # Scroll para el editor
+        editor_scroll = ttk.Scrollbar(right_frame)
+        editor_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        editor_canvas = tk.Canvas(right_frame, bg=self.colors['bg'], yscrollcommand=editor_scroll.set, highlightthickness=0)
+        editor_canvas.pack(fill=tk.BOTH, expand=True)
+        editor_scroll.config(command=editor_canvas.yview)
+        
+        editor_content = tk.Frame(editor_canvas, bg=self.colors['bg'])
+        editor_canvas.create_window((0, 0), window=editor_content, anchor="nw")
+        editor_content.bind("<Configure>", lambda e: editor_canvas.configure(scrollregion=editor_canvas.bbox("all")))
+        
+        # Campo único para el contenido de la idea
+        tk.Label(editor_content, text="Content", font=('SF Pro Display', 10, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['text_primary']).pack(anchor=tk.W, pady=(10, 5))
+        self.idea_content_text = tk.Text(editor_content, height=25, bg=self.colors['bg_card'], fg=self.colors['text_primary'],
+                                        insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
+        self.idea_content_text.pack(fill=tk.BOTH, expand=True)
+        
+        # Botones de edición específicos
+        tk.Label(editor_content, text="EDIT SPECIFIC DATA", font=('SF Pro Display', 11, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['accent']).pack(anchor=tk.W, pady=(20, 10))
+        
+        edit_frame = tk.Frame(editor_content, bg=self.colors['bg'])
+        edit_frame.pack(fill=tk.X)
+        
+        btn_edit = {'font': ('SF Pro Display', 9, 'bold'), 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'],
+                     'activebackground': self.colors['bg_hover'], 'activeforeground': self.colors['text_primary'],
+                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 12, 'pady': 6}
+        
+        tk.Button(edit_frame, text="📝 Edit Post Data", command=self.edit_post_data, **btn_edit).grid(row=0, column=0, padx=2, pady=2)
+        tk.Button(edit_frame, text="🚀 Edit Project Data", command=self.edit_project_data, **btn_edit).grid(row=0, column=1, padx=2, pady=2)
+        tk.Button(edit_frame, text="🎓 Edit Certification Data", command=self.edit_certification_data, **btn_edit).grid(row=0, column=2, padx=2, pady=2)
+        tk.Button(edit_frame, text="📦 Edit Secondary Project Data", command=self.edit_secondary_project_data, **btn_edit).grid(row=1, column=0, columnspan=3, padx=2, pady=2, sticky='ew')
+        edit_frame.grid_columnconfigure(0, weight=1)
+        edit_frame.grid_columnconfigure(1, weight=1)
+        edit_frame.grid_columnconfigure(2, weight=1)
+        
+        # Botones de conversión
+        tk.Label(editor_content, text="CONVERT TO", font=('SF Pro Display', 11, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['accent']).pack(anchor=tk.W, pady=(20, 10))
+        
+        convert_frame = tk.Frame(editor_content, bg=self.colors['bg'])
+        convert_frame.pack(fill=tk.X)
+        
+        btn_convert = {'font': ('SF Pro Display', 9, 'bold'), 'bg': self.colors['accent'], 'fg': '#ffffff',
+                       'activebackground': '#1f6feb', 'activeforeground': '#ffffff',
+                       'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 12, 'pady': 6}
+        
+        tk.Button(convert_frame, text="📝 Post", command=self.convert_to_post, **btn_convert).grid(row=0, column=0, padx=2, pady=2)
+        tk.Button(convert_frame, text="🚀 Project", command=self.convert_to_project, **btn_convert).grid(row=0, column=1, padx=2, pady=2)
+        tk.Button(convert_frame, text="🎓 Certification", command=self.convert_to_certification, **btn_convert).grid(row=0, column=2, padx=2, pady=2)
+        tk.Button(convert_frame, text="📦 Secondary Project", command=self.convert_to_secondary_project, **btn_convert).grid(row=1, column=0, columnspan=3, padx=2, pady=2, sticky='ew')
+        convert_frame.grid_columnconfigure(0, weight=1)
+        convert_frame.grid_columnconfigure(1, weight=1)
+        convert_frame.grid_columnconfigure(2, weight=1)
+        
+        # Campo para prompt (oculto, solo para compatibilidad)
+        self.prompt_text = tk.Text(editor_content, height=1, bg=self.colors['bg'], fg=self.colors['bg'],
+                                   insertbackground=self.colors['bg'], font=('SF Pro Display', 1), relief=tk.FLAT, bd=0)
+        self.prompt_text.pack(fill=tk.X)
+        
+        # Cargar ideas
+        self.load_ideas()
     
     def create_element_editor(self):
         # Scrollable frame para el editor
@@ -393,14 +518,30 @@ class JSONEditor:
         
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
-                self.current_data = json.load(f)
-                self.current_file = json_file
+                data = json.load(f)
             
-            self.update_visual_view()
-            self.update_text_editor()
-            self.status_var.set(f"Archivo cargado: {json_file}")
-            self.unsaved_changes = False
-            self.unsaved_label.config(text="")
+            self.current_file = json_file
+            self.current_data = data
+            
+            # Si es ideas.json, usar interfaz especial
+            if json_file == 'ideas.json':
+                # Limpiar visual frame y crear interfaz de ideas
+                for widget in self.visual_frame.winfo_children():
+                    widget.destroy()
+                self.create_ideas_interface()
+                # No actualizar text editor para ideas.json
+                self.status_var.set(f"Archivo cargado: {json_file}")
+                self.unsaved_changes = False
+                self.unsaved_label.config(text="")
+            else:
+                # Si venimos de ideas.json, recrear el canvas visual
+                if not hasattr(self, 'visual_canvas') or not self.visual_canvas.winfo_exists():
+                    self.create_visual_canvas()
+                self.update_visual_view()
+                self.update_text_editor()
+                self.status_var.set(f"Archivo cargado: {json_file}")
+                self.unsaved_changes = False
+                self.unsaved_label.config(text="")
             
             # Actualizar botones para mostrar el archivo activo
             for file, btn in self.file_buttons.items():
@@ -417,7 +558,10 @@ class JSONEditor:
             if json_file == 'ideas.json':
                 self.current_data = []
                 self.current_file = json_file
-                self.update_visual_view()
+                # Limpiar visual frame y crear interfaz de ideas
+                for widget in self.visual_frame.winfo_children():
+                    widget.destroy()
+                self.create_ideas_interface()
                 self.update_text_editor()
                 self.status_var.set(f"Archivo creado: {json_file}")
                 self.unsaved_changes = False
@@ -1902,22 +2046,17 @@ class JSONEditor:
     def update_ideas_listbox(self):
         """Actualizar el listbox con las ideas guardadas"""
         self.ideas_listbox.delete(0, tk.END)
-        for idea in self.ideas_data:
-            title = idea.get('title', 'Untitled')
-            category = idea.get('category', '')
-            display_text = f"{title} [{category}]" if category else title
+        for idx, idea in enumerate(self.ideas_data):
+            content = idea.get('content', '')
+            # Mostrar primeros 50 caracteres como título
+            title = content[:50] + '...' if len(content) > 50 else content
+            display_text = f"#{idx + 1}: {title}" if title else f"#{idx + 1}: Empty"
             self.ideas_listbox.insert(tk.END, display_text)
     
     def new_idea(self):
         """Crear nueva idea"""
         self.current_idea_id = None
-        self.idea_title_entry.delete(0, tk.END)
-        self.idea_category_var.set('')
-        self.idea_main_text.delete(1.0, tk.END)
-        self.idea_points_text.delete(1.0, tk.END)
-        self.idea_audience_entry.delete(0, tk.END)
-        self.idea_tech_level_var.set('Intermediate')
-        self.idea_notes_text.delete(1.0, tk.END)
+        self.idea_content_text.delete(1.0, tk.END)
         self.prompt_text.delete(1.0, tk.END)
         self.ideas_listbox.selection_clear(0, tk.END)
     
@@ -1946,24 +2085,10 @@ class JSONEditor:
             idea = self.ideas_data[idx]
             self.current_idea_id = idx
             
-            self.idea_title_entry.delete(0, tk.END)
-            self.idea_title_entry.insert(0, idea.get('title', ''))
-            
-            self.idea_category_var.set(idea.get('category', ''))
-            
-            self.idea_main_text.delete(1.0, tk.END)
-            self.idea_main_text.insert(1.0, idea.get('main_idea', ''))
-            
-            self.idea_points_text.delete(1.0, tk.END)
-            self.idea_points_text.insert(1.0, idea.get('key_points', ''))
-            
-            self.idea_audience_entry.delete(0, tk.END)
-            self.idea_audience_entry.insert(0, idea.get('target_audience', ''))
-            
-            self.idea_tech_level_var.set(idea.get('technical_level', 'Intermediate'))
-            
-            self.idea_notes_text.delete(1.0, tk.END)
-            self.idea_notes_text.insert(1.0, idea.get('additional_notes', ''))
+            self.idea_content_text.delete(1.0, tk.END)
+            content = idea.get('content', '')
+            if content:
+                self.idea_content_text.insert(1.0, content)
             
             self.prompt_text.delete(1.0, tk.END)
             if idea.get('generated_prompt'):
@@ -1971,19 +2096,13 @@ class JSONEditor:
     
     def save_idea(self):
         """Guardar la idea actual"""
-        title = self.idea_title_entry.get().strip()
-        if not title:
-            messagebox.showwarning("Warning", "Title is required")
+        content = self.idea_content_text.get(1.0, tk.END).strip()
+        if not content:
+            messagebox.showwarning("Warning", "Content is required")
             return
         
         idea_data = {
-            'title': title,
-            'category': self.idea_category_var.get(),
-            'main_idea': self.idea_main_text.get(1.0, tk.END).strip(),
-            'key_points': self.idea_points_text.get(1.0, tk.END).strip(),
-            'target_audience': self.idea_audience_entry.get().strip(),
-            'technical_level': self.idea_tech_level_var.get(),
-            'additional_notes': self.idea_notes_text.get(1.0, tk.END).strip(),
+            'content': content,
             'generated_prompt': self.prompt_text.get(1.0, tk.END).strip(),
             'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
@@ -2073,7 +2192,7 @@ Focus on creating content that is technically accurate, well-structured, and val
             self.save_ideas_to_file()
     
     def copy_prompt(self):
-        """Copiar el prompt al clipboard"""
+        """Copiar el prompt"""
         prompt = self.prompt_text.get(1.0, tk.END).strip()
         if prompt:
             self.root.clipboard_clear()
@@ -2082,11 +2201,269 @@ Focus on creating content that is technically accurate, well-structured, and val
         else:
             messagebox.showwarning("Warning", "No prompt to copy")
     
+    def edit_post_data(self):
+        """Editar datos específicos para post"""
+        if self.current_idea_id is None or self.current_idea_id >= len(self.ideas_data):
+            messagebox.showwarning("Warning", "Select an idea first")
+            return
+        
+        post_data = self.ideas_data[self.current_idea_id].get('post_data', {})
+        
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Edit Post Data")
+        dialog.geometry("500x600")
+        dialog.configure(bg=self.colors['bg'])
+        
+        entries = {}
+        
+        # Slug
+        tk.Label(dialog, text="Slug", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['slug'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['slug'].pack(fill=tk.X, padx=10, pady=5)
+        entries['slug'].insert(0, post_data.get('slug', ''))
+        
+        # Category
+        tk.Label(dialog, text="Category", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['category'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['category'].pack(fill=tk.X, padx=10, pady=5)
+        entries['category'].insert(0, post_data.get('category', 'Development'))
+        
+        # Description
+        tk.Label(dialog, text="Description", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['description'] = tk.Text(dialog, height=4, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['description'].pack(fill=tk.X, padx=10, pady=5)
+        entries['description'].insert(1.0, post_data.get('description', ''))
+        
+        # Keywords
+        tk.Label(dialog, text="Keywords (comma separated)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['keywords'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['keywords'].pack(fill=tk.X, padx=10, pady=5)
+        entries['keywords'].insert(0, ', '.join(post_data.get('keywords', [])))
+        
+        # Reading Time
+        tk.Label(dialog, text="Reading Time (minutes)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['readingTime'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['readingTime'].pack(fill=tk.X, padx=10, pady=5)
+        entries['readingTime'].insert(0, str(post_data.get('readingTime', 5)))
+        
+        # Featured
+        featured_var = tk.BooleanVar(value=post_data.get('featured', False))
+        tk.Checkbutton(dialog, text="Featured", variable=featured_var, bg=self.colors['bg'], fg=self.colors['text_primary'], selectcolor=self.colors['bg_card'], activebackground=self.colors['bg']).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        
+        # Published
+        published_var = tk.BooleanVar(value=post_data.get('published', False))
+        tk.Checkbutton(dialog, text="Published", variable=published_var, bg=self.colors['bg'], fg=self.colors['text_primary'], selectcolor=self.colors['bg_card'], activebackground=self.colors['bg']).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        
+        def save_post_data():
+            self.ideas_data[self.current_idea_id]['post_data'] = {
+                'slug': entries['slug'].get().strip(),
+                'category': entries['category'].get().strip(),
+                'description': entries['description'].get(1.0, tk.END).strip(),
+                'keywords': [k.strip() for k in entries['keywords'].get().split(',') if k.strip()],
+                'readingTime': int(entries['readingTime'].get()) if entries['readingTime'].get().isdigit() else 5,
+                'featured': featured_var.get(),
+                'published': published_var.get()
+            }
+            self.save_ideas_to_file()
+            messagebox.showinfo("Success", "Post data saved")
+            dialog.destroy()
+        
+        btn_frame = tk.Frame(dialog, bg=self.colors['bg'])
+        btn_frame.pack(fill=tk.X, padx=10, pady=20)
+        tk.Button(btn_frame, text="Save", command=save_post_data, bg=self.colors['success'], fg='#ffffff', font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(btn_frame, text="Cancel", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT)
+    
+    def edit_project_data(self):
+        """Editar datos específicos para project"""
+        if self.current_idea_id is None or self.current_idea_id >= len(self.ideas_data):
+            messagebox.showwarning("Warning", "Select an idea first")
+            return
+        
+        project_data = self.ideas_data[self.current_idea_id].get('project_data', {})
+        
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Edit Project Data")
+        dialog.geometry("500x500")
+        dialog.configure(bg=self.colors['bg'])
+        
+        entries = {}
+        
+        # Image
+        tk.Label(dialog, text="Image URL", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['image'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['image'].pack(fill=tk.X, padx=10, pady=5)
+        entries['image'].insert(0, project_data.get('image', '/images/default.png'))
+        
+        # Tags
+        tk.Label(dialog, text="Tags (comma separated)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['tags'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['tags'].pack(fill=tk.X, padx=10, pady=5)
+        entries['tags'].insert(0, ', '.join(project_data.get('tags', [])))
+        
+        # Tech
+        tk.Label(dialog, text="Tech Stack (comma separated)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['tech'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['tech'].pack(fill=tk.X, padx=10, pady=5)
+        entries['tech'].insert(0, ', '.join(project_data.get('tech', [])))
+        
+        # Color
+        tk.Label(dialog, text="Color (hex)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['color'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['color'].pack(fill=tk.X, padx=10, pady=5)
+        entries['color'].insert(0, project_data.get('color', '#3B82F6'))
+        
+        # Order
+        tk.Label(dialog, text="Order", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['order'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['order'].pack(fill=tk.X, padx=10, pady=5)
+        entries['order'].insert(0, str(project_data.get('order', 1)))
+        
+        def save_project_data():
+            self.ideas_data[self.current_idea_id]['project_data'] = {
+                'image': entries['image'].get().strip(),
+                'tags': [t.strip() for t in entries['tags'].get().split(',') if t.strip()],
+                'tech': [t.strip() for t in entries['tech'].get().split(',') if t.strip()],
+                'color': entries['color'].get().strip(),
+                'order': int(entries['order'].get()) if entries['order'].get().isdigit() else 1
+            }
+            self.save_ideas_to_file()
+            messagebox.showinfo("Success", "Project data saved")
+            dialog.destroy()
+        
+        btn_frame = tk.Frame(dialog, bg=self.colors['bg'])
+        btn_frame.pack(fill=tk.X, padx=10, pady=20)
+        tk.Button(btn_frame, text="Save", command=save_project_data, bg=self.colors['success'], fg='#ffffff', font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(btn_frame, text="Cancel", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT)
+    
+    def edit_certification_data(self):
+        """Editar datos específicos para certification"""
+        if self.current_idea_id is None or self.current_idea_id >= len(self.ideas_data):
+            messagebox.showwarning("Warning", "Select an idea first")
+            return
+        
+        cert_data = self.ideas_data[self.current_idea_id].get('certification_data', {})
+        
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Edit Certification Data")
+        dialog.geometry("500x400")
+        dialog.configure(bg=self.colors['bg'])
+        
+        entries = {}
+        
+        # Icon
+        tk.Label(dialog, text="Icon (big/small)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['icon'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['icon'].pack(fill=tk.X, padx=10, pady=5)
+        entries['icon'].insert(0, cert_data.get('icon', 'big'))
+        
+        # Issuer
+        tk.Label(dialog, text="Issuer", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['issuer'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['issuer'].pack(fill=tk.X, padx=10, pady=5)
+        entries['issuer'].insert(0, cert_data.get('issuer', 'Unknown'))
+        
+        # Date
+        tk.Label(dialog, text="Date (YYYY)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['date'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['date'].pack(fill=tk.X, padx=10, pady=5)
+        entries['date'].insert(0, cert_data.get('date', datetime.now().strftime('%Y')))
+        
+        # Credential ID
+        tk.Label(dialog, text="Credential ID", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['credentialId'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['credentialId'].pack(fill=tk.X, padx=10, pady=5)
+        entries['credentialId'].insert(0, cert_data.get('credentialId', ''))
+        
+        # Badge
+        tk.Label(dialog, text="Badge", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['badge'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['badge'].pack(fill=tk.X, padx=10, pady=5)
+        entries['badge'].insert(0, cert_data.get('badge', 'None'))
+        
+        def save_cert_data():
+            self.ideas_data[self.current_idea_id]['certification_data'] = {
+                'icon': entries['icon'].get().strip(),
+                'issuer': entries['issuer'].get().strip(),
+                'date': entries['date'].get().strip(),
+                'credentialId': entries['credentialId'].get().strip(),
+                'badge': entries['badge'].get().strip()
+            }
+            self.save_ideas_to_file()
+            messagebox.showinfo("Success", "Certification data saved")
+            dialog.destroy()
+        
+        btn_frame = tk.Frame(dialog, bg=self.colors['bg'])
+        btn_frame.pack(fill=tk.X, padx=10, pady=20)
+        tk.Button(btn_frame, text="Save", command=save_cert_data, bg=self.colors['success'], fg='#ffffff', font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(btn_frame, text="Cancel", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT)
+    
+    def edit_secondary_project_data(self):
+        """Editar datos específicos para secondary project"""
+        if self.current_idea_id is None or self.current_idea_id >= len(self.ideas_data):
+            messagebox.showwarning("Warning", "Select an idea first")
+            return
+        
+        sec_data = self.ideas_data[self.current_idea_id].get('secondary_project_data', {})
+        
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Edit Secondary Project Data")
+        dialog.geometry("500x450")
+        dialog.configure(bg=self.colors['bg'])
+        
+        entries = {}
+        
+        # Category
+        tk.Label(dialog, text="Category", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['category'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['category'].pack(fill=tk.X, padx=10, pady=5)
+        entries['category'].insert(0, sec_data.get('category', 'General'))
+        
+        # Description
+        tk.Label(dialog, text="Description", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['description'] = tk.Text(dialog, height=4, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['description'].pack(fill=tk.X, padx=10, pady=5)
+        entries['description'].insert(1.0, sec_data.get('description', ''))
+        
+        # Details
+        tk.Label(dialog, text="Details", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['details'] = tk.Text(dialog, height=4, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['details'].pack(fill=tk.X, padx=10, pady=5)
+        entries['details'].insert(1.0, sec_data.get('details', ''))
+        
+        # Tech
+        tk.Label(dialog, text="Tech Stack (comma separated)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['tech'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['tech'].pack(fill=tk.X, padx=10, pady=5)
+        entries['tech'].insert(0, ', '.join(sec_data.get('tech', [])))
+        
+        # Link
+        tk.Label(dialog, text="Link URL", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['link'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['link'].pack(fill=tk.X, padx=10, pady=5)
+        entries['link'].insert(0, sec_data.get('link', ''))
+        
+        def save_sec_data():
+            self.ideas_data[self.current_idea_id]['secondary_project_data'] = {
+                'category': entries['category'].get().strip(),
+                'description': entries['description'].get(1.0, tk.END).strip(),
+                'details': entries['details'].get(1.0, tk.END).strip(),
+                'tech': [t.strip() for t in entries['tech'].get().split(',') if t.strip()],
+                'link': entries['link'].get().strip()
+            }
+            self.save_ideas_to_file()
+            messagebox.showinfo("Success", "Secondary project data saved")
+            dialog.destroy()
+        
+        btn_frame = tk.Frame(dialog, bg=self.colors['bg'])
+        btn_frame.pack(fill=tk.X, padx=10, pady=20)
+        tk.Button(btn_frame, text="Save", command=save_sec_data, bg=self.colors['success'], fg='#ffffff', font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(btn_frame, text="Cancel", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT)
+    
     def convert_to_post(self):
         """Convertir la idea en un post real"""
-        title = self.idea_title_entry.get().strip()
-        if not title:
-            messagebox.showwarning("Warning", "Title is required")
+        content = self.idea_content_text.get(1.0, tk.END).strip()
+        if not content:
+            messagebox.showwarning("Warning", "Content is required")
             return
         
         # Cargar posts existentes
@@ -2100,20 +2477,32 @@ Focus on creating content that is technically accurate, well-structured, and val
         except:
             posts_data = []
         
-        # Crear nuevo post desde la idea
+        # Obtener datos específicos de post si existen
+        if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+            post_data = self.ideas_data[self.current_idea_id].get('post_data', {})
+        else:
+            post_data = {}
+        
+        # Extraer primera línea como título
+        lines = content.split('\n')
+        title = lines[0].strip() if lines else 'Untitled'
+        # El resto del contenido es el body
+        body = '\n'.join(lines[1:]) if len(lines) > 1 else content
+        
+        # Crear nuevo post desde la idea, usando datos específicos si existen
         new_post = {
             'id': str(len(posts_data) + 1),
-            'slug': title.lower().replace(' ', '-').replace('/', '-'),
+            'slug': post_data.get('slug', title.lower().replace(' ', '-').replace('/', '-')),
             'title': title,
-            'category': self.idea_category_var.get(),
-            'description': self.idea_main_text.get(1.0, tk.END).strip()[:200] + '...',
-            'content': self.idea_main_text.get(1.0, tk.END).strip() + '\n\n' + self.idea_points_text.get(1.0, tk.END).strip(),
+            'category': post_data.get('category', 'Development'),
+            'description': post_data.get('description', body[:200] + '...' if len(body) > 200 else body),
+            'content': body,
             'createdAt': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'keywords': [],
-            'readingTime': 5,
+            'keywords': post_data.get('keywords', []),
+            'readingTime': post_data.get('readingTime', 5),
             'wordCount': 1000,
-            'featured': False,
-            'published': False,
+            'featured': post_data.get('featured', False),
+            'published': post_data.get('published', False),
             'series': None,
             'seriesOrder': None,
             'seriesPartTitle': None
@@ -2125,6 +2514,7 @@ Focus on creating content that is technically accurate, well-structured, and val
         try:
             with open(posts_path, 'w', encoding='utf-8') as f:
                 json.dump(posts_data, f, indent=2, ensure_ascii=False)
+            self.save_file()
             messagebox.showinfo("Success", f"Post created successfully! You can now edit it in the Posts section.")
             
             # Opcional: eliminar la idea después de convertirla
@@ -2136,6 +2526,196 @@ Focus on creating content that is technically accurate, well-structured, and val
                     self.new_idea()
         except Exception as e:
             messagebox.showerror("Error", f"Error creating post: {str(e)}")
+    
+    def convert_to_project(self):
+        """Convertir la idea en un proyecto real"""
+        content = self.idea_content_text.get(1.0, tk.END).strip()
+        if not content:
+            messagebox.showwarning("Warning", "Content is required")
+            return
+        
+        # Cargar proyectos existentes
+        try:
+            projects_path = self.base_path / 'projects.json'
+            if projects_path.exists():
+                with open(projects_path, 'r', encoding='utf-8') as f:
+                    projects_data = json.load(f)
+            else:
+                projects_data = []
+        except:
+            projects_data = []
+        
+        # Obtener datos específicos de proyecto si existen
+        if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+            project_data = self.ideas_data[self.current_idea_id].get('project_data', {})
+        else:
+            project_data = {}
+        
+        # Extraer primera línea como título
+        lines = content.split('\n')
+        title = lines[0].strip() if lines else 'Untitled'
+        # El resto del contenido es la descripción
+        description = '\n'.join(lines[1:]) if len(lines) > 1 else content
+        
+        # Crear nuevo proyecto desde la idea, usando datos específicos si existen
+        new_project = {
+            'id': str(len(projects_data) + 1),
+            'title': title,
+            'description': project_data.get('description', description),
+            'image': project_data.get('image', '/images/default.png'),
+            'tags': project_data.get('tags', []),
+            'tech': project_data.get('tech', []),
+            'color': project_data.get('color', '#3B82F6'),
+            'order': project_data.get('order', len(projects_data) + 1),
+            'relatedPostIds': []
+        }
+        
+        projects_data.append(new_project)
+        
+        # Guardar proyectos
+        try:
+            with open(projects_path, 'w', encoding='utf-8') as f:
+                json.dump(projects_data, f, indent=2, ensure_ascii=False)
+            self.save_file()
+            messagebox.showinfo("Success", f"Project created successfully! You can now edit it in the Projects section.")
+            
+            if messagebox.askyesno("Delete Idea?", "Delete this idea after converting to project?"):
+                if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+                    del self.ideas_data[self.current_idea_id]
+                    self.save_ideas_to_file()
+                    self.update_ideas_listbox()
+                    self.new_idea()
+        except Exception as e:
+            messagebox.showerror("Error", f"Error creating project: {str(e)}")
+    
+    def convert_to_certification(self):
+        """Convertir la idea en una certificación real"""
+        content = self.idea_content_text.get(1.0, tk.END).strip()
+        if not content:
+            messagebox.showwarning("Warning", "Content is required")
+            return
+        
+        # Cargar certificaciones existentes
+        try:
+            certifications_path = self.base_path / 'certifications.json'
+            if certifications_path.exists():
+                with open(certifications_path, 'r', encoding='utf-8') as f:
+                    certifications_data = json.load(f)
+            else:
+                certifications_data = []
+        except:
+            certifications_data = []
+        
+        # Obtener datos específicos de certificación si existen
+        if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+            cert_data = self.ideas_data[self.current_idea_id].get('certification_data', {})
+        else:
+            cert_data = {}
+        
+        # Extraer primera línea como nombre
+        lines = content.split('\n')
+        name = lines[0].strip() if lines else 'Untitled'
+        
+        # Crear nueva certificación desde la idea, usando datos específicos si existen
+        new_certification = {
+            'id': str(len(certifications_data) + 1),
+            'name': name,
+            'icon': cert_data.get('icon', 'big'),
+            'order': len(certifications_data) + 1,
+            'issuer': cert_data.get('issuer', 'Unknown'),
+            'date': cert_data.get('date', datetime.now().strftime('%Y')),
+            'credentialId': cert_data.get('credentialId', ''),
+            'badge': cert_data.get('badge', 'None'),
+            'relatedPostId': None
+        }
+        
+        certifications_data.append(new_certification)
+        
+        # Guardar certificaciones
+        try:
+            with open(certifications_path, 'w', encoding='utf-8') as f:
+                json.dump(certifications_data, f, indent=2, ensure_ascii=False)
+            self.save_file()
+            messagebox.showinfo("Success", f"Certification created successfully! You can now edit it in the Certifications section.")
+            
+            if messagebox.askyesno("Delete Idea?", "Delete this idea after converting to certification?"):
+                if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+                    del self.ideas_data[self.current_idea_id]
+                    self.save_ideas_to_file()
+                    self.update_ideas_listbox()
+                    self.new_idea()
+        except Exception as e:
+            messagebox.showerror("Error", f"Error creating certification: {str(e)}")
+    
+    def convert_to_secondary_project(self):
+        """Convertir la idea en un proyecto secundario real"""
+        content = self.idea_content_text.get(1.0, tk.END).strip()
+        if not content:
+            messagebox.showwarning("Warning", "Content is required")
+            return
+        
+        # Cargar proyectos secundarios existentes
+        try:
+            secondary_projects_path = self.base_path / 'secondary-projects.json'
+            if secondary_projects_path.exists():
+                with open(secondary_projects_path, 'r', encoding='utf-8') as f:
+                    secondary_projects_data = json.load(f)
+            else:
+                secondary_projects_data = {}
+        except:
+            secondary_projects_data = {}
+        
+        # Obtener datos específicos de proyecto secundario si existen
+        if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+            sec_data = self.ideas_data[self.current_idea_id].get('secondary_project_data', {})
+        else:
+            sec_data = {}
+        
+        # Extraer primera línea como nombre
+        lines = content.split('\n')
+        name = lines[0].strip() if lines else 'Untitled'
+        # El resto del contenido es la descripción
+        description = '\n'.join(lines[1:]) if len(lines) > 1 else content
+        
+        category = sec_data.get('category', 'General')
+        if category not in secondary_projects_data:
+            secondary_projects_data[category] = []
+        
+        # Calcular el siguiente ID
+        all_projects = []
+        for cat_projects in secondary_projects_data.values():
+            all_projects.extend(cat_projects)
+        next_id = len(all_projects) + 1
+        
+        # Crear nuevo proyecto secundario desde la idea, usando datos específicos si existen
+        new_secondary_project = {
+            'id': str(next_id),
+            'name': name,
+            'description': sec_data.get('description', description),
+            'details': sec_data.get('details', ''),
+            'tech': sec_data.get('tech', []),
+            'link': sec_data.get('link', ''),
+            'relatedPostIds': [],
+            'category': category
+        }
+        
+        secondary_projects_data[category].append(new_secondary_project)
+        
+        # Guardar proyectos secundarios
+        try:
+            with open(secondary_projects_path, 'w', encoding='utf-8') as f:
+                json.dump(secondary_projects_data, f, indent=2, ensure_ascii=False)
+            self.save_file()
+            messagebox.showinfo("Success", f"Secondary project created successfully! You can now edit it in the Secondary Projects section.")
+            
+            if messagebox.askyesno("Delete Idea?", "Delete this idea after converting to secondary project?"):
+                if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+                    del self.ideas_data[self.current_idea_id]
+                    self.save_ideas_to_file()
+                    self.update_ideas_listbox()
+                    self.new_idea()
+        except Exception as e:
+            messagebox.showerror("Error", f"Error creating secondary project: {str(e)}")
 
 
 if __name__ == "__main__":

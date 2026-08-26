@@ -1,13 +1,12 @@
 [
   {
-    "id": "",
-    "title": "",
-    "category": "",
-    "main_idea": "",
-    "key_points": "odsijas",
-    "target_audience": "",
-    "technical_level": null,
-    "additional_notes": "",
-    "generated_prompt": ""
+    "content": "neceisot que me perfecciones esta noticia, necesito tituo descripcion slug y keyword separados por comas, luego un texto en formato markdown para ponerlo todo, te cuento.\nCuando estaba en grado medio una de las muchas asignaturas era proramacion, nada que ve con la programacion mas adelante pero ellos te enseñan lo basico, la logica detras de todo, pueden enseñarte dos codigos distintos, java, que es util, lo usaras mas adelante y quien quiera decirme lo contrario que me lo diga pero es muy completo, tiene 1000 variantes y minecraft se hizo en java puro. La otra, que esta es la que me enseñaron a mi es python, que es un poco inutil en la vida real si no es como una multiherramienta sencilla de usar para quitarte cosas de encma pero nada comercial ni productos serios ya que, como os voy a contar, cuando lo use de forma que requeria mayores cantidades de informacion simutaneamente fallaba.\nYo tenia que hacer u  videojuego en pthon, sencillo sin mas un rpg en consola, podia ser sencillo o podia usar librerias para poner colores y demas, asi hice, todo lleno de colores, text arts, un juego con falta de mecanicas porque no soy desarollador de videojuegos ymucho menos iba a ponerme a pensar como hago el juego complicado, si ganas las primeras 5 rondas era i posible perder y si te mejorabas un estatus mas que los demas, daba igual cual, tambien ganabas, habia una especie de \"inteligencia\" logica para los enemigos que basicamente eran aprametros de cuando curarse o cuando atacar que era una forma tryhard de decir que no se curen hasta que lo necesiten, asimismo el mismo calcuo estaba para el autoplay asi que ganabas siempre ya que no habia forma de igualar daño y vida con el enemigo si ibas buffeado. Me acuerdo tambien creo que saque una version con hacks donde si ya era complicado epder pues aun mas lo era con esa verion que simlemente ponia vida y daño absurdamente alto. el juego en si sige en github, lo colge y hice algun post en reddit para que alguien que no fuerai rfesor me lo criticase con la esoeranza de aprender un poco mas pero no fue asi.",
+    "secondary_project_data": {
+      "category": "General",
+      "description": "",
+      "details": "",
+      "tech": [],
+      "link": ""
+    }
   }
 ]
