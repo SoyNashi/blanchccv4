@@ -1,187 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-		http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"><!-- created with Seo Panel:www.seopanel.org -->
-		<url>
-			<loc><![CDATA[https://blanch.cc]]></loc>
-		   	<lastmod>2026-08-26T13:33:09+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/]]></loc>
-		   	<lastmod>2026-08-26T13:33:12+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/]]></loc>
-		   	<lastmod>2026-08-26T13:33:12+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#-cundo-no-usarlo]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#-cundo-usarlo]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#2-terminal-linuxmacos]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#3-javascript]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#4-python]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#beneficios]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#beneficios-clave]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#buenas-prcticas-con-base64]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#caso-de-uso-2-svgs-sin-dependencias]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#caso-de-uso-3-optimizacin-de-recursos-en-frontend]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#cmo-convertir-archivos-a-base64]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#conclusin]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#la-solucin-con-base64]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#mi-experiencia-con-base64]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#qu-es-base64-y-por-qu-es-til]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/base64-revolucion-proyectos-web/#recursos-adicionales]]></loc>
-		   	<lastmod>2026-08-26T13:34:07+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/hello-world-blanch-cc/]]></loc>
-		   	<lastmod>2026-08-26T13:33:12+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/mi-experiencia-big-school-brais-moure-desarrollo-ia/]]></loc>
-		   	<lastmod>2026-08-26T13:33:12+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/mi-experiencia-big-school-brais-moure-desarrollo-ia/#la-importancia-de-hacer-las-preguntas-correctas]]></loc>
-		   	<lastmod>2026-08-26T13:33:13+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/mi-experiencia-big-school-brais-moure-desarrollo-ia/#reflexin-final]]></loc>
-		   	<lastmod>2026-08-26T13:33:13+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/blog/mi-experiencia-big-school-brais-moure-desarrollo-ia/#una-nueva-forma-de-aprender]]></loc>
-		   	<lastmod>2026-08-26T13:33:13+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/certifications/]]></loc>
-		   	<lastmod>2026-08-26T13:33:12+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	
-		<url>
-			<loc><![CDATA[https://blanch.cc/rss.xml]]></loc>
-		   	<lastmod>2026-08-26T13:33:13+02:00</lastmod>
-		    <changefreq>always</changefreq>
-		    <priority>0.5</priority>
-	 	</url>
-	 	</urlset>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+	<url>
+	<loc>https://blanch.cc/</loc>
+<lastmod>2026-08-26T15:45:33.775Z</lastmod>
+<image:image>
+	<image:loc>https://blanch.cc/path2.svg</image:loc>
+</image:image>
+<image:image>
+	<image:loc>https://blanch.cc/_next/image?url=%2Fimages%2Fblau360.png&amp;w=3840&amp;q=75</image:loc>
+</image:image>
+<image:image>
+	<image:loc>https://blanch.cc/_next/image?url=%2Fimages%2Fbastet.png&amp;w=3840&amp;q=75</image:loc>
+</image:image>
+<image:image>
+	<image:loc>https://blanch.cc/certifications/big.svg</image:loc>
+</image:image>
+</url>
+<url>
+	<loc>https://blanch.cc/certifications</loc>
+<lastmod>2026-08-26T15:45:36.764Z</lastmod>
+<image:image>
+	<image:loc>https://blanch.cc/certifications/big.svg</image:loc>
+</image:image>
+</url>
+<url>
+	<loc>https://blanch.cc/blog</loc>
+<lastmod>2026-08-26T15:45:37.598Z</lastmod>
+<image:image>
+	<image:loc>https://blanch.cc/path2.svg</image:loc>
+</image:image>
+</url>
+<url>
+	<loc>https://blanch.cc/blog/hello-world-blanch-cc</loc>
+<lastmod>2026-08-26T15:45:37.816Z</lastmod>
+<image:image>
+	<image:loc>https://blanch.cc/path2.svg</image:loc>
+</image:image>
+</url>
+<url>
+	<loc>https://blanch.cc/blog/base64-revolucion-proyectos-web</loc>
+<lastmod>2026-08-26T15:45:38.530Z</lastmod>
+<image:image>
+	<image:loc>https://blanch.cc/path2.svg</image:loc>
+</image:image>
+</url>
+<url>
+	<loc>https://blanch.cc/blog/mi-experiencia-big-school-brais-moure-desarrollo-ia</loc>
+<lastmod>2026-08-26T15:45:40.550Z</lastmod>
+<image:image>
+	<image:loc>https://blanch.cc/path2.svg</image:loc>
+</image:image>
+</url>
+</urlset>
