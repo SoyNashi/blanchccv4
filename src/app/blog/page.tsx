@@ -103,6 +103,9 @@ export default function BlogPage() {
                 <p className="text-base text-muted-foreground mt-3 max-w-2xl">
                   Exploro temas como programación moderna, mejores prácticas de desarrollo, optimización de rendimiento, y las últimas tendencias en el mundo tecnológico. Cada artículo está diseñado para compartir conocimiento práctico y experiencias reales.
                 </p>
+                <p className="text-base text-muted-foreground mt-3 max-w-2xl">
+                  Desde trucos de desarrollo hasta reflexiones sobre arquitectura de sistemas, el objetivo es documentar el aprendizaje continuo y compartir soluciones a problemas técnicos reales que encuentro en el día a día.
+                </p>
               </div>
               
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -204,7 +207,7 @@ export default function BlogPage() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {featuredPosts.map((post) => (
-                  <Link key={post.id} href={`/blog/${post.slug}`} className="group block bg-card border border-white/5 rounded-xl p-4 hover:border-white/20 transition-all">
+                  <Link key={post.id} href={`/blog/${post.slug}`} aria-label={`Leer artículo: ${post.title}`} className="group block bg-card border border-white/5 rounded-xl p-4 hover:border-white/20 transition-all">
                     <div className="flex items-center justify-between mb-3">
                       <span className="px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold uppercase tracking-wider">
                         {post.category}
@@ -246,7 +249,7 @@ export default function BlogPage() {
                     <h3 className="text-xl font-bold text-white mb-4">{seriesName}</h3>
                     <div className="flex flex-wrap gap-3">
                       {seriesPosts.map((post) => (
-                        <Link key={post.id} href={`/blog/${post.slug}`} className="px-4 py-2 bg-white/5 rounded-lg text-sm text-white hover:bg-white/10 transition-colors">
+                        <Link key={post.id} href={`/blog/${post.slug}`} aria-label={`Leer: ${post.seriesPartTitle || `Parte ${post.seriesOrder}`} - ${post.title}`} className="px-4 py-2 bg-white/5 rounded-lg text-sm text-white hover:bg-white/10 transition-colors">
                           {post.seriesPartTitle || `Parte ${post.seriesOrder}`}
                         </Link>
                       ))}
@@ -283,6 +286,7 @@ export default function BlogPage() {
                     <Link 
                       key={post.id} 
                       href={`/blog/${post.slug}`} 
+                      aria-label={`Leer artículo: ${post.title}`}
                       id={`post-${post.id}`}
                       className="group block bg-card border border-white/5 rounded-xl p-4 hover:border-white/20 transition-all"
                     >

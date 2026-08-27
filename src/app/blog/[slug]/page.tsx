@@ -183,7 +183,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 
                 <div className="flex items-center justify-between">
                   {prevPost ? (
-                    <Link href={`/blog/${prevPost.slug}`} className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
+                    <Link href={`/blog/${prevPost.slug}`} aria-label={`Artículo anterior: ${prevPost.seriesPartTitle || `Parte ${prevPost.seriesOrder}`} - ${prevPost.title}`} className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                       </svg>
@@ -214,7 +214,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   </div>
                   
                   {nextPost ? (
-                    <Link href={`/blog/${nextPost.slug}`} className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
+                    <Link href={`/blog/${nextPost.slug}`} aria-label={`Artículo siguiente: ${nextPost.seriesPartTitle || `Parte ${nextPost.seriesOrder}`} - ${nextPost.title}`} className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
                       <div className="text-right">
                         <div className="text-xs text-white/40">Siguiente</div>
                         <div className="text-sm font-medium">{nextPost.seriesPartTitle || `Parte ${nextPost.seriesOrder}`}</div>
@@ -287,7 +287,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         </div>
 
         <div className="mt-12 flex items-center justify-between">
-          <Link href="/blog" className="text-blue-400 font-medium hover:text-blue-300 transition-colors">
+          <Link href="/blog" aria-label="Volver a todos los artículos" className="text-blue-400 font-medium hover:text-blue-300 transition-colors">
             ← Volver a todos los artículos
           </Link>
         </div>

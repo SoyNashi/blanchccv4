@@ -95,6 +95,8 @@ export const Hero = () => {
             src="/path2.svg"
             alt="Logo"
             className="w-full h-full object-contain"
+            width="600"
+            height="600"
           />
         </motion.div>
       </motion.div>

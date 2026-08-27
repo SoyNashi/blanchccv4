@@ -10,7 +10,7 @@ export default function BlogFooter() {
           {/* Logo y descripción */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <img src="/path2.svg" alt="Logo" className="w-8 h-8" />
+              <img src="/path2.svg" alt="Logo" className="w-8 h-8" width="32" height="32" />
               <span className="text-white font-bold tracking-tighter">Nil Blanch</span>
             </div>
             <p className="text-sm text-muted-foreground">
