@@ -9,5 +9,16 @@
     "credentialId": "",
     "badge": "None",
     "relatedPostId": "1"
+  },
+  {
+    "id": "",
+    "name": "Desarollo de aplicaciones multiplataforma",
+    "icon": "",
+    "order": 0,
+    "issuer": "",
+    "date": "",
+    "credentialId": "",
+    "badge": "",
+    "relatedPostId": null
   }
 ]
