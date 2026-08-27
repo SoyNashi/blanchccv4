@@ -24,13 +24,13 @@ export default function BlogFooter() {
               Enlaces
             </h3>
             <div className="space-y-2">
-              <Link href="/" className="block text-sm text-muted-foreground hover:text-white transition-colors">
+              <Link href="/" aria-label="Ir al Portfolio" className="block text-sm text-muted-foreground hover:text-white transition-colors">
                 Portfolio
               </Link>
-              <Link href="/blog" className="block text-sm text-muted-foreground hover:text-white transition-colors">
+              <Link href="/blog" aria-label="Ir a Insights" className="block text-sm text-muted-foreground hover:text-white transition-colors">
                 Insights
               </Link>
-              <Link href="/rss.xml" className="block text-sm text-muted-foreground hover:text-white transition-colors">
+              <Link href="/rss.xml" aria-label="Suscribirse al RSS Feed" className="block text-sm text-muted-foreground hover:text-white transition-colors">
                 RSS Feed
               </Link>
             </div>
@@ -60,7 +60,7 @@ export default function BlogFooter() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </a>
-              <Link href="/rss.xml" className="text-muted-foreground hover:text-white transition-colors">
+              <Link href="/rss.xml" aria-label="Suscribirse al RSS" className="text-muted-foreground hover:text-white transition-colors">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 13c0 3.314 2.686 6 6 6s6-2.686 6-6M6 8c0 5.523 4.477 10 10 10s10-4.477 10-10M6 3c0 7.732 6.268 14 14 14s14-6.268 14-14" />
                 </svg>

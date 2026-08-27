@@ -4,6 +4,8 @@
     "title": "Blau360",
     "description": "Plataforma integral de gestión empresarial con análisis de datos en tiempo real y dashboards personalizados.",
     "image": "/images/blau360.png",
+    "imageWidth": 1920,
+    "imageHeight": 1080,
     "tags": [
       "React",
       "Node.js",
@@ -13,13 +15,15 @@
     "tech": [],
     "color": "#3B82F6",
     "order": 1,
-    "relatedPostIds": []
+    "relatedPostIds": ["2"]
   },
   {
     "id": "2",
     "title": "Bastet",
     "description": "Sistema de automatización de procesos con IA para optimizar flujos de trabajo empresariales.",
     "image": "/images/bastet.png",
+    "imageWidth": 1920,
+    "imageHeight": 1080,
     "tags": [
       "Python",
       "TensorFlow",
@@ -42,6 +46,6 @@
     ],
     "color": "#10B981",
     "order": 2,
-    "relatedPostIds": []
+    "relatedPostIds": ["1"]
   }
 ]

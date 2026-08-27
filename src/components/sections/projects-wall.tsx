@@ -129,6 +129,9 @@ const ProjectItem = ({ project, index, posts }: { project: any; index: number; p
               src={project.image}
               alt={project.title}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"
+              width={project.imageWidth || 1920}
+              height={project.imageHeight || 1080}
               className="object-cover transition-transform duration-700 hover:scale-105"
             />
             <div className="absolute inset-0 bg-black/20" />

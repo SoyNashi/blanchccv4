@@ -106,6 +106,9 @@ export default function BlogPage() {
                 <p className="text-base text-muted-foreground mt-3 max-w-2xl">
                   Desde trucos de desarrollo hasta reflexiones sobre arquitectura de sistemas, el objetivo es documentar el aprendizaje continuo y compartir soluciones a problemas técnicos reales que encuentro en el día a día.
                 </p>
+                <p className="text-base text-muted-foreground mt-3 max-w-2xl">
+                  Este espacio también sirve como archivo personal de conocimientos técnicos, donde registro patrones de diseño, optimizaciones de rendimiento y lecciones aprendidas en proyectos reales. La idea es crear un recurso útil tanto para mí como para otros desarrolladores que busquen soluciones prácticas.
+                </p>
               </div>
               
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
