@@ -49,6 +49,14 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamic = 'force-static';
+
+export async function generateStaticParams() {
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
   const post = posts.find(p => p.slug === slug);
@@ -60,7 +68,7 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   return {
-    title: `${post.title} | Nil Blanch`,
+    title: post.title,
     description: post.description,
     alternates: {
       canonical: `https://blanch.cc/blog/${slug}`,

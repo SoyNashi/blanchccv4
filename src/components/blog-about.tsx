@@ -41,6 +41,7 @@ export default function BlogAbout() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="GitHub de Nil Blanch"
                 className="flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -50,6 +51,7 @@ export default function BlogAbout() {
               </a>
               <a
                 href="mailto:nil@blanch.cc"
+                aria-label="Enviar email a nil@blanch.cc"
                 className="flex items-center gap-2 text-sm font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">

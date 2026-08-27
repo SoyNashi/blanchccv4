@@ -18,7 +18,7 @@ export const Contact = () => {
         </span>
         
         <Magnetic>
-          <a href="mailto:nil@blanch.cc">
+          <a href="mailto:nil@blanch.cc" aria-label="Enviar email a nil@blanch.cc">
             <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white mb-12 cursor-pointer hover:text-white/80 transition-colors break-words px-4">
               NIL@BLANCH.CC
             </h2>
@@ -32,6 +32,7 @@ export const Contact = () => {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`Visitar ${link.name}`}
                 className="text-sm sm:text-base md:text-lg font-bold tracking-widest text-muted-foreground uppercase hover:text-white transition-colors p-2 sm:p-4"
               >
                 {link.name}

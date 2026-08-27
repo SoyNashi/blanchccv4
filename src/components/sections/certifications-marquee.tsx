@@ -16,6 +16,7 @@ export const CertificationsMarquee = ({ items, posts }: { items: any[]; posts?: 
         </span>
         <Link 
           href="/certifications" 
+          aria-label="Ver todas las certificaciones"
           className="group flex items-center gap-2 text-xs font-bold tracking-widest text-white uppercase hover:text-white/80 transition-colors"
         >
           Ver todas <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
@@ -65,6 +66,7 @@ export const CertificationsMarquee = ({ items, posts }: { items: any[]; posts?: 
                       {relatedPost && (
                         <Link
                           href={`/blog/${relatedPost.slug}`}
+                          aria-label={`Leer artículo: ${relatedPost.title}`}
                           className="inline-flex items-center gap-1 text-xs text-white/40 group-hover:text-white/60 transition-colors mt-1"
                         >
                           <BookOpen className="h-3 w-3" />
@@ -123,6 +125,7 @@ export const CertificationsMarquee = ({ items, posts }: { items: any[]; posts?: 
                       {relatedPost && (
                         <Link
                           href={`/blog/${relatedPost.slug}`}
+                          aria-label={`Leer artículo: ${relatedPost.title}`}
                           className="inline-flex items-center gap-1 text-xs text-white/40 group-hover:text-white/60 transition-colors mt-1"
                         >
                           <BookOpen className="h-3 w-3" />

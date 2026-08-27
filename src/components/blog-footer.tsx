@@ -46,6 +46,7 @@ export default function BlogFooter() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="GitHub de Nil Blanch"
                 className="text-muted-foreground hover:text-white transition-colors"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -54,6 +55,7 @@ export default function BlogFooter() {
               </a>
               <a
                 href="mailto:nil@blanch.cc"
+                aria-label="Enviar email a nil@blanch.cc"
                 className="text-muted-foreground hover:text-white transition-colors"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">

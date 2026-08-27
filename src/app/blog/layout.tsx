@@ -7,7 +7,10 @@ import BlogDockHider from "@/components/blog-dock-hider";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Insights y Artículos sobre Desarrollo Web | Nil Blanch",
+  title: {
+    default: "Insights y Artículos sobre Desarrollo Web | Nil Blanch",
+    template: "%s | Nil Blanch",
+  },
   description: "Artículos sobre desarrollo web, seguridad, arquitectura de sistemas y tecnología",
   alternates: {
     canonical: "https://blanch.cc/blog",
