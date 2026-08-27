@@ -109,6 +109,9 @@ export default function BlogPage() {
                 <p className="text-base text-muted-foreground mt-3 max-w-2xl">
                   Este espacio también sirve como archivo personal de conocimientos técnicos, donde registro patrones de diseño, optimizaciones de rendimiento y lecciones aprendidas en proyectos reales. La idea es crear un recurso útil tanto para mí como para otros desarrolladores que busquen soluciones prácticas.
                 </p>
+                <p className="text-base text-muted-foreground mt-3 max-w-2xl">
+                  Además de artículos técnicos, también comparto reflexiones sobre la industria, tendencias emergentes y experiencias personales en el mundo del desarrollo de software. El objetivo es mantener un equilibrio entre contenido educativo y narrativa personal.
+                </p>
               </div>
               
               <div className="flex items-center gap-4 text-sm text-muted-foreground">

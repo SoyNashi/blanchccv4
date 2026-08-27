@@ -50,6 +50,8 @@ export const CertificationsMarquee = ({ items, posts }: { items: any[]; posts?: 
                         src={`/certifications/${cert.icon}.svg`}
                         alt={cert.name}
                         className="h-10 w-10 object-contain"
+                        width="40"
+                        height="40"
                         onError={(e) => {
                           console.error(`Error loading image: /certifications/${cert.icon}.svg`);
                           (e.target as HTMLImageElement).style.display = 'none';
@@ -106,6 +108,8 @@ export const CertificationsMarquee = ({ items, posts }: { items: any[]; posts?: 
                         src={`/certifications/${cert.icon}.svg`}
                         alt={cert.name}
                         className="h-10 w-10 object-contain"
+                        width="40"
+                        height="40"
                         onError={(e) => {
                           console.error(`Error loading image: /certifications/${cert.icon}.svg`);
                           (e.target as HTMLImageElement).style.display = 'none';
