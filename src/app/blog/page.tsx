@@ -100,6 +100,9 @@ export default function BlogPage() {
                 <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
                   Artículos sobre desarrollo web, seguridad, arquitectura de sistemas y tecnología.
                 </p>
+                <p className="text-base text-muted-foreground mt-3 max-w-2xl">
+                  Exploro temas como programación moderna, mejores prácticas de desarrollo, optimización de rendimiento, y las últimas tendencias en el mundo tecnológico. Cada artículo está diseñado para compartir conocimiento práctico y experiencias reales.
+                </p>
               </div>
               
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -181,6 +184,7 @@ export default function BlogPage() {
                     key={post.id}
                     href={`#post-${post.id}`}
                     className="text-sm text-white/70 hover:text-blue-400 transition-colors py-1"
+                    aria-label={`Ir a ${post.title}`}
                   >
                     {post.title}
                   </a>

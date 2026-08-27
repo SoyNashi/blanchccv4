@@ -4,7 +4,7 @@ import certifications from "@/data/certifications.json";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Certificaciones | Nil Blanch",
+  title: "Certificaciones Profesionales y Técnicas | Nil Blanch",
   description: "Credenciales profesionales y certificaciones técnicas en desarrollo web, seguridad y arquitectura de sistemas.",
   alternates: {
     canonical: "https://blanch.cc/certifications",

@@ -6,14 +6,14 @@ export default function BlogAbout() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
           {/* Logo grande */}
           <div className="lg:col-span-1 flex justify-center">
-            <img src="/path2.svg" alt="Logo" className="w-48 h-48 md:w-64 md:h-64" />
+            <img src="/path2.svg" alt="Logo" className="w-48 h-48 md:w-64 md:h-64" width="192" height="192" />
           </div>
 
           {/* Información */}
           <div className="lg:col-span-2 space-y-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
               Nil Blanch
-            </h1>
+            </h2>
             
             <p className="text-xl text-muted-foreground">
               Digital Product Builder & Full-Stack Developer

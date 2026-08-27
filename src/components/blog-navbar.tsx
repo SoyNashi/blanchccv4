@@ -11,7 +11,7 @@ export default function BlogNavbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo con SVG */}
           <Link href="/blog" className="flex items-center gap-3">
-            <img src="/path2.svg" alt="Logo" className="w-10 h-10" />
+            <img src="/path2.svg" alt="Logo" className="w-10 h-10" width="40" height="40" />
             <span className="text-white font-bold tracking-tighter text-lg">Insights</span>
           </Link>
 

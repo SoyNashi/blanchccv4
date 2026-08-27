@@ -112,6 +112,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     <a
                       key={index}
                       href={`#${heading.id}`}
+                      aria-label={`Ir a sección ${heading.text}`}
                       className={`block text-sm hover:text-white transition-colors ${
                         heading.level === 1 
                           ? 'text-white font-bold' 
