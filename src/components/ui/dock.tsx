@@ -23,6 +23,7 @@ export const Dock = () => {
           <Link
             key={item.label}
             href={item.href}
+            aria-label={item.label}
             className="group relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full text-white/50 transition-all hover:bg-white/10 hover:text-white flex-shrink-0"
           >
             {item.icon}

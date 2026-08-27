@@ -1,6 +1,15 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import certifications from "@/data/certifications.json";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Certificaciones | Nil Blanch",
+  description: "Credenciales profesionales y certificaciones técnicas en desarrollo web, seguridad y arquitectura de sistemas.",
+  alternates: {
+    canonical: "https://blanch.cc/certifications",
+  },
+};
 
 export default function CertificationsPage() {
   const sortedCerts = certifications.sort((a, b) => a.order - b.order);
@@ -14,7 +23,12 @@ export default function CertificationsPage() {
         
         <h1 className="text-6xl font-bold tracking-tighter text-white mb-4">Certificaciones</h1>
         <p className="text-xl text-muted-foreground mb-16 max-w-2xl">
-          Credenciales profesionales y certificaciones técnicas obtenidas a lo largo de mi carrera.
+          Credenciales profesionales y certificaciones técnicas obtenidas a lo largo de mi carrera. Estas certificaciones demuestran mi compromiso con el aprendizaje continuo y la excelencia técnica en áreas clave como desarrollo web, seguridad informática, arquitectura de sistemas y tecnologías emergentes. Cada certificación representa horas de estudio, práctica y aplicación en proyectos reales.
+        </p>
+
+        <h2 className="text-2xl font-bold text-white mb-6">Credenciales Técnicas</h2>
+        <p className="text-muted-foreground mb-8 max-w-3xl">
+          A continuación presento las certificaciones que he obtenido a través de plataformas reconocidas en la industria tecnológica. Estas credenciales cubren desde fundamentos de programación hasta conceptos avanzados de seguridad y arquitectura, reflejando mi enfoque multidisciplinar en el desarrollo de software.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -25,6 +39,8 @@ export default function CertificationsPage() {
                   src={`/certifications/${cert.icon}.svg`}
                   alt={cert.name}
                   className="h-14 w-14 object-contain"
+                  width="56"
+                  height="56"
                 />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">{cert.name}</h3>

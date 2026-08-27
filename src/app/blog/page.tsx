@@ -130,7 +130,9 @@ export default function BlogPage() {
             {/* Filtros */}
             <div className="mt-6 flex flex-col md:flex-row gap-4">
               <div className="flex-1">
+                <label htmlFor="search-input" className="sr-only">Buscar artículos</label>
                 <input
+                  id="search-input"
                   type="text"
                   placeholder="Buscar artículos..."
                   value={searchQuery}
@@ -139,7 +141,9 @@ export default function BlogPage() {
                 />
               </div>
               <div className="flex gap-3">
+                <label htmlFor="category-select" className="sr-only">Filtrar por categoría</label>
                 <select
+                  id="category-select"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
@@ -149,7 +153,9 @@ export default function BlogPage() {
                     <option key={category} value={category}>{category}</option>
                   ))}
                 </select>
+                <label htmlFor="sort-select" className="sr-only">Ordenar artículos</label>
                 <select
+                  id="sort-select"
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"

@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     apple: "/favicon.ico",
   },
   manifest: "/manifest.json",
+  alternates: {
+    canonical: "https://blanch.cc",
+  },
 };
 
 export default function RootLayout({

@@ -38,10 +38,11 @@ function HeadingWithId({ level, children }: { level: number; children: React.Rea
   
   const props = { id };
   
-  if (level === 1) return <h1 {...props}>{children}</h1>;
-  if (level === 2) return <h2 {...props}>{children}</h2>;
-  if (level === 3) return <h3 {...props}>{children}</h3>;
-  return <h4 {...props}>{children}</h4>;
+  // Convert H1 from markdown to H2 to avoid multiple H1s on page
+  if (level === 1) return <h2 {...props}>{children}</h2>;
+  if (level === 2) return <h3 {...props}>{children}</h3>;
+  if (level === 3) return <h4 {...props}>{children}</h4>;
+  return <h5 {...props}>{children}</h5>;
 }
 
 interface PageProps {
@@ -61,6 +62,9 @@ export async function generateMetadata({ params }: PageProps) {
   return {
     title: `${post.title} | Nil Blanch`,
     description: post.description,
+    alternates: {
+      canonical: `https://blanch.cc/blog/${slug}`,
+    },
     openGraph: {
       title: post.title,
       description: post.description,
@@ -196,6 +200,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                       <Link
                         key={p.slug}
                         href={`/blog/${p.slug}`}
+                        aria-label={`Parte ${idx + 1}: ${p.seriesPartTitle || `Parte ${p.seriesOrder}`}`}
                         className={`w-8 h-8 rounded-full flex items-center justify-center text-xs transition-colors ${
                           p.slug === post.slug
                             ? 'bg-blue-500 text-white'
