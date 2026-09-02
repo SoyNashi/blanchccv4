@@ -11,42 +11,36 @@ import subprocess
 class JSONEditor:
     def __init__(self, root):
         self.root = root
-        self.root.title("BLANCH.CC JSON EDITOR [TERMINAL MODE]")
+        self.root.title("BLANCH.CC JSON EDITOR")
         self.root.attributes('-fullscreen', True)
         self.root.bind('<Escape>', lambda e: self.root.attributes('-fullscreen', False))
         
-        # Configurar estilo terminal Linux
+        # Configurar estilo premium minimalista
         self.style = ttk.Style()
         self.style.theme_use('clam')
         
-        # Paleta de colores terminal
+        # Paleta de colores premium
         self.colors = {
-            'bg': '#000000',
-            'bg_card': '#1a1a1a',
-            'bg_hover': '#2d2d2d',
-            'accent': '#00ff00',
-            'accent_secondary': '#008000',
-            'text_primary': '#00ff00',
-            'text_secondary': '#00b300',
-            'border': '#00ff00',
-            'success': '#00ff00',
-            'warning': '#ffff00',
-            'error': '#ff0000',
-            'info': '#00ffff'
+            'bg': '#0d1117',
+            'bg_card': '#161b22',
+            'bg_hover': '#21262d',
+            'accent': '#58a6ff',
+            'accent_secondary': '#8b949e',
+            'text_primary': '#c9d1d9',
+            'text_secondary': '#8b949e',
+            'border': '#30363d',
+            'success': '#3fb950',
+            'warning': '#d29922',
+            'error': '#f85149'
         }
         
-        # Fuente monoespaciada estilo terminal
-        self.terminal_font = ('Courier New', 10)
-        self.terminal_font_bold = ('Courier New', 10, 'bold')
-        self.terminal_font_small = ('Courier New', 9)
-        
         self.style.configure('TFrame', background=self.colors['bg'])
-        self.style.configure('TLabel', background=self.colors['bg'], foreground=self.colors['text_primary'], font=self.terminal_font)
-        self.style.configure('TButton', background=self.colors['bg_card'], foreground=self.colors['text_primary'], font=self.terminal_font_bold, borderwidth=1)
-        self.style.map('TButton', background=[('active', self.colors['bg_hover']), ('pressed', self.colors['accent'])], foreground=[('pressed', '#000000')])
+        self.style.configure('TLabel', background=self.colors['bg'], foreground=self.colors['text_primary'], font=('SF Pro Display', 11))
+        self.style.configure('TButton', background=self.colors['bg_card'], foreground=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold'), borderwidth=1)
+        self.style.map('TButton', background=[('active', self.colors['bg_hover']), ('pressed', self.colors['accent'])], foreground=[('pressed', '#ffffff')])
         self.style.configure('TNotebook', background=self.colors['bg'])
-        self.style.configure('TNotebook.Tab', background=self.colors['bg_card'], foreground=self.colors['text_secondary'], padding=[8, 4], font=self.terminal_font_bold, borderwidth=1)
-        self.style.map('TNotebook.Tab', background=[('selected', self.colors['accent'])], foreground=[('selected', '#000000')])
+        self.style.configure('TNotebook.Tab', background=self.colors['bg_card'], foreground=self.colors['text_secondary'], padding=[20, 12], font=('SF Pro Display', 10, 'bold'), borderwidth=0)
+        self.style.map('TNotebook.Tab', background=[('selected', self.colors['accent'])], foreground=[('selected', '#ffffff')])
         
         self.root.configure(bg=self.colors['bg'])
         
@@ -58,12 +52,12 @@ class JSONEditor:
         
         # Archivos JSON disponibles
         self.json_files = {
-            'CERT': 'certifications.json',
-            'POSTS': 'posts.json',
-            'PROJ': 'projects.json',
-            'SEC': 'secondary-projects.json',
-            'SRV': 'services.json',
-            'IDEAS': 'ideas.json'
+            'Certificaciones': 'certifications.json',
+            'Posts': 'posts.json',
+            'Proyectos': 'projects.json',
+            'Proyectos Secundarios': 'secondary-projects.json',
+            'Servicios': 'services.json',
+            'Ideas': 'ideas.json'
         }
         
         self.current_data = None
@@ -82,131 +76,144 @@ class JSONEditor:
         self.idea_certification_data = {}
         self.idea_secondary_project_data = {}
         
-        # Sistema de notificaciones no intrusivas
-        self.notification_timer = None
-        self.notification_queue = []
-        self.showing_notification = False
-        
         self.create_ui()
         self.show_dashboard()
     
     def create_ui(self):
-        # Frame principal - más compacto
+        # Frame principal
         main_frame = tk.Frame(self.root, bg=self.colors['bg'])
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=30, pady=30)
         
-        # Header estilo terminal - muy compacto
+        # Header con estilo premium
         header_frame = tk.Frame(main_frame, bg=self.colors['bg'])
-        header_frame.pack(fill=tk.X, pady=(0, 2))
+        header_frame.pack(fill=tk.X, pady=(0, 30))
         
-        # Línea estilo terminal
-        tk.Frame(header_frame, bg=self.colors['border'], height=1).pack(fill=tk.X)
+        # Línea decorativa sutil
+        tk.Frame(header_frame, bg=self.colors['border'], height=1).pack(fill=tk.X, pady=(0, 20))
         
-        self.title_label = tk.Label(header_frame, text="[BLANCH.CC] JSON EDITOR >", 
-                              font=self.terminal_font_bold, bg=self.colors['bg'], fg=self.colors['text_primary'])
-        self.title_label.pack(side=tk.LEFT, padx=2)
+        self.title_label = tk.Label(header_frame, text="BLANCH.CC", 
+                              font=('SF Pro Display', 24, 'bold'), bg=self.colors['bg'], fg=self.colors['text_primary'])
+        self.title_label.pack(side=tk.LEFT)
         
-        # Botón de cierre estilo terminal
-        close_btn = tk.Button(header_frame, text="[X]", 
+        tk.Label(header_frame, text="JSON Editor", 
+                font=('SF Pro Display', 14), bg=self.colors['bg'], fg=self.colors['text_secondary']).pack(side=tk.LEFT, padx=(10, 0))
+        
+        # Botón de cierre
+        close_btn = tk.Button(header_frame, text="✕", 
                             command=self.root.destroy,
-                            font=self.terminal_font_bold, 
-                            bg=self.colors['bg'], fg=self.colors['error'], 
-                            activebackground=self.colors['error'], activeforeground='#000000',
-                            relief=tk.FLAT, cursor='hand2', bd=1, padx=5, pady=2)
+                            font=('SF Pro Display', 16, 'bold'), 
+                            bg=self.colors['bg_card'], fg=self.colors['text_secondary'], 
+                            activebackground=self.colors['error'], activeforeground='#ffffff',
+                            relief=tk.FLAT, cursor='hand2', bd=0, padx=12, pady=8)
         close_btn.pack(side=tk.RIGHT)
         
-        # Selector de archivo estilo terminal - muy compacto
+        # Selector de archivo con estilo premium
         selector_frame = tk.Frame(main_frame, bg=self.colors['bg'])
-        selector_frame.pack(fill=tk.X, pady=(0, 2))
+        selector_frame.pack(fill=tk.X, pady=(0, 15))
         
-        # Grid de botones estilo terminal
+        # Grid de botones para cada archivo
         self.file_buttons = {}
         button_grid = tk.Frame(selector_frame, bg=self.colors['bg'])
         button_grid.pack(fill=tk.X)
         
-        btn_style_terminal = {'font': self.terminal_font_bold, 'bg': self.colors['bg'], 'fg': self.colors['text_secondary'], 
-                          'activebackground': self.colors['accent'], 'activeforeground': '#000000',
-                          'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 1, 'padx': 4, 'pady': 2,
+        btn_style_large = {'font': ('SF Pro Display', 10, 'bold'), 'bg': self.colors['bg_card'], 'fg': self.colors['text_secondary'], 
+                          'activebackground': self.colors['accent'], 'activeforeground': '#ffffff',
+                          'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 16, 'pady': 10,
                           'highlightbackground': self.colors['border'], 'highlightthickness': 1}
         
         for idx, (name, file) in enumerate(self.json_files.items()):
-            btn = tk.Button(button_grid, text=f"[{name}]", 
+            btn = tk.Button(button_grid, text=name, 
                           command=lambda f=file: self.load_specific_file(f),
-                          **btn_style_terminal)
-            btn.grid(row=0, column=idx, padx=1, pady=0, sticky='ew')
+                          **btn_style_large)
+            btn.grid(row=0, column=idx, padx=3, pady=0, sticky='ew')
             button_grid.grid_columnconfigure(idx, weight=1)
             self.file_buttons[file] = btn
         
-        # Botones de acción estilo terminal - muy compactos
+        # Botones de acción
         action_btn_frame = tk.Frame(selector_frame, bg=self.colors['bg'])
-        action_btn_frame.pack(fill=tk.X, pady=(2, 0))
+        action_btn_frame.pack(fill=tk.X, pady=(20, 0))
         
-        btn_style_action = {'font': self.terminal_font_bold, 'bg': self.colors['success'], 'fg': '#000000', 
-                           'activebackground': '#00cc00', 'activeforeground': '#000000',
-                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 1, 'padx': 8, 'pady': 2}
+        btn_style_action = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['success'], 'fg': '#ffffff', 
+                           'activebackground': '#2ea043', 'activeforeground': '#ffffff',
+                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
         
-        btn_style_secondary = {'font': self.terminal_font_bold, 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'], 
+        btn_style_secondary = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'], 
                            'activebackground': self.colors['bg_hover'], 'activeforeground': self.colors['text_primary'],
-                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 1, 'padx': 8, 'pady': 2}
+                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
         
-        btn_style_primary = {'font': self.terminal_font_bold, 'bg': self.colors['accent'], 'fg': '#000000', 
-                           'activebackground': '#00cc00', 'activeforeground': '#000000',
-                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 1, 'padx': 8, 'pady': 2}
+        btn_style_primary = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['accent'], 'fg': '#ffffff', 
+                           'activebackground': '#1f6feb', 'activeforeground': '#ffffff',
+                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
         
-        btn_style_danger = {'font': self.terminal_font_bold, 'bg': self.colors['error'], 'fg': '#000000', 
-                           'activebackground': '#cc0000', 'activeforeground': '#000000',
-                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 1, 'padx': 8, 'pady': 2}
+        btn_style_danger = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['error'], 'fg': '#ffffff', 
+                           'activebackground': '#da3633', 'activeforeground': '#ffffff',
+                           'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 24, 'pady': 12}
         
-        tk.Button(action_btn_frame, text="[+]ADD", command=self.add_element, **btn_style_primary).pack(side=tk.LEFT, padx=1)
-        tk.Button(action_btn_frame, text="[S]SAVE", command=self.save_file, **btn_style_action).pack(side=tk.LEFT, padx=1)
-        tk.Button(action_btn_frame, text="[R]REFRESH", command=self.refresh_file, **btn_style_secondary).pack(side=tk.LEFT, padx=1)
-        tk.Button(action_btn_frame, text="[E]EDIT", command=self.edit_element, **btn_style_primary).pack(side=tk.LEFT, padx=1)
-        tk.Button(action_btn_frame, text="[D]DELETE", command=self.delete_element, **btn_style_danger).pack(side=tk.LEFT, padx=1)
+        add_btn = tk.Button(action_btn_frame, text="+ Add New", command=self.add_element, **btn_style_primary)
+        add_btn.pack(side=tk.LEFT, padx=(0, 10))
         
-        # Notebook para diferentes vistas - estilo terminal compacto
+        save_btn = tk.Button(action_btn_frame, text="Save", command=self.save_file, **btn_style_action)
+        save_btn.pack(side=tk.LEFT, padx=(0, 10))
+        
+        refresh_btn = tk.Button(action_btn_frame, text="Refresh", command=self.refresh_file, **btn_style_secondary)
+        refresh_btn.pack(side=tk.LEFT)
+        
+        # Botones de acción (Edit y Delete) - más visibles
+        edit_delete_frame = tk.Frame(selector_frame, bg=self.colors['bg'])
+        edit_delete_frame.pack(fill=tk.X, pady=(15, 0))
+        
+        tk.Button(edit_delete_frame, text="Edit Selected", command=self.edit_element, width=15, **btn_style_primary).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(edit_delete_frame, text="Delete Selected", command=self.delete_element, width=15, **btn_style_danger).pack(side=tk.LEFT)
+        
+        # Notebook para diferentes vistas
         self.notebook = ttk.Notebook(main_frame)
         self.notebook.pack(fill=tk.BOTH, expand=True)
         
         # Vista dashboard
         self.dashboard_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.dashboard_frame, text='[DASH]')
+        self.notebook.add(self.dashboard_frame, text='DASHBOARD')
         
         # Vista visual por tipo de JSON
         self.visual_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.visual_frame, text='[VIEW]')
+        self.notebook.add(self.visual_frame, text='VISUAL VIEW')
         
         # Editor de texto para JSON raw
         self.text_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.text_frame, text='[RAW]')
+        self.notebook.add(self.text_frame, text='RAW JSON')
         
         # Editor de elementos
         self.editor_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.editor_frame, text='[EDIT]')
+        self.notebook.add(self.editor_frame, text='EDITOR')
         
         self.create_visual_view()
         self.create_text_editor()
         self.create_dashboard()
         self.create_element_editor()
         
-        # Configurar atajos de teclado mejorados
+        # Configurar atajos de teclado
         self.setup_keyboard_shortcuts()
         
-        # Línea decorativa terminal
-        tk.Frame(main_frame, bg=self.colors['border'], height=1).pack(fill=tk.X, pady=(2, 1))
+        # Iniciar animaciones
+        self.animate_title()
+        self.animate_neon_border()
+        self.animate_status_bar()
         
-        # Status bar estilo terminal
+        # Línea decorativa
+        tk.Frame(main_frame, bg=self.colors['border'], height=1).pack(fill=tk.X, pady=(25, 20))
+        
+        # Status bar con estilo
         self.status_var = tk.StringVar()
-        self.status_var.set("READY > Select file to begin")
+        self.status_var.set("Ready — Select a file to begin")
         status_bar = tk.Label(main_frame, textvariable=self.status_var, 
-                            font=self.terminal_font_small, bg=self.colors['bg'], fg=self.colors['text_secondary'], 
-                            relief=tk.FLAT, pady=1, anchor='w')
+                            font=('SF Pro Display', 9), bg=self.colors['bg'], fg=self.colors['text_secondary'], 
+                            relief=tk.FLAT, pady=4)
         status_bar.pack(fill=tk.X)
         
         # Indicador de cambios sin guardar
         self.unsaved_label = tk.Label(main_frame, text="", 
-                                     font=self.terminal_font_small, 
-                                     bg=self.colors['bg'], fg=self.colors['warning'], anchor='w')
-        self.unsaved_label.pack(fill=tk.X, pady=(0, 1))
+                                     font=('SF Pro Display', 9, 'bold'), 
+                                     bg=self.colors['bg'], fg=self.colors['warning'])
+        self.unsaved_label.pack(fill=tk.X, pady=(2, 0))
         
     
     def create_visual_canvas(self):
@@ -217,7 +224,7 @@ class JSONEditor:
         self.create_visual_view()
     
     def create_visual_view(self):
-        # Scrollbars estilo terminal
+        # Scrollbars
         visual_scroll_y = ttk.Scrollbar(self.visual_frame)
         visual_scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
         
@@ -225,7 +232,7 @@ class JSONEditor:
         visual_scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
         
         # Canvas para vista visual
-        self.visual_canvas = tk.Canvas(self.visual_frame, bg=self.colors['bg'], yscrollcommand=visual_scroll_y.set, xscrollcommand=visual_scroll_x.set, highlightthickness=1, highlightbackground=self.colors['border'])
+        self.visual_canvas = tk.Canvas(self.visual_frame, bg=self.colors['bg'], yscrollcommand=visual_scroll_y.set, xscrollcommand=visual_scroll_x.set, highlightthickness=0)
         self.visual_canvas.pack(fill=tk.BOTH, expand=True)
         
         visual_scroll_y.config(command=self.visual_canvas.yview)
@@ -240,7 +247,7 @@ class JSONEditor:
         self.visual_canvas.bind('<Double-Button-1>', self.on_canvas_double_click)
         self.visual_canvas.bind('<Motion>', self.on_canvas_hover)
         
-        # Bind events para scroll del ratón
+        # Bind events para scroll del ratón (Linux usa Button-4/5, Windows/Mac usan MouseWheel)
         try:
             self.visual_canvas.bind('<MouseWheel>', lambda e: self.visual_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
         except:
@@ -253,104 +260,129 @@ class JSONEditor:
         text_scroll = ttk.Scrollbar(self.text_frame)
         text_scroll.pack(side=tk.RIGHT, fill=tk.Y)
         
-        # Text widget estilo terminal
-        self.text_editor = tk.Text(self.text_frame, yscrollcommand=text_scroll.set, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=self.terminal_font, insertbackground=self.colors['accent'], relief=tk.FLAT, bd=1)
+        # Text widget
+        self.text_editor = tk.Text(self.text_frame, yscrollcommand=text_scroll.set, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=('SF Mono', 11), insertbackground=self.colors['accent'])
         self.text_editor.pack(fill=tk.BOTH, expand=True)
         
         # Detectar cambios en el editor de texto
         self.text_editor.bind('<KeyRelease>', lambda e: self.mark_unsaved())
+        self.text_editor.bind('<ButtonRelease-1>', lambda e: self.mark_unsaved())
         
         text_scroll.config(command=self.text_editor.yview)
     
     def create_ideas_interface(self):
-        """Crear interfaz específica para ideas - estilo terminal puro"""
+        """Crear interfaz específica para ideas"""
         ideas_frame = tk.Frame(self.visual_frame, bg=self.colors['bg'])
-        ideas_frame.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
+        ideas_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
         
-        # Header simple
-        header_frame = tk.Frame(ideas_frame, bg=self.colors['bg'])
-        header_frame.pack(fill=tk.X, pady=(0, 2))
+        # Título
+        tk.Label(ideas_frame, text="IDEAS MANAGER", font=('SF Pro Display', 18, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['text_primary']).pack(pady=(0, 20))
         
-        tk.Label(header_frame, text="ideas.txt", font=self.terminal_font_bold,
-                bg=self.colors['bg'], fg=self.colors['text_primary']).pack(side=tk.LEFT)
+        # Frame principal con 2 columnas
+        main_frame = tk.Frame(ideas_frame, bg=self.colors['bg'])
+        main_frame.pack(fill=tk.BOTH, expand=True)
         
-        # Botones básicos
-        btn_frame = tk.Frame(header_frame, bg=self.colors['bg'])
-        btn_frame.pack(side=tk.RIGHT)
+        # Columna izquierda: Lista de ideas
+        left_frame = tk.Frame(main_frame, bg=self.colors['bg'], width=400)
+        left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 20))
         
-        btn_style = {'font': self.terminal_font_bold, 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'],
-                     'activebackground': self.colors['bg_hover'], 'activeforeground': self.colors['text_primary'],
-                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 1, 'padx': 4, 'pady': 1}
+        tk.Label(left_frame, text="Saved Ideas", font=('SF Pro Display', 12, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['text_primary']).pack(anchor=tk.W, pady=(0, 10))
         
-        tk.Button(btn_frame, text="[N]ew", command=self.new_idea, **btn_style).pack(side=tk.LEFT, padx=1)
-        tk.Button(btn_frame, text="[S]ave", command=self.save_idea, **btn_style).pack(side=tk.LEFT, padx=1)
-        tk.Button(btn_frame, text="[D]el", command=self.delete_idea, **btn_style).pack(side=tk.LEFT, padx=1)
-        
-        # Split: lista izquierda, editor derecha
-        split_frame = tk.Frame(ideas_frame, bg=self.colors['bg'])
-        split_frame.pack(fill=tk.BOTH, expand=True)
-        
-        # Lista de ideas (checklist estilo terminal)
-        list_frame = tk.Frame(split_frame, bg=self.colors['bg'], width=300)
-        list_frame.pack(side=tk.LEFT, fill=tk.BOTH, padx=(0, 2))
-        
-        self.ideas_listbox = tk.Listbox(list_frame, bg=self.colors['bg_card'], fg=self.colors['text_primary'],
-                                        font=self.terminal_font, relief=tk.FLAT, bd=1,
-                                        selectbackground=self.colors['accent'], selectforeground='#000000')
-        self.ideas_listbox.pack(fill=tk.BOTH, expand=True)
+        self.ideas_listbox = tk.Listbox(left_frame, bg=self.colors['bg_card'], fg=self.colors['text_primary'],
+                                        font=('SF Pro Display', 10), relief=tk.FLAT, bd=0,
+                                        selectbackground=self.colors['accent'], selectforeground='#ffffff')
+        self.ideas_listbox.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
         self.ideas_listbox.bind('<<ListboxSelect>>', self.on_idea_selected)
         
-        # Editor de texto plano
-        editor_frame = tk.Frame(split_frame, bg=self.colors['bg'])
-        editor_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        # Botones de ideas
+        ideas_btn_frame = tk.Frame(left_frame, bg=self.colors['bg'])
+        ideas_btn_frame.pack(fill=tk.X)
         
-        self.idea_content_text = tk.Text(editor_frame, bg=self.colors['bg_card'], fg=self.colors['text_primary'],
-                                        insertbackground=self.colors['accent'], font=self.terminal_font, 
-                                        relief=tk.FLAT, bd=1, wrap=tk.WORD)
+        btn_style_small = {'font': ('SF Pro Display', 10, 'bold'), 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'],
+                          'activebackground': self.colors['bg_hover'], 'activeforeground': self.colors['text_primary'],
+                          'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 16, 'pady': 8}
+        
+        tk.Button(ideas_btn_frame, text="New Idea", command=self.new_idea, **btn_style_small).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(ideas_btn_frame, text="Delete", command=self.delete_idea, **btn_style_small).pack(side=tk.LEFT, padx=(0, 8))
+        tk.Button(ideas_btn_frame, text="Save", command=self.save_idea, **btn_style_small).pack(side=tk.LEFT)
+        
+        # Columna derecha: Editor de idea
+        right_frame = tk.Frame(main_frame, bg=self.colors['bg'])
+        right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        
+        # Scroll para el editor
+        editor_scroll = ttk.Scrollbar(right_frame)
+        editor_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        editor_canvas = tk.Canvas(right_frame, bg=self.colors['bg'], yscrollcommand=editor_scroll.set, highlightthickness=0)
+        editor_canvas.pack(fill=tk.BOTH, expand=True)
+        editor_scroll.config(command=editor_canvas.yview)
+        
+        editor_content = tk.Frame(editor_canvas, bg=self.colors['bg'])
+        editor_canvas.create_window((0, 0), window=editor_content, anchor="nw")
+        editor_content.bind("<Configure>", lambda e: editor_canvas.configure(scrollregion=editor_canvas.bbox("all")))
+        
+        # Campo único para el contenido de la idea
+        tk.Label(editor_content, text="Content", font=('SF Pro Display', 10, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['text_primary']).pack(anchor=tk.W, pady=(10, 5))
+        self.idea_content_text = tk.Text(editor_content, height=25, bg=self.colors['bg_card'], fg=self.colors['text_primary'],
+                                        insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
         self.idea_content_text.pack(fill=tk.BOTH, expand=True)
         
+        # Botones de edición específicos
+        tk.Label(editor_content, text="EDIT SPECIFIC DATA", font=('SF Pro Display', 11, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['accent']).pack(anchor=tk.W, pady=(20, 10))
+        
+        edit_frame = tk.Frame(editor_content, bg=self.colors['bg'])
+        edit_frame.pack(fill=tk.X)
+        
+        btn_edit = {'font': ('SF Pro Display', 9, 'bold'), 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'],
+                     'activebackground': self.colors['bg_hover'], 'activeforeground': self.colors['text_primary'],
+                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 12, 'pady': 6}
+        
+        tk.Button(edit_frame, text="📝 Edit Post Data", command=self.edit_post_data, **btn_edit).grid(row=0, column=0, padx=2, pady=2)
+        tk.Button(edit_frame, text="🚀 Edit Project Data", command=self.edit_project_data, **btn_edit).grid(row=0, column=1, padx=2, pady=2)
+        tk.Button(edit_frame, text="🎓 Edit Certification Data", command=self.edit_certification_data, **btn_edit).grid(row=0, column=2, padx=2, pady=2)
+        tk.Button(edit_frame, text="📦 Edit Secondary Project Data", command=self.edit_secondary_project_data, **btn_edit).grid(row=1, column=0, columnspan=3, padx=2, pady=2, sticky='ew')
+        edit_frame.grid_columnconfigure(0, weight=1)
+        edit_frame.grid_columnconfigure(1, weight=1)
+        edit_frame.grid_columnconfigure(2, weight=1)
+        
+        # Botones de conversión
+        tk.Label(editor_content, text="CONVERT TO", font=('SF Pro Display', 11, 'bold'),
+                bg=self.colors['bg'], fg=self.colors['accent']).pack(anchor=tk.W, pady=(20, 10))
+        
+        convert_frame = tk.Frame(editor_content, bg=self.colors['bg'])
+        convert_frame.pack(fill=tk.X)
+        
+        btn_convert = {'font': ('SF Pro Display', 9, 'bold'), 'bg': self.colors['accent'], 'fg': '#ffffff',
+                       'activebackground': '#1f6feb', 'activeforeground': '#ffffff',
+                       'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 12, 'pady': 6}
+        
+        tk.Button(convert_frame, text="📝 Post", command=self.convert_to_post, **btn_convert).grid(row=0, column=0, padx=2, pady=2)
+        tk.Button(convert_frame, text="🚀 Project", command=self.convert_to_project, **btn_convert).grid(row=0, column=1, padx=2, pady=2)
+        tk.Button(convert_frame, text="🎓 Certification", command=self.convert_to_certification, **btn_convert).grid(row=0, column=2, padx=2, pady=2)
+        tk.Button(convert_frame, text="📦 Secondary Project", command=self.convert_to_secondary_project, **btn_convert).grid(row=1, column=0, columnspan=3, padx=2, pady=2, sticky='ew')
+        convert_frame.grid_columnconfigure(0, weight=1)
+        convert_frame.grid_columnconfigure(1, weight=1)
+        convert_frame.grid_columnconfigure(2, weight=1)
+        
         # Campo para prompt (oculto, solo para compatibilidad)
-        self.prompt_text = tk.Text(editor_frame, height=0, width=0, bg=self.colors['bg'], fg=self.colors['bg'])
+        self.prompt_text = tk.Text(editor_content, height=1, bg=self.colors['bg'], fg=self.colors['bg'],
+                                   insertbackground=self.colors['bg'], font=('SF Pro Display', 1), relief=tk.FLAT, bd=0)
+        self.prompt_text.pack(fill=tk.X)
         
         # Cargar ideas
         self.load_ideas()
-    
-    def show_notification(self, message, message_type='info'):
-        """Mostrar notificación no intrusiva en la status bar"""
-        # Cancelar timer anterior si existe
-        if self.notification_timer:
-            self.root.after_cancel(self.notification_timer)
-            self.notification_timer = None
-        
-        # Determinar color según tipo
-        color = self.colors['info']
-        if message_type == 'success':
-            color = self.colors['success']
-        elif message_type == 'warning':
-            color = self.colors['warning']
-        elif message_type == 'error':
-            color = self.colors['error']
-        
-        # Mostrar mensaje
-        self.status_var.set(f"[{message_type.upper()}] {message}")
-        self.status_bar = self.root.winfo_children()[0].winfo_children()[-2]  # Status bar
-        self.status_bar.config(fg=color)
-        
-        # Auto-cerrar después de 3 segundos
-        self.notification_timer = self.root.after(3000, self.clear_notification)
-    
-    def clear_notification(self):
-        """Limpiar notificación y restaurar estado normal"""
-        self.status_var.set("READY >")
-        self.status_bar.config(fg=self.colors['text_secondary'])
-        self.notification_timer = None
     
     def create_element_editor(self):
         # Scrollable frame para el editor
         self.editor_scroll_y = ttk.Scrollbar(self.editor_frame)
         self.editor_scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
         
-        self.editor_canvas = tk.Canvas(self.editor_frame, bg=self.colors['bg'], yscrollcommand=self.editor_scroll_y.set, highlightthickness=1, highlightbackground=self.colors['border'])
+        self.editor_canvas = tk.Canvas(self.editor_frame, bg=self.colors['bg'], yscrollcommand=self.editor_scroll_y.set, highlightthickness=0)
         self.editor_canvas.pack(fill=tk.BOTH, expand=True)
         
         self.editor_scroll_y.config(command=self.editor_canvas.yview)
@@ -375,38 +407,38 @@ class JSONEditor:
         self.editor_mode = None  # 'add' or 'edit'
         self.editor_element = None
         
-        # Botones de acción del editor estilo terminal
+        # Botones de acción del editor
         self.editor_button_frame = tk.Frame(self.editor_scrollable_frame, bg=self.colors['bg'])
-        self.editor_button_frame.pack(fill=tk.X, padx=5, pady=5)
+        self.editor_button_frame.pack(fill=tk.X, padx=20, pady=20)
         
-        btn_style_save = {'font': self.terminal_font_bold, 'bg': self.colors['success'], 'fg': '#000000', 
-                     'activebackground': '#00cc00', 'activeforeground': '#000000',
-                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 1, 'padx': 12, 'pady': 4}
+        btn_style_save = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['success'], 'fg': '#ffffff', 
+                     'activebackground': '#2ea043', 'activeforeground': '#ffffff',
+                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 28, 'pady': 12}
         
-        btn_style_cancel = {'font': self.terminal_font_bold, 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'], 
+        btn_style_cancel = {'font': ('SF Pro Display', 11, 'bold'), 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'], 
                      'activebackground': self.colors['bg_hover'], 'activeforeground': self.colors['text_primary'],
-                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 1, 'padx': 12, 'pady': 4}
+                     'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 28, 'pady': 12}
         
-        tk.Button(self.editor_button_frame, text="[S]SAVE", command=self.save_editor, **btn_style_save).pack(side=tk.LEFT, padx=1)
-        tk.Button(self.editor_button_frame, text="[ESC]CANCEL", command=self.cancel_editor, **btn_style_cancel).pack(side=tk.LEFT, padx=1)
+        tk.Button(self.editor_button_frame, text="Save", command=self.save_editor, **btn_style_save).pack(side=tk.LEFT, padx=(0, 12))
+        tk.Button(self.editor_button_frame, text="Cancel", command=self.cancel_editor, **btn_style_cancel).pack(side=tk.LEFT)
     
     def create_dashboard(self):
-        # Frame principal del dashboard - compacto
+        # Frame principal del dashboard
         dash_main = tk.Frame(self.dashboard_frame, bg=self.colors['bg'])
-        dash_main.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        dash_main.pack(fill=tk.BOTH, expand=True, padx=30, pady=30)
         
-        # Título del dashboard estilo terminal
+        # Título del dashboard
         title_frame = tk.Frame(dash_main, bg=self.colors['bg'])
-        title_frame.pack(fill=tk.X, pady=(0, 5))
+        title_frame.pack(fill=tk.X, pady=(0, 35))
         
-        tk.Label(title_frame, text="[DASHBOARD] >", 
-                font=self.terminal_font_bold, bg=self.colors['bg'], fg=self.colors['text_primary']).pack(anchor=tk.W)
+        tk.Label(title_frame, text="Dashboard", 
+                font=('SF Pro Display', 28, 'bold'), bg=self.colors['bg'], fg=self.colors['text_primary']).pack(anchor=tk.W)
         tk.Label(title_frame, text="Statistics & Quick Actions", 
-                font=self.terminal_font_small, bg=self.colors['bg'], fg=self.colors['text_secondary']).pack(anchor=tk.W, pady=(2, 0))
+                font=('SF Pro Display', 14), bg=self.colors['bg'], fg=self.colors['text_secondary']).pack(anchor=tk.W, pady=(5, 0))
         
-        # Frame para estadísticas - compacto
+        # Frame para estadísticas
         stats_frame = tk.Frame(dash_main, bg=self.colors['bg'])
-        stats_frame.pack(fill=tk.X, pady=(0, 5))
+        stats_frame.pack(fill=tk.X, pady=(0, 40))
         
         # Cargar estadísticas
         self.dashboard_stats = {}
@@ -426,49 +458,50 @@ class JSONEditor:
             except:
                 self.dashboard_stats[name] = 0
         
-        # Crear tarjetas de estadísticas estilo terminal
+        # Crear tarjetas de estadísticas
         stats_grid = tk.Frame(stats_frame, bg=self.colors['bg'])
         stats_grid.pack(fill=tk.X)
         
         for idx, (name, count) in enumerate(self.dashboard_stats.items()):
-            card = tk.Frame(stats_grid, bg=self.colors['bg_card'], bd=1, relief=tk.FLAT, highlightbackground=self.colors['border'], highlightthickness=1)
-            card.grid(row=0, column=idx, padx=2, pady=2, sticky='nsew')
+            card = tk.Frame(stats_grid, bg=self.colors['bg_card'], bd=0, relief=tk.FLAT, highlightbackground=self.colors['border'], highlightthickness=1)
+            card.grid(row=0, column=idx, padx=12, pady=12, sticky='nsew')
             stats_grid.grid_columnconfigure(idx, weight=1)
             
-            tk.Label(card, text=name, font=self.terminal_font_bold, 
-                    bg=self.colors['bg_card'], fg=self.colors['text_secondary']).pack(pady=(5, 2))
-            tk.Label(card, text=str(count), font=self.terminal_font_bold, 
-                    bg=self.colors['bg_card'], fg=self.colors['accent']).pack(pady=(0, 5))
+            tk.Label(card, text=name.upper(), font=('SF Pro Display', 11, 'bold'), 
+                    bg=self.colors['bg_card'], fg=self.colors['text_secondary']).pack(pady=(18, 8))
+            tk.Label(card, text=str(count), font=('SF Pro Display', 32, 'bold'), 
+                    bg=self.colors['bg_card'], fg=self.colors['accent']).pack(pady=(0, 18))
             
             # Hacer la tarjeta clickeable
             card.bind('<Button-1>', lambda e, f=self.json_files[name]: self.load_specific_file(f))
         
-        # Frame para acciones rápidas - compacto
+        # Frame para acciones rápidas
         actions_frame = tk.Frame(dash_main, bg=self.colors['bg'])
         actions_frame.pack(fill=tk.BOTH, expand=True)
         
-        tk.Label(actions_frame, text="[QUICK ACTIONS] >", 
-                font=self.terminal_font_bold, bg=self.colors['bg'], fg=self.colors['text_primary']).pack(anchor=tk.W, pady=(0, 5))
+        tk.Label(actions_frame, text="Quick Actions", 
+                font=('SF Pro Display', 18, 'bold'), bg=self.colors['bg'], fg=self.colors['text_primary']).pack(anchor=tk.W, pady=(0, 25))
         
-        # Botones compactos para cargar archivos
+        # Botones grandes para cargar archivos
         btn_grid = tk.Frame(actions_frame, bg=self.colors['bg'])
         btn_grid.pack(fill=tk.BOTH, expand=True)
         
-        btn_style_large = {'font': self.terminal_font_bold, 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'], 
-                          'activebackground': self.colors['accent'], 'activeforeground': '#000000',
-                          'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 1, 'padx': 8, 'pady': 6,
+        btn_style_large = {'font': ('SF Pro Display', 13, 'bold'), 'bg': self.colors['bg_card'], 'fg': self.colors['text_primary'], 
+                          'activebackground': self.colors['accent'], 'activeforeground': '#ffffff',
+                          'relief': tk.FLAT, 'cursor': 'hand2', 'bd': 0, 'padx': 32, 'pady': 18,
                           'highlightbackground': self.colors['border'], 'highlightthickness': 1}
         
         for idx, (name, file) in enumerate(self.json_files.items()):
-            btn = tk.Button(btn_grid, text=f"[{name}]", 
+            btn = tk.Button(btn_grid, text=name.upper(), 
                           command=lambda f=file: self.load_specific_file(f),
                           **btn_style_large)
-            btn.grid(row=idx // 3, column=idx % 3, padx=2, pady=2, sticky='nsew')
+            btn.grid(row=idx // 2, column=idx % 2, padx=10, pady=10, sticky='nsew')
         
-        for i in range(3):
-            btn_grid.grid_columnconfigure(i, weight=1)
-        for i in range(2):
-            btn_grid.grid_rowconfigure(i, weight=1)
+        btn_grid.grid_columnconfigure(0, weight=1)
+        btn_grid.grid_columnconfigure(1, weight=1)
+        btn_grid.grid_rowconfigure(0, weight=1)
+        btn_grid.grid_rowconfigure(1, weight=1)
+        btn_grid.grid_rowconfigure(2, weight=1)
     
     def show_dashboard(self):
         self.notebook.select(0)
@@ -476,9 +509,10 @@ class JSONEditor:
     def load_specific_file(self, json_file):
         # Verificar si hay cambios sin guardar
         if self.unsaved_changes:
-            # Usar notificación en lugar de messagebox
-            self.show_notification("Unsaved changes - auto-saving...", "warning")
-            self.save_file()
+            if not messagebox.askyesno("Cambios sin guardar", "Hay cambios sin guardar. ¿Deseas guardar antes de cargar otro archivo?"):
+                self.unsaved_changes = False
+            else:
+                self.save_file()
         
         file_path = self.base_path / json_file
         
@@ -496,7 +530,7 @@ class JSONEditor:
                     widget.destroy()
                 self.create_ideas_interface()
                 # No actualizar text editor para ideas.json
-                self.show_notification(f"Loaded: {json_file}", "success")
+                self.status_var.set(f"Archivo cargado: {json_file}")
                 self.unsaved_changes = False
                 self.unsaved_label.config(text="")
             else:
@@ -505,7 +539,7 @@ class JSONEditor:
                     self.create_visual_canvas()
                 self.update_visual_view()
                 self.update_text_editor()
-                self.show_notification(f"Loaded: {json_file}", "success")
+                self.status_var.set(f"Archivo cargado: {json_file}")
                 self.unsaved_changes = False
                 self.unsaved_label.config(text="")
             
@@ -529,7 +563,7 @@ class JSONEditor:
                     widget.destroy()
                 self.create_ideas_interface()
                 self.update_text_editor()
-                self.show_notification(f"Created: {json_file}", "success")
+                self.status_var.set(f"Archivo creado: {json_file}")
                 self.unsaved_changes = False
                 self.unsaved_label.config(text="")
                 
@@ -542,9 +576,11 @@ class JSONEditor:
                 
                 self.notebook.select(1)
             else:
-                self.show_notification(f"File not found: {file_path}", "error")
+                messagebox.showerror("Error", f"No se encontró el archivo: {file_path}")
+                self.status_var.set("Error: Archivo no encontrado")
         except json.JSONDecodeError:
-            self.show_notification(f"Invalid JSON: {file_path}", "error")
+            messagebox.showerror("Error", f"Error al decodificar JSON: {file_path}")
+            self.status_var.set("Error: JSON inválido")
     
     def load_file(self, event=None):
         # Este método ya no se usa, se mantiene por compatibilidad
@@ -579,80 +615,80 @@ class JSONEditor:
             self.create_ideas_view()
     
     def create_posts_view(self):
-        y_pos = 5
-        x_pos = 5
-        card_width = 250
-        card_height = 150
-        gap = 5
+        y_pos = 20
+        x_pos = 20
+        card_width = 320
+        card_height = 200
+        gap = 15
         
         for idx, post in enumerate(self.current_data):
             if idx > 0 and idx % 5 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
-            # Card background estilo terminal
+            # Card background con estilo premium
             card = self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
                 fill=self.colors['bg_card'], outline=self.colors['border'], width=1,
                 tags=('card', f'post_{idx}')
             )
             
-            # Title estilo terminal
+            # Title con wrapping
             title = post.get('title', 'Sin título')
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + 5,
-                text=title[:30] + '...' if len(title) > 30 else title,
-                font=self.terminal_font_bold,
+                x_pos + 15, y_pos + 15,
+                text=title,
+                font=('SF Pro Display', 12, 'bold'),
                 fill=self.colors['text_primary'], anchor='nw',
-                width=card_width - 10,
+                width=card_width - 30,
                 tags=('card', f'post_{idx}')
             )
             
-            # Category badge estilo terminal
+            # Category badge
             category = post.get('category', '') or ''
             if category:
-                badge_width = len(category) * 6 + 10
+                badge_width = len(category) * 7 + 24
                 self.visual_canvas.create_rectangle(
-                    x_pos + 5, y_pos + 25, x_pos + 5 + badge_width, y_pos + 40,
+                    x_pos + 15, y_pos + 48, x_pos + 15 + badge_width, y_pos + 68,
                     fill=self.colors['accent'], outline=self.colors['accent'],
                     tags=('card', f'post_{idx}')
                 )
                 self.visual_canvas.create_text(
-                    x_pos + 8, y_pos + 27,
-                    text=category.upper()[:8],
-                    font=self.terminal_font_small,
-                    fill='#000000', anchor='nw',
+                    x_pos + 27, y_pos + 50,
+                    text=category.upper(),
+                    font=('SF Pro Display', 8, 'bold'),
+                    fill='#ffffff', anchor='nw',
                     tags=('card', f'post_{idx}')
                 )
             
-            # Description estilo terminal
+            # Description con wrapping
             desc = post.get('description', '')
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + 50,
-                text=desc[:60] + '...' if len(desc) > 60 else desc,
-                font=self.terminal_font_small,
+                x_pos + 15, y_pos + 78,
+                text=desc,
+                font=('SF Pro Display', 10),
                 fill=self.colors['text_secondary'], anchor='nw',
-                width=card_width - 10,
+                width=card_width - 30,
                 tags=('card', f'post_{idx}')
             )
             
-            # Date estilo terminal
+            # Date
             date = post.get('createdAt', '')
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + card_height - 15,
+                x_pos + 15, y_pos + card_height - 25,
                 text=date[:10] if date else '',
-                font=self.terminal_font_small,
+                font=('SF Pro Display', 9),
                 fill=self.colors['text_secondary'], anchor='nw',
-                width=card_width - 10,
+                width=card_width - 30,
                 tags=('card', f'post_{idx}')
             )
             
-            # Featured indicator estilo terminal
+            # Featured indicator
             if post.get('featured', False):
                 self.visual_canvas.create_text(
-                    x_pos + card_width - 15, y_pos + 5,
-                    text="*",
-                    font=self.terminal_font_bold,
+                    x_pos + card_width - 25, y_pos + 15,
+                    text="★",
+                    font=('SF Pro Display', 16),
                     fill=self.colors['warning'], anchor='ne',
                     tags=('card', f'post_{idx}')
                 )
@@ -664,56 +700,56 @@ class JSONEditor:
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
     
     def create_projects_view(self):
-        y_pos = 5
-        x_pos = 5
-        card_width = 220
-        card_height = 130
-        gap = 5
+        y_pos = 20
+        x_pos = 20
+        card_width = 280
+        card_height = 180
+        gap = 12
         
         for idx, project in enumerate(self.current_data):
             if idx > 0 and idx % 6 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
-            # Card background estilo terminal con color personalizado
+            # Card background con color personalizado
             color = project.get('color', self.colors['accent'])
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
-                fill=self.colors['bg_card'], outline=color, width=1,
+                fill=self.colors['bg_card'], outline=color, width=2,
                 tags=('card', f'project_{idx}')
             )
             
-            # Title estilo terminal
+            # Title con wrapping
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + 5,
-                text=project.get('title', 'Sin título')[:25] + '...' if len(project.get('title', '')) > 25 else project.get('title', 'Sin título'),
-                font=self.terminal_font_bold,
+                x_pos + 15, y_pos + 15,
+                text=project.get('title', 'Sin título'),
+                font=('SF Pro Display', 12, 'bold'),
                 fill=self.colors['text_primary'], anchor='nw',
-                width=card_width - 10,
+                width=card_width - 30,
                 tags=('card', f'project_{idx}')
             )
             
-            # Description estilo terminal
+            # Description con wrapping
             desc = project.get('description', '')
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + 30,
-                text=desc[:50] + '...' if len(desc) > 50 else desc,
-                font=self.terminal_font_small,
+                x_pos + 15, y_pos + 45,
+                text=desc,
+                font=('SF Pro Display', 10),
                 fill=self.colors['text_secondary'], anchor='nw',
-                width=card_width - 10,
+                width=card_width - 30,
                 tags=('card', f'project_{idx}')
             )
             
-            # Tags estilo terminal
+            # Tags con wrapping
             tags = project.get('tags', [])
             if tags:
-                tags_text = ', '.join(tags[:3])
+                tags_text = ', '.join(tags[:4])
                 self.visual_canvas.create_text(
-                    x_pos + 5, y_pos + card_height - 20,
-                    text=tags_text[:30] + '...' if len(tags_text) > 30 else tags_text,
-                    font=self.terminal_font_small,
+                    x_pos + 15, y_pos + card_height - 35,
+                    text=tags_text,
+                    font=('SF Mono', 9),
                     fill=color, anchor='nw',
-                    width=card_width - 10,
+                    width=card_width - 30,
                     tags=('card', f'project_{idx}')
                 )
             
@@ -741,18 +777,18 @@ class JSONEditor:
         )
     
     def create_certifications_view(self):
-        y_pos = 5
-        x_pos = 5
-        card_width = 240
-        card_height = 100
-        gap = 5
+        y_pos = 20
+        x_pos = 20
+        card_width = 300
+        card_height = 130
+        gap = 12
         
         for idx, cert in enumerate(self.current_data):
             if idx > 0 and idx % 5 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
-            # Card background estilo terminal
+            # Card background
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
                 fill=self.colors['bg_card'], outline=self.colors['border'], width=1,
@@ -865,43 +901,43 @@ class JSONEditor:
                 else:
                     self._show_cert_fallback(x_pos, y_pos, card_width, cert, idx)
             
-            # Name estilo terminal
+            # Name con wrapping
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + 5,
-                text=cert.get('name', 'Sin nombre')[:25] + '...' if len(cert.get('name', '')) > 25 else cert.get('name', 'Sin nombre'),
-                font=self.terminal_font_bold,
+                x_pos + 15, y_pos + 15,
+                text=cert.get('name', 'Sin nombre'),
+                font=('SF Pro Display', 11, 'bold'),
                 fill=self.colors['text_primary'], anchor='nw',
-                width=card_width - 60,
+                width=card_width - 80,
                 tags=('card', f'cert_{idx}')
             )
             
-            # Issuer estilo terminal
+            # Issuer
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + 30,
-                text=f"{cert.get('issuer', '')[:20]}",
-                font=self.terminal_font_small,
+                x_pos + 15, y_pos + 50,
+                text=f"Issuer: {cert.get('issuer', '')}",
+                font=('SF Pro Display', 10),
                 fill=self.colors['text_secondary'], anchor='nw',
-                width=card_width - 60,
+                width=card_width - 80,
                 tags=('card', f'cert_{idx}')
             )
             
-            # Date estilo terminal
+            # Date
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + card_height - 25,
-                text=f"{cert.get('date', '')}",
-                font=self.terminal_font_small,
+                x_pos + 15, y_pos + card_height - 35,
+                text=f"Date: {cert.get('date', '')}",
+                font=('SF Pro Display', 9),
                 fill=self.colors['text_secondary'], anchor='nw',
-                width=card_width - 10,
+                width=card_width - 30,
                 tags=('card', f'cert_{idx}')
             )
             
-            # Credential ID estilo terminal
+            # Credential ID
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + card_height - 12,
-                text=f"ID: {cert.get('credentialId', '')[:15]}..." if len(cert.get('credentialId', '')) > 15 else f"ID: {cert.get('credentialId', '')}",
-                font=self.terminal_font_small,
+                x_pos + 15, y_pos + card_height - 20,
+                text=f"ID: {cert.get('credentialId', '')}",
+                font=('SF Pro Display', 8),
                 fill=self.colors['text_secondary'], anchor='nw',
-                width=card_width - 10,
+                width=card_width - 30,
                 tags=('card', f'cert_{idx}')
             )
             
@@ -911,50 +947,50 @@ class JSONEditor:
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
     
     def create_ideas_view(self):
-        y_pos = 5
-        x_pos = 5
-        card_width = 300
-        card_height = 80
-        gap = 5
+        y_pos = 20
+        x_pos = 20
+        card_width = 400
+        card_height = 120
+        gap = 15
         
         for idx, idea in enumerate(self.current_data):
             if idx > 0 and idx % 4 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
-            # Card background estilo terminal
+            # Card background
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
                 fill=self.colors['bg_card'], outline=self.colors['border'], width=1,
                 tags=('card', f'idea_{idx}')
             )
             
-            # Content (truncated) estilo terminal
+            # Content (truncated)
             content = idea.get('content', '')
             if content:
-                truncated = content[:80] + '...' if len(content) > 80 else content
+                truncated = content[:150] + '...' if len(content) > 150 else content
                 self.visual_canvas.create_text(
-                    x_pos + 5, y_pos + 5,
+                    x_pos + 15, y_pos + 15,
                     text=truncated,
-                    font=self.terminal_font,
+                    font=('SF Pro Display', 11),
                     fill=self.colors['text_primary'], anchor='nw',
-                    width=card_width - 10,
+                    width=card_width - 30,
                     tags=('card', f'idea_{idx}')
                 )
             else:
                 self.visual_canvas.create_text(
-                    x_pos + 5, y_pos + 5,
-                    text="[EMPTY]",
-                    font=self.terminal_font,
+                    x_pos + 15, y_pos + 15,
+                    text="Idea vacía...",
+                    font=('SF Pro Display', 11),
                     fill=self.colors['text_secondary'], anchor='nw',
                     tags=('card', f'idea_{idx}')
                 )
             
-            # Index indicator estilo terminal
+            # Date indicator
             self.visual_canvas.create_text(
-                x_pos + card_width - 10, y_pos + card_height - 10,
+                x_pos + card_width - 15, y_pos + card_height - 15,
                 text=f"#{idx + 1}",
-                font=self.terminal_font_bold,
+                font=('SF Pro Display', 10, 'bold'),
                 fill=self.colors['accent'], anchor='se',
                 tags=('card', f'idea_{idx}')
             )
@@ -966,51 +1002,51 @@ class JSONEditor:
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
     
     def create_services_view(self):
-        y_pos = 5
-        x_pos = 5
-        card_width = 240
-        card_height = 100
-        gap = 5
+        y_pos = 20
+        x_pos = 20
+        card_width = 300
+        card_height = 130
+        gap = 12
         
         for idx, service in enumerate(self.current_data):
             if idx > 0 and idx % 5 == 0:
                 x_pos = 20
                 y_pos += card_height + gap
             
-            # Card background estilo terminal
+            # Card background
             self.visual_canvas.create_rectangle(
                 x_pos, y_pos, x_pos + card_width, y_pos + card_height,
                 fill=self.colors['bg_card'], outline=self.colors['border'], width=1,
                 tags=('card', f'service_{idx}')
             )
             
-            # Title estilo terminal
+            # Title con wrapping
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + 5,
-                text=service.get('title', 'Sin título')[:25] + '...' if len(service.get('title', '')) > 25 else service.get('title', 'Sin título'),
-                font=self.terminal_font_bold,
+                x_pos + 15, y_pos + 15,
+                text=service.get('title', 'Sin título'),
+                font=('SF Pro Display', 12, 'bold'),
                 fill=self.colors['text_primary'], anchor='nw',
-                width=card_width - 10,
+                width=card_width - 30,
                 tags=('card', f'service_{idx}')
             )
             
-            # Description estilo terminal
+            # Description con wrapping
             desc = service.get('description', '')
             self.visual_canvas.create_text(
-                x_pos + 5, y_pos + 30,
-                text=desc[:50] + '...' if len(desc) > 50 else desc,
-                font=self.terminal_font_small,
+                x_pos + 15, y_pos + 40,
+                text=desc,
+                font=('SF Pro Display', 10),
                 fill=self.colors['text_secondary'], anchor='nw',
-                width=card_width - 10,
+                width=card_width - 30,
                 tags=('card', f'service_{idx}')
             )
             
-            # Order indicator estilo terminal
+            # Order indicator
             order = service.get('order', 0)
             self.visual_canvas.create_text(
-                x_pos + card_width - 10, y_pos + card_height - 10,
+                x_pos + card_width - 15, y_pos + card_height - 15,
                 text=f"#{order}",
-                font=self.terminal_font_bold,
+                font=('SF Pro Display', 10, 'bold'),
                 fill=self.colors['accent'], anchor='se',
                 tags=('card', f'service_{idx}')
             )
@@ -1021,74 +1057,74 @@ class JSONEditor:
         self.visual_canvas.configure(scrollregion=self.visual_canvas.bbox('all'))
     
     def create_secondary_projects_view(self):
-        y_pos = 5
-        x_pos = 5
+        y_pos = 20
+        x_pos = 20
         
         for category, projects in self.current_data.items():
             if isinstance(projects, list):
-                # Category header estilo terminal
+                # Category header con estilo
                 self.visual_canvas.create_rectangle(
-                    x_pos, y_pos, x_pos + 150, y_pos + 20,
+                    x_pos, y_pos, x_pos + 200, y_pos + 30,
                     fill=self.colors['accent'], outline=self.colors['accent'],
                     tags=('header', f'cat_{category}')
                 )
                 self.visual_canvas.create_text(
-                    x_pos + 5, y_pos + 3,
-                    text=category.upper()[:15],
-                    font=self.terminal_font_bold,
-                    fill='#000000', anchor='nw',
+                    x_pos + 10, y_pos + 5,
+                    text=category.upper(),
+                    font=('SF Pro Display', 11, 'bold'),
+                    fill='#ffffff', anchor='nw',
                     tags=('header', f'cat_{category}')
                 )
-                y_pos += 25
+                y_pos += 40
                 
                 # Projects in category
-                card_width = 220
-                card_height = 90
-                gap = 5
+                card_width = 280
+                card_height = 120
+                gap = 12
                 
                 for idx, project in enumerate(projects):
                     if idx > 0 and idx % 5 == 0:
                         x_pos = 20
                         y_pos += card_height + gap
                     
-                    # Card background estilo terminal
+                    # Card background
                     self.visual_canvas.create_rectangle(
                         x_pos, y_pos, x_pos + card_width, y_pos + card_height,
                         fill=self.colors['bg_card'], outline=self.colors['border'], width=1,
                         tags=('card', f'secproj_{category}_{idx}')
                     )
                     
-                    # Name estilo terminal
+                    # Name con wrapping
                     self.visual_canvas.create_text(
-                        x_pos + 5, y_pos + 5,
-                        text=project.get('name', 'Sin nombre')[:20] + '...' if len(project.get('name', '')) > 20 else project.get('name', 'Sin nombre'),
-                        font=self.terminal_font_bold,
+                        x_pos + 15, y_pos + 15,
+                        text=project.get('name', 'Sin nombre'),
+                        font=('SF Pro Display', 11, 'bold'),
                         fill=self.colors['text_primary'], anchor='nw',
-                        width=card_width - 10,
+                        width=card_width - 30,
                         tags=('card', f'secproj_{category}_{idx}')
                     )
                     
-                    # Description estilo terminal
+                    # Description con wrapping
                     desc = project.get('description', '')
                     self.visual_canvas.create_text(
-                        x_pos + 5, y_pos + 25,
-                        text=desc[:40] + '...' if len(desc) > 40 else desc,
-                        font=self.terminal_font_small,
+                        x_pos + 15, y_pos + 40,
+                        text=desc,
+                        font=('SF Pro Display', 10),
                         fill=self.colors['text_secondary'], anchor='nw',
-                        width=card_width - 10,
+                        width=card_width - 30,
                         tags=('card', f'secproj_{category}_{idx}')
                     )
                     
-                    # Tech estilo terminal
+                    # Tech con wrapping
                     tech = project.get('tech', [])
                     if tech:
-                        tech_text = ', '.join(tech[:2])
+                        tech_text = ', '.join(tech[:3])
                         self.visual_canvas.create_text(
-                            x_pos + 5, y_pos + card_height - 20,
-                            text=tech_text[:25] + '...' if len(tech_text) > 25 else tech_text,
-                            font=self.terminal_font_small,
-                            fill=self.colors['accent'], anchor='nw',
-                            width=card_width - 10,
+                            x_pos + 15, y_pos + card_height - 30,
+                            text=tech_text,
+                            font=('Orbitron', 8),
+                            fill='#ff0040', anchor='nw',
+                            width=card_width - 30,
                             tags=('card', f'secproj_{category}_{idx}')
                         )
                     
@@ -1256,11 +1292,11 @@ class JSONEditor:
     
     def edit_element(self):
         if not self.current_data:
-            self.show_notification("Load a file first", "warning")
+            messagebox.showwarning("Advertencia", "Carga un archivo primero")
             return
         
         if not self.selected_element:
-            self.show_notification("Select element to edit (double-click)", "warning")
+            messagebox.showwarning("Advertencia", "Selecciona un elemento para editar (doble click en la tarjeta)")
             return
         
         self.editor_mode = 'edit'
@@ -1270,56 +1306,56 @@ class JSONEditor:
     
     def delete_element(self):
         if not self.current_data:
-            self.show_notification("Load a file first", "warning")
+            messagebox.showwarning("Advertencia", "Carga un archivo primero")
             return
         
         if not self.selected_element:
-            self.show_notification("Select element to delete", "warning")
+            messagebox.showwarning("Advertencia", "Selecciona un elemento para eliminar (click en la tarjeta)")
             return
         
-        # Eliminar directamente sin confirmación (estilo terminal)
-        element = self.selected_element
-        
-        # Manejar estructura anidada de secondary-projects
-        if element.get('type') == 'secproj':
-            category = element['category']
+        if messagebox.askyesno("Confirmar", "¿Estás seguro de eliminar este elemento?"):
+            element = self.selected_element
+            
+            # Manejar estructura anidada de secondary-projects
+            if element.get('type') == 'secproj':
+                category = element['category']
+                index = element['index']
+                
+                if isinstance(self.current_data, dict) and category in self.current_data:
+                    projects = self.current_data[category]
+                    if isinstance(projects, list) and index < len(projects):
+                        try:
+                            del self.current_data[category][index]
+                            self.update_visual_view()
+                            self.update_text_editor()
+                            self.mark_unsaved()
+                            self.save_file()
+                            self.status_var.set("Elemento eliminado")
+                            self.selected_element = None
+                            self.visual_canvas.delete('highlight')
+                        except (ValueError, IndexError):
+                            messagebox.showerror("Error", "No se pudo eliminar el elemento")
+                return
+            
+            # Manejar estructura normal (list)
             index = element['index']
             
-            if isinstance(self.current_data, dict) and category in self.current_data:
-                projects = self.current_data[category]
-                if isinstance(projects, list) and index < len(projects):
-                    try:
-                        del self.current_data[category][index]
-                        self.update_visual_view()
-                        self.update_text_editor()
-                        self.mark_unsaved()
-                        self.save_file()
-                        self.show_notification("Element deleted", "success")
-                        self.selected_element = None
-                        self.visual_canvas.delete('highlight')
-                    except (ValueError, IndexError):
-                        self.show_notification("Could not delete element", "error")
-            return
-        
-        # Manejar estructura normal (list)
-        index = element['index']
-        
-        if isinstance(self.current_data, list):
-            try:
-                del self.current_data[index]
-                self.update_visual_view()
-                self.update_text_editor()
-                self.mark_unsaved()
-                self.save_file()
-                self.show_notification("Element deleted", "success")
-                self.selected_element = None
-                self.visual_canvas.delete('highlight')
-            except (ValueError, IndexError):
-                self.show_notification("Could not delete element", "error")
+            if isinstance(self.current_data, list):
+                try:
+                    del self.current_data[index]
+                    self.update_visual_view()
+                    self.update_text_editor()
+                    self.mark_unsaved()
+                    self.save_file()
+                    self.status_var.set("Elemento eliminado")
+                    self.selected_element = None
+                    self.visual_canvas.delete('highlight')
+                except (ValueError, IndexError):
+                    messagebox.showerror("Error", "No se pudo eliminar el elemento")
     
     def save_file(self):
         if not self.current_data or not self.current_file:
-            self.show_notification("No data to save", "warning")
+            messagebox.showwarning("Advertencia", "No hay datos para guardar")
             return
         
         # También actualizar desde el editor de texto si está modificado
@@ -1338,14 +1374,17 @@ class JSONEditor:
             
             self.unsaved_changes = False
             self.unsaved_label.config(text="")
-            self.show_notification(f"Saved: {self.current_file}", "success")
+            self.status_var.set(f"Archivo guardado: {self.current_file}")
             
             # Hacer git commit y push automáticamente en background
             import threading
             threading.Thread(target=self.git_commit_and_push, daemon=True).start()
             
+            messagebox.showinfo("Éxito", f"Archivo guardado: {self.current_file}")
+            
         except Exception as e:
-            self.show_notification(f"Error saving: {str(e)}", "error")
+            messagebox.showerror("Error", f"Error al guardar archivo: {str(e)}")
+            self.status_var.set("Error al guardar archivo")
     
     def git_commit_and_push(self):
         """Hacer git commit y push seguro usando las credenciales ya configuradas"""
@@ -1458,28 +1497,19 @@ class JSONEditor:
         self.root.after(4000, cycle_messages)
     
     def setup_keyboard_shortcuts(self):
-        """Configurar atajos de teclado mejorados estilo terminal"""
+        """Configurar atajos de teclado para mejorar UX"""
         self.root.bind('<Control-s>', lambda e: self.save_file())
         self.root.bind('<Control-r>', lambda e: self.refresh_file())
         self.root.bind('<Control-n>', lambda e: self.add_element())
         self.root.bind('<Delete>', lambda e: self.delete_element())
         self.root.bind('<F5>', lambda e: self.refresh_file())
         self.root.bind('<F2>', lambda e: self.edit_element())
-        self.root.bind('<Escape>', lambda e: self.cancel_editor())
         
         # Atajos para navegación de pestañas
         self.root.bind('<Control-1>', lambda e: self.notebook.select(0))
         self.root.bind('<Control-2>', lambda e: self.notebook.select(1))
         self.root.bind('<Control-3>', lambda e: self.notebook.select(2))
         self.root.bind('<Control-4>', lambda e: self.notebook.select(3))
-        
-        # Atajos para archivos específicos
-        self.root.bind('<Alt-c>', lambda e: self.load_specific_file('certifications.json'))
-        self.root.bind('<Alt-p>', lambda e: self.load_specific_file('posts.json'))
-        self.root.bind('<Alt-j>', lambda e: self.load_specific_file('projects.json'))
-        self.root.bind('<Alt-s>', lambda e: self.load_specific_file('secondary-projects.json'))
-        self.root.bind('<Alt-v>', lambda e: self.load_specific_file('services.json'))
-        self.root.bind('<Alt-i>', lambda e: self.load_specific_file('ideas.json'))
     
     def on_canvas_hover(self, event):
         """Efecto hover al pasar el mouse sobre tarjetas"""
@@ -1540,17 +1570,17 @@ class JSONEditor:
         idea_categories = ['Development', 'Design', 'Tutorial', 'Case Study', 'Opinion']
         tech_levels = ['Beginner', 'Intermediate', 'Advanced', 'Expert']
         
-        # Crear frame para 2 columnas - compacto
-        columns_frame = tk.Frame(self.editor_scrollable_frame, bg=self.colors['bg'])
-        columns_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=3)
+        # Crear frame para 2 columnas
+        columns_frame = tk.Frame(self.editor_scrollable_frame, bg='#0a0a0a')
+        columns_frame.pack(fill=tk.BOTH, expand=True, padx=15, pady=8)
         
         # Frame para columna izquierda
-        left_column = tk.Frame(columns_frame, bg=self.colors['bg'])
-        left_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 3))
+        left_column = tk.Frame(columns_frame, bg='#0a0a0a')
+        left_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
         
         # Frame para columna derecha
-        right_column = tk.Frame(columns_frame, bg=self.colors['bg'])
-        right_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(3, 0))
+        right_column = tk.Frame(columns_frame, bg='#0a0a0a')
+        right_column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
         
         for idx, (field, field_type) in enumerate(fields.items()):
             # Para campos grandes (markdown, content), usar todo el ancho
@@ -1561,9 +1591,9 @@ class JSONEditor:
                 column = left_column if idx % 2 == 0 else right_column
             
             frame = tk.Frame(column, bg=self.colors['bg'])
-            frame.pack(fill=tk.X, pady=3)
+            frame.pack(fill=tk.X, pady=8)
             
-            label = tk.Label(frame, text=f"[{field.upper()}]:", font=self.terminal_font_bold, 
+            label = tk.Label(frame, text=field.title() + ":", font=('SF Pro Display', 11, 'bold'), 
                            bg=self.colors['bg'], fg=self.colors['text_primary'])
             label.pack(anchor=tk.W)
             
@@ -1571,33 +1601,33 @@ class JSONEditor:
                 state = 'readonly' if field_type == 'readonly' else 'normal'
                 bg_color = self.colors['bg_hover'] if field_type == 'readonly' else self.colors['bg_card']
                 entry = tk.Entry(frame, width=50, bg=bg_color, fg=self.colors['text_secondary'], 
-                               insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1, state=state)
-                entry.pack(fill=tk.X, ipady=2)
+                               insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0, state=state)
+                entry.pack(fill=tk.X, ipady=8)
             elif field_type == 'textarea':
                 # Para ideas.json, hacer el textarea más grande
-                textarea_height = 20 if self.current_file == 'ideas.json' else 6
+                textarea_height = 25 if self.current_file == 'ideas.json' else 8
                 entry = tk.Text(frame, height=textarea_height, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
-                              insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
+                              insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
                 entry.pack(fill=tk.X)
             elif field_type == 'markdown':
-                entry = tk.Text(frame, height=20, width=80, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
-                              insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
+                entry = tk.Text(frame, height=30, width=80, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
+                              insertbackground=self.colors['accent'], font=('SF Mono', 11), relief=tk.FLAT, bd=0)
                 entry.pack(fill=tk.BOTH, expand=True)
             elif field_type == 'number':
                 entry = tk.Entry(frame, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
-                               insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-                entry.pack(fill=tk.X, ipady=2)
+                               insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
+                entry.pack(fill=tk.X, ipady=8)
             elif field_type == 'readonly_number':
                 entry = tk.Entry(frame, width=50, bg=self.colors['bg_hover'], fg=self.colors['text_secondary'], 
-                               insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1, state='readonly')
-                entry.pack(fill=tk.X, ipady=2)
+                               insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0, state='readonly')
+                entry.pack(fill=tk.X, ipady=8)
             elif field_type == 'color':
                 entry = tk.Entry(frame, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
-                               insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-                entry.pack(fill=tk.X, ipady=2)
+                               insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
+                entry.pack(fill=tk.X, ipady=8)
             elif field_type == 'array':
-                entry = tk.Text(frame, height=2, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
-                              insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
+                entry = tk.Text(frame, height=3, width=50, bg=self.colors['bg_card'], fg=self.colors['text_primary'], 
+                              insertbackground=self.colors['accent'], font=('SF Pro Display', 11), relief=tk.FLAT, bd=0)
                 entry.pack(fill=tk.X)
             elif field_type == 'boolean':
                 # Inicializar con el valor del elemento si estamos editando
@@ -1606,8 +1636,8 @@ class JSONEditor:
                     default_value = 'true' if element[field] else 'false'
                 var = tk.StringVar(value=default_value)
                 entry = ttk.Combobox(frame, textvariable=var, values=['true', 'false'], 
-                                   state='readonly', width=47, font=self.terminal_font)
-                entry.pack(fill=tk.X, ipady=2)
+                                   state='readonly', width=47, font=('SF Pro Display', 10))
+                entry.pack(fill=tk.X, ipady=4)
                 self.editor_entries[field] = (var, 'boolean')
                 continue
             elif field_type == 'select':
@@ -1618,8 +1648,8 @@ class JSONEditor:
                 else:
                     values = ['[Create new...]'] + list(existing_categories) + [''] if existing_categories else ['[Create new...]', '']
                 entry = ttk.Combobox(frame, textvariable=var, values=values, 
-                                   state='readonly', width=47, font=self.terminal_font)
-                entry.pack(fill=tk.X, ipady=2)
+                                   state='readonly', width=47, font=('SF Pro Display', 10))
+                entry.pack(fill=tk.X, ipady=4)
                 if self.current_file != 'ideas.json':
                     entry.bind('<<ComboboxSelected>>', lambda e, f=field, v=var: self.on_category_selected(f, v))
                 self.editor_entries[field] = (var, 'select')
@@ -1628,16 +1658,16 @@ class JSONEditor:
                 var = tk.StringVar()
                 values = ['[Create new...]'] + list(existing_series) + [''] if existing_series else ['[Create new...]', '']
                 entry = ttk.Combobox(frame, textvariable=var, values=values, 
-                                   state='readonly', width=47, font=self.terminal_font)
-                entry.pack(fill=tk.X, ipady=2)
+                                   state='readonly', width=47, font=('SF Pro Display', 10))
+                entry.pack(fill=tk.X, ipady=4)
                 entry.bind('<<ComboboxSelected>>', lambda e, f=field, v=var: self.on_series_selected(f, v))
                 self.editor_entries[field] = (var, 'select_series')
                 continue
             elif field_type == 'select' and field == 'technical_level':
                 var = tk.StringVar(value='Intermediate')
                 entry = ttk.Combobox(frame, textvariable=var, values=tech_levels, 
-                                   state='readonly', width=47, font=self.terminal_font)
-                entry.pack(fill=tk.X, ipady=2)
+                                   state='readonly', width=47, font=('SF Pro Display', 10))
+                entry.pack(fill=tk.X, ipady=4)
                 self.editor_entries[field] = (var, 'select')
                 continue
             elif field_type == 'select_post':
@@ -1645,8 +1675,8 @@ class JSONEditor:
                 posts_list = self.get_existing_posts()
                 values = ['[SIN POST ASOCIADO]'] + posts_list + [''] if posts_list else ['[SIN POST ASOCIADO]', '']
                 entry = ttk.Combobox(frame, textvariable=var, values=values, 
-                                   state='readonly', width=47, font=self.terminal_font)
-                entry.pack(fill=tk.X, ipady=2)
+                                   state='readonly', width=47, font=('SF Pro Display', 10))
+                entry.pack(fill=tk.X, ipady=4)
                 self.editor_entries[field] = (var, 'select_post')
                 continue
             elif field_type == 'select_posts_multiple':
@@ -1654,7 +1684,7 @@ class JSONEditor:
                 if posts_list:
                     # Frame para checkboxes
                     checkbox_frame = tk.Frame(frame, bg=self.colors['bg'])
-                    checkbox_frame.pack(fill=tk.X, pady=2)
+                    checkbox_frame.pack(fill=tk.X, pady=5)
                     
                     checkbox_container = tk.Frame(checkbox_frame, bg=self.colors['bg'])
                     checkbox_container.pack(fill=tk.BOTH, expand=True)
@@ -1665,17 +1695,17 @@ class JSONEditor:
                         # Extraer ID del formato "Título | ID"
                         post_id = post.split(' | ')[-1].strip() if ' | ' in post else post
                         var = tk.BooleanVar()
-                        cb = tk.Checkbutton(checkbox_container, text=post[:30] + '...' if len(post) > 30 else post, variable=var,
+                        cb = tk.Checkbutton(checkbox_container, text=post, variable=var,
                                           bg=self.colors['bg'], fg=self.colors['text_primary'],
-                                          font=self.terminal_font_small, selectcolor=self.colors['accent'],
+                                          font=('SF Pro Display', 10), selectcolor=self.colors['accent'],
                                           activebackground=self.colors['bg'], activeforeground=self.colors['accent'],
-                                          relief=tk.FLAT, bd=1, anchor='w')
-                        cb.pack(fill=tk.X, padx=2, pady=1)
+                                          relief=tk.FLAT, bd=0, anchor='w')
+                        cb.pack(fill=tk.X, padx=5, pady=2)
                         checkboxes[post_id] = var
                     
                     self.editor_entries[field] = (checkboxes, 'select_posts_multiple')
                 else:
-                    tk.Label(frame, text="[NO POSTS]", font=self.terminal_font_small,
+                    tk.Label(frame, text="No posts available", font=('SF Pro Display', 10),
                            bg=self.colors['bg'], fg=self.colors['text_secondary']).pack()
                     self.editor_entries[field] = (None, 'select_posts_multiple')
                 continue
@@ -1721,23 +1751,23 @@ class JSONEditor:
         # Categoría para secondary-projects
         if self.current_file == 'secondary-projects.json' and not element:
             cat_frame = tk.Frame(self.editor_scrollable_frame, bg=self.colors['bg'])
-            cat_frame.pack(fill=tk.X, padx=5, pady=3)
+            cat_frame.pack(fill=tk.X, padx=20, pady=10)
             
-            tk.Label(cat_frame, text="[CATEGORY]:", font=self.terminal_font_bold, 
+            tk.Label(cat_frame, text="Category:", font=('SF Pro Display', 11, 'bold'), 
                    bg=self.colors['bg'], fg=self.colors['text_primary']).pack(anchor=tk.W)
             
             categories = list(self.current_data.keys()) if isinstance(self.current_data, dict) else []
             cat_var = tk.StringVar()
             cat_values = ['[Create new...]'] + categories if categories else ['[Create new...]']
             cat_combo = ttk.Combobox(cat_frame, textvariable=cat_var, values=cat_values, 
-                                   state='readonly', width=47, font=self.terminal_font)
-            cat_combo.pack(fill=tk.X, ipady=2)
+                                   state='readonly', width=47, font=('SF Pro Display', 10))
+            cat_combo.pack(fill=tk.X, ipady=4)
             cat_combo.bind('<<ComboboxSelected>>', lambda e, v=cat_var: self.on_category_selected_secondary(v))
             self.editor_entries['category'] = (cat_var, 'select')
         
         # Mover los botones al final
         self.editor_button_frame.pack_forget()
-        self.editor_button_frame.pack(fill=tk.X, padx=5, pady=5)
+        self.editor_button_frame.pack(fill=tk.X, padx=15, pady=15)
         
         # Actualizar scroll region
         self.editor_canvas.configure(scrollregion=self.editor_canvas.bbox("all"))
@@ -2014,14 +2044,13 @@ class JSONEditor:
             messagebox.showerror("Error", f"Error saving ideas: {str(e)}")
     
     def update_ideas_listbox(self):
-        """Actualizar el listbox con las ideas guardadas - estilo terminal"""
+        """Actualizar el listbox con las ideas guardadas"""
         self.ideas_listbox.delete(0, tk.END)
         for idx, idea in enumerate(self.ideas_data):
             content = idea.get('content', '')
-            # Mostrar primera línea como título
-            lines = content.split('\n')
-            first_line = lines[0][:60] + '...' if len(lines[0]) > 60 else lines[0]
-            display_text = first_line if first_line else '[empty]'
+            # Mostrar primeros 50 caracteres como título
+            title = content[:50] + '...' if len(content) > 50 else content
+            display_text = f"#{idx + 1}: {title}" if title else f"#{idx + 1}: Empty"
             self.ideas_listbox.insert(tk.END, display_text)
     
     def new_idea(self):
@@ -2035,7 +2064,7 @@ class JSONEditor:
         """Eliminar idea seleccionada"""
         selection = self.ideas_listbox.curselection()
         if not selection:
-            self.show_notification("Select an idea to delete", "warning")
+            messagebox.showwarning("Warning", "Select an idea to delete")
             return
         
         idx = selection[0]
@@ -2044,7 +2073,6 @@ class JSONEditor:
             self.save_ideas_to_file()
             self.update_ideas_listbox()
             self.new_idea()
-            self.show_notification("Idea deleted", "success")
     
     def on_idea_selected(self, event):
         """Cuando se selecciona una idea de la lista"""
@@ -2070,7 +2098,7 @@ class JSONEditor:
         """Guardar la idea actual"""
         content = self.idea_content_text.get(1.0, tk.END).strip()
         if not content:
-            self.show_notification("Content is required", "warning")
+            messagebox.showwarning("Warning", "Content is required")
             return
         
         idea_data = {
@@ -2089,7 +2117,7 @@ class JSONEditor:
         
         self.save_ideas_to_file()
         self.update_ideas_listbox()
-        self.show_notification("Idea saved successfully", "success")
+        messagebox.showinfo("Success", "Idea saved successfully")
     
     def generate_ai_prompt(self):
         """Generar prompt optimizado para IA"""
@@ -2169,62 +2197,62 @@ Focus on creating content that is technically accurate, well-structured, and val
         if prompt:
             self.root.clipboard_clear()
             self.root.clipboard_append(prompt)
-            self.show_notification("Prompt copied to clipboard", "success")
+            messagebox.showinfo("Success", "Prompt copied to clipboard")
         else:
-            self.show_notification("No prompt to copy", "warning")
+            messagebox.showwarning("Warning", "No prompt to copy")
     
     def edit_post_data(self):
         """Editar datos específicos para post"""
         if self.current_idea_id is None or self.current_idea_id >= len(self.ideas_data):
-            self.show_notification("Select an idea first", "warning")
+            messagebox.showwarning("Warning", "Select an idea first")
             return
         
         post_data = self.ideas_data[self.current_idea_id].get('post_data', {})
         
         dialog = tk.Toplevel(self.root)
-        dialog.title("[EDIT POST DATA]")
-        dialog.geometry("400x450")
+        dialog.title("Edit Post Data")
+        dialog.geometry("500x600")
         dialog.configure(bg=self.colors['bg'])
         
         entries = {}
         
         # Slug
-        tk.Label(dialog, text="[SLUG]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['slug'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['slug'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Slug", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['slug'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['slug'].pack(fill=tk.X, padx=10, pady=5)
         entries['slug'].insert(0, post_data.get('slug', ''))
         
         # Category
-        tk.Label(dialog, text="[CATEGORY]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['category'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['category'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Category", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['category'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['category'].pack(fill=tk.X, padx=10, pady=5)
         entries['category'].insert(0, post_data.get('category', 'Development'))
         
         # Description
-        tk.Label(dialog, text="[DESCRIPTION]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['description'] = tk.Text(dialog, height=3, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['description'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Description", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['description'] = tk.Text(dialog, height=4, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['description'].pack(fill=tk.X, padx=10, pady=5)
         entries['description'].insert(1.0, post_data.get('description', ''))
         
         # Keywords
-        tk.Label(dialog, text="[KEYWORDS]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['keywords'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['keywords'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Keywords (comma separated)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['keywords'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['keywords'].pack(fill=tk.X, padx=10, pady=5)
         entries['keywords'].insert(0, ', '.join(post_data.get('keywords', [])))
         
         # Reading Time
-        tk.Label(dialog, text="[READING TIME]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['readingTime'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['readingTime'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Reading Time (minutes)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['readingTime'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['readingTime'].pack(fill=tk.X, padx=10, pady=5)
         entries['readingTime'].insert(0, str(post_data.get('readingTime', 5)))
         
         # Featured
         featured_var = tk.BooleanVar(value=post_data.get('featured', False))
-        tk.Checkbutton(dialog, text="[FEATURED]", variable=featured_var, bg=self.colors['bg'], fg=self.colors['text_primary'], selectcolor=self.colors['accent'], activebackground=self.colors['bg'], font=self.terminal_font).pack(anchor=tk.W, padx=5, pady=(5, 2))
+        tk.Checkbutton(dialog, text="Featured", variable=featured_var, bg=self.colors['bg'], fg=self.colors['text_primary'], selectcolor=self.colors['bg_card'], activebackground=self.colors['bg']).pack(anchor=tk.W, padx=10, pady=(10, 5))
         
         # Published
         published_var = tk.BooleanVar(value=post_data.get('published', False))
-        tk.Checkbutton(dialog, text="[PUBLISHED]", variable=published_var, bg=self.colors['bg'], fg=self.colors['text_primary'], selectcolor=self.colors['accent'], activebackground=self.colors['bg'], font=self.terminal_font).pack(anchor=tk.W, padx=5, pady=(5, 2))
+        tk.Checkbutton(dialog, text="Published", variable=published_var, bg=self.colors['bg'], fg=self.colors['text_primary'], selectcolor=self.colors['bg_card'], activebackground=self.colors['bg']).pack(anchor=tk.W, padx=10, pady=(10, 5))
         
         def save_post_data():
             self.ideas_data[self.current_idea_id]['post_data'] = {
@@ -2237,57 +2265,57 @@ Focus on creating content that is technically accurate, well-structured, and val
                 'published': published_var.get()
             }
             self.save_ideas_to_file()
-            self.show_notification("Post data saved", "success")
+            messagebox.showinfo("Success", "Post data saved")
             dialog.destroy()
         
         btn_frame = tk.Frame(dialog, bg=self.colors['bg'])
-        btn_frame.pack(fill=tk.X, padx=5, pady=5)
-        tk.Button(btn_frame, text="[S]SAVE", command=save_post_data, bg=self.colors['success'], fg='#000000', font=self.terminal_font_bold, relief=tk.FLAT, bd=1, padx=10, pady=4).pack(side=tk.LEFT, padx=2)
-        tk.Button(btn_frame, text="[ESC]CANCEL", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=self.terminal_font_bold, relief=tk.FLAT, bd=1, padx=10, pady=4).pack(side=tk.LEFT, padx=2)
+        btn_frame.pack(fill=tk.X, padx=10, pady=20)
+        tk.Button(btn_frame, text="Save", command=save_post_data, bg=self.colors['success'], fg='#ffffff', font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(btn_frame, text="Cancel", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT)
     
     def edit_project_data(self):
         """Editar datos específicos para project"""
         if self.current_idea_id is None or self.current_idea_id >= len(self.ideas_data):
-            self.show_notification("Select an idea first", "warning")
+            messagebox.showwarning("Warning", "Select an idea first")
             return
         
         project_data = self.ideas_data[self.current_idea_id].get('project_data', {})
         
         dialog = tk.Toplevel(self.root)
-        dialog.title("[EDIT PROJECT DATA]")
-        dialog.geometry("400x350")
+        dialog.title("Edit Project Data")
+        dialog.geometry("500x500")
         dialog.configure(bg=self.colors['bg'])
         
         entries = {}
         
         # Image
-        tk.Label(dialog, text="[IMAGE URL]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['image'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['image'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Image URL", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['image'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['image'].pack(fill=tk.X, padx=10, pady=5)
         entries['image'].insert(0, project_data.get('image', '/images/default.png'))
         
         # Tags
-        tk.Label(dialog, text="[TAGS]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['tags'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['tags'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Tags (comma separated)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['tags'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['tags'].pack(fill=tk.X, padx=10, pady=5)
         entries['tags'].insert(0, ', '.join(project_data.get('tags', [])))
         
         # Tech
-        tk.Label(dialog, text="[TECH STACK]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['tech'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['tech'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Tech Stack (comma separated)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['tech'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['tech'].pack(fill=tk.X, padx=10, pady=5)
         entries['tech'].insert(0, ', '.join(project_data.get('tech', [])))
         
         # Color
-        tk.Label(dialog, text="[COLOR]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['color'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['color'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Color (hex)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['color'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['color'].pack(fill=tk.X, padx=10, pady=5)
         entries['color'].insert(0, project_data.get('color', '#3B82F6'))
         
         # Order
-        tk.Label(dialog, text="[ORDER]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['order'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['order'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Order", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['order'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['order'].pack(fill=tk.X, padx=10, pady=5)
         entries['order'].insert(0, str(project_data.get('order', 1)))
         
         def save_project_data():
@@ -2299,57 +2327,57 @@ Focus on creating content that is technically accurate, well-structured, and val
                 'order': int(entries['order'].get()) if entries['order'].get().isdigit() else 1
             }
             self.save_ideas_to_file()
-            self.show_notification("Project data saved", "success")
+            messagebox.showinfo("Success", "Project data saved")
             dialog.destroy()
         
         btn_frame = tk.Frame(dialog, bg=self.colors['bg'])
-        btn_frame.pack(fill=tk.X, padx=5, pady=5)
-        tk.Button(btn_frame, text="[S]SAVE", command=save_project_data, bg=self.colors['success'], fg='#000000', font=self.terminal_font_bold, relief=tk.FLAT, bd=1, padx=10, pady=4).pack(side=tk.LEFT, padx=2)
-        tk.Button(btn_frame, text="[ESC]CANCEL", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=self.terminal_font_bold, relief=tk.FLAT, bd=1, padx=10, pady=4).pack(side=tk.LEFT, padx=2)
+        btn_frame.pack(fill=tk.X, padx=10, pady=20)
+        tk.Button(btn_frame, text="Save", command=save_project_data, bg=self.colors['success'], fg='#ffffff', font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(btn_frame, text="Cancel", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT)
     
     def edit_certification_data(self):
         """Editar datos específicos para certification"""
         if self.current_idea_id is None or self.current_idea_id >= len(self.ideas_data):
-            self.show_notification("Select an idea first", "warning")
+            messagebox.showwarning("Warning", "Select an idea first")
             return
         
         cert_data = self.ideas_data[self.current_idea_id].get('certification_data', {})
         
         dialog = tk.Toplevel(self.root)
-        dialog.title("[EDIT CERT DATA]")
-        dialog.geometry("400x350")
+        dialog.title("Edit Certification Data")
+        dialog.geometry("500x400")
         dialog.configure(bg=self.colors['bg'])
         
         entries = {}
         
         # Icon
-        tk.Label(dialog, text="[ICON]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['icon'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['icon'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Icon (big/small)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['icon'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['icon'].pack(fill=tk.X, padx=10, pady=5)
         entries['icon'].insert(0, cert_data.get('icon', 'big'))
         
         # Issuer
-        tk.Label(dialog, text="[ISSUER]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['issuer'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['issuer'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Issuer", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['issuer'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['issuer'].pack(fill=tk.X, padx=10, pady=5)
         entries['issuer'].insert(0, cert_data.get('issuer', 'Unknown'))
         
         # Date
-        tk.Label(dialog, text="[DATE]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['date'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['date'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Date (YYYY)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['date'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['date'].pack(fill=tk.X, padx=10, pady=5)
         entries['date'].insert(0, cert_data.get('date', datetime.now().strftime('%Y')))
         
         # Credential ID
-        tk.Label(dialog, text="[CREDENTIAL ID]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['credentialId'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['credentialId'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Credential ID", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['credentialId'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['credentialId'].pack(fill=tk.X, padx=10, pady=5)
         entries['credentialId'].insert(0, cert_data.get('credentialId', ''))
         
         # Badge
-        tk.Label(dialog, text="[BADGE]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['badge'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['badge'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Badge", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['badge'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['badge'].pack(fill=tk.X, padx=10, pady=5)
         entries['badge'].insert(0, cert_data.get('badge', 'None'))
         
         def save_cert_data():
@@ -2361,57 +2389,57 @@ Focus on creating content that is technically accurate, well-structured, and val
                 'badge': entries['badge'].get().strip()
             }
             self.save_ideas_to_file()
-            self.show_notification("Certification data saved", "success")
+            messagebox.showinfo("Success", "Certification data saved")
             dialog.destroy()
         
         btn_frame = tk.Frame(dialog, bg=self.colors['bg'])
-        btn_frame.pack(fill=tk.X, padx=5, pady=5)
-        tk.Button(btn_frame, text="[S]SAVE", command=save_cert_data, bg=self.colors['success'], fg='#000000', font=self.terminal_font_bold, relief=tk.FLAT, bd=1, padx=10, pady=4).pack(side=tk.LEFT, padx=2)
-        tk.Button(btn_frame, text="[ESC]CANCEL", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=self.terminal_font_bold, relief=tk.FLAT, bd=1, padx=10, pady=4).pack(side=tk.LEFT, padx=2)
+        btn_frame.pack(fill=tk.X, padx=10, pady=20)
+        tk.Button(btn_frame, text="Save", command=save_cert_data, bg=self.colors['success'], fg='#ffffff', font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(btn_frame, text="Cancel", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT)
     
     def edit_secondary_project_data(self):
         """Editar datos específicos para secondary project"""
         if self.current_idea_id is None or self.current_idea_id >= len(self.ideas_data):
-            self.show_notification("Select an idea first", "warning")
+            messagebox.showwarning("Warning", "Select an idea first")
             return
         
         sec_data = self.ideas_data[self.current_idea_id].get('secondary_project_data', {})
         
         dialog = tk.Toplevel(self.root)
-        dialog.title("[EDIT SEC PROJ DATA]")
-        dialog.geometry("400x400")
+        dialog.title("Edit Secondary Project Data")
+        dialog.geometry("500x450")
         dialog.configure(bg=self.colors['bg'])
         
         entries = {}
         
         # Category
-        tk.Label(dialog, text="[CATEGORY]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['category'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['category'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Category", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['category'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['category'].pack(fill=tk.X, padx=10, pady=5)
         entries['category'].insert(0, sec_data.get('category', 'General'))
         
         # Description
-        tk.Label(dialog, text="[DESCRIPTION]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['description'] = tk.Text(dialog, height=3, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['description'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Description", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['description'] = tk.Text(dialog, height=4, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['description'].pack(fill=tk.X, padx=10, pady=5)
         entries['description'].insert(1.0, sec_data.get('description', ''))
         
         # Details
-        tk.Label(dialog, text="[DETAILS]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['details'] = tk.Text(dialog, height=3, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['details'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Details", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['details'] = tk.Text(dialog, height=4, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['details'].pack(fill=tk.X, padx=10, pady=5)
         entries['details'].insert(1.0, sec_data.get('details', ''))
         
         # Tech
-        tk.Label(dialog, text="[TECH STACK]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['tech'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['tech'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Tech Stack (comma separated)", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['tech'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['tech'].pack(fill=tk.X, padx=10, pady=5)
         entries['tech'].insert(0, ', '.join(sec_data.get('tech', [])))
         
         # Link
-        tk.Label(dialog, text="[LINK URL]:", bg=self.colors['bg'], fg=self.colors['text_primary'], font=self.terminal_font_bold).pack(anchor=tk.W, padx=5, pady=(5, 2))
-        entries['link'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=self.terminal_font, relief=tk.FLAT, bd=1)
-        entries['link'].pack(fill=tk.X, padx=5, pady=2)
+        tk.Label(dialog, text="Link URL", bg=self.colors['bg'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=(10, 5))
+        entries['link'] = tk.Entry(dialog, bg=self.colors['bg_card'], fg=self.colors['text_primary'], insertbackground=self.colors['accent'], font=('SF Pro Display', 10), relief=tk.FLAT, bd=0)
+        entries['link'].pack(fill=tk.X, padx=10, pady=5)
         entries['link'].insert(0, sec_data.get('link', ''))
         
         def save_sec_data():
@@ -2423,19 +2451,19 @@ Focus on creating content that is technically accurate, well-structured, and val
                 'link': entries['link'].get().strip()
             }
             self.save_ideas_to_file()
-            self.show_notification("Secondary project data saved", "success")
+            messagebox.showinfo("Success", "Secondary project data saved")
             dialog.destroy()
         
         btn_frame = tk.Frame(dialog, bg=self.colors['bg'])
-        btn_frame.pack(fill=tk.X, padx=5, pady=5)
-        tk.Button(btn_frame, text="[S]SAVE", command=save_sec_data, bg=self.colors['success'], fg='#000000', font=self.terminal_font_bold, relief=tk.FLAT, bd=1, padx=10, pady=4).pack(side=tk.LEFT, padx=2)
-        tk.Button(btn_frame, text="[ESC]CANCEL", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=self.terminal_font_bold, relief=tk.FLAT, bd=1, padx=10, pady=4).pack(side=tk.LEFT, padx=2)
+        btn_frame.pack(fill=tk.X, padx=10, pady=20)
+        tk.Button(btn_frame, text="Save", command=save_sec_data, bg=self.colors['success'], fg='#ffffff', font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT, padx=(0, 10))
+        tk.Button(btn_frame, text="Cancel", command=dialog.destroy, bg=self.colors['bg_card'], fg=self.colors['text_primary'], font=('SF Pro Display', 10, 'bold'), relief=tk.FLAT, bd=0, padx=20, pady=8).pack(side=tk.LEFT)
     
     def convert_to_post(self):
         """Convertir la idea en un post real"""
         content = self.idea_content_text.get(1.0, tk.END).strip()
         if not content:
-            self.show_notification("Content is required", "warning")
+            messagebox.showwarning("Warning", "Content is required")
             return
         
         # Cargar posts existentes
@@ -2487,23 +2515,23 @@ Focus on creating content that is technically accurate, well-structured, and val
             with open(posts_path, 'w', encoding='utf-8') as f:
                 json.dump(posts_data, f, indent=2, ensure_ascii=False)
             self.save_file()
-            self.show_notification("Post created successfully", "success")
+            messagebox.showinfo("Success", f"Post created successfully! You can now edit it in the Posts section.")
             
-            # Auto-eliminar la idea después de convertirla (estilo terminal)
-            if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
-                del self.ideas_data[self.current_idea_id]
-                self.save_ideas_to_file()
-                self.update_ideas_listbox()
-                self.new_idea()
-                self.show_notification("Idea deleted after conversion", "info")
+            # Opcional: eliminar la idea después de convertirla
+            if messagebox.askyesno("Delete Idea?", "Delete this idea after converting to post?"):
+                if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+                    del self.ideas_data[self.current_idea_id]
+                    self.save_ideas_to_file()
+                    self.update_ideas_listbox()
+                    self.new_idea()
         except Exception as e:
-            self.show_notification(f"Error creating post: {str(e)}", "error")
+            messagebox.showerror("Error", f"Error creating post: {str(e)}")
     
     def convert_to_project(self):
         """Convertir la idea en un proyecto real"""
         content = self.idea_content_text.get(1.0, tk.END).strip()
         if not content:
-            self.show_notification("Content is required", "warning")
+            messagebox.showwarning("Warning", "Content is required")
             return
         
         # Cargar proyectos existentes
@@ -2549,23 +2577,22 @@ Focus on creating content that is technically accurate, well-structured, and val
             with open(projects_path, 'w', encoding='utf-8') as f:
                 json.dump(projects_data, f, indent=2, ensure_ascii=False)
             self.save_file()
-            self.show_notification("Project created successfully", "success")
+            messagebox.showinfo("Success", f"Project created successfully! You can now edit it in the Projects section.")
             
-            # Auto-eliminar la idea después de convertirla (estilo terminal)
-            if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
-                del self.ideas_data[self.current_idea_id]
-                self.save_ideas_to_file()
-                self.update_ideas_listbox()
-                self.new_idea()
-                self.show_notification("Idea deleted after conversion", "info")
+            if messagebox.askyesno("Delete Idea?", "Delete this idea after converting to project?"):
+                if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+                    del self.ideas_data[self.current_idea_id]
+                    self.save_ideas_to_file()
+                    self.update_ideas_listbox()
+                    self.new_idea()
         except Exception as e:
-            self.show_notification(f"Error creating project: {str(e)}", "error")
+            messagebox.showerror("Error", f"Error creating project: {str(e)}")
     
     def convert_to_certification(self):
         """Convertir la idea en una certificación real"""
         content = self.idea_content_text.get(1.0, tk.END).strip()
         if not content:
-            self.show_notification("Content is required", "warning")
+            messagebox.showwarning("Warning", "Content is required")
             return
         
         # Cargar certificaciones existentes
@@ -2609,23 +2636,22 @@ Focus on creating content that is technically accurate, well-structured, and val
             with open(certifications_path, 'w', encoding='utf-8') as f:
                 json.dump(certifications_data, f, indent=2, ensure_ascii=False)
             self.save_file()
-            self.show_notification("Certification created successfully", "success")
+            messagebox.showinfo("Success", f"Certification created successfully! You can now edit it in the Certifications section.")
             
-            # Auto-eliminar la idea después de convertirla (estilo terminal)
-            if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
-                del self.ideas_data[self.current_idea_id]
-                self.save_ideas_to_file()
-                self.update_ideas_listbox()
-                self.new_idea()
-                self.show_notification("Idea deleted after conversion", "info")
+            if messagebox.askyesno("Delete Idea?", "Delete this idea after converting to certification?"):
+                if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+                    del self.ideas_data[self.current_idea_id]
+                    self.save_ideas_to_file()
+                    self.update_ideas_listbox()
+                    self.new_idea()
         except Exception as e:
-            self.show_notification(f"Error creating certification: {str(e)}", "error")
+            messagebox.showerror("Error", f"Error creating certification: {str(e)}")
     
     def convert_to_secondary_project(self):
         """Convertir la idea en un proyecto secundario real"""
         content = self.idea_content_text.get(1.0, tk.END).strip()
         if not content:
-            self.show_notification("Content is required", "warning")
+            messagebox.showwarning("Warning", "Content is required")
             return
         
         # Cargar proyectos secundarios existentes
@@ -2680,17 +2706,16 @@ Focus on creating content that is technically accurate, well-structured, and val
             with open(secondary_projects_path, 'w', encoding='utf-8') as f:
                 json.dump(secondary_projects_data, f, indent=2, ensure_ascii=False)
             self.save_file()
-            self.show_notification("Secondary project created successfully", "success")
+            messagebox.showinfo("Success", f"Secondary project created successfully! You can now edit it in the Secondary Projects section.")
             
-            # Auto-eliminar la idea después de convertirla (estilo terminal)
-            if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
-                del self.ideas_data[self.current_idea_id]
-                self.save_ideas_to_file()
-                self.update_ideas_listbox()
-                self.new_idea()
-                self.show_notification("Idea deleted after conversion", "info")
+            if messagebox.askyesno("Delete Idea?", "Delete this idea after converting to secondary project?"):
+                if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+                    del self.ideas_data[self.current_idea_id]
+                    self.save_ideas_to_file()
+                    self.update_ideas_listbox()
+                    self.new_idea()
         except Exception as e:
-            self.show_notification(f"Error creating secondary project: {str(e)}", "error")
+            messagebox.showerror("Error", f"Error creating secondary project: {str(e)}")
 
 
 if __name__ == "__main__":
