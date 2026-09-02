@@ -1337,6 +1337,10 @@ class JSONEditor:
         file_path = self.base_path / self.current_file
         
         try:
+            # Verificar que el directorio existe
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            # Guardar el archivo
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(self.current_data, f, indent=2, ensure_ascii=False)
             
@@ -1344,10 +1348,13 @@ class JSONEditor:
             self.unsaved_label.config(text="")
             self.show_notification(f"Saved: {self.current_file}", "success")
             
-            # Hacer git commit y push automáticamente en background
-            import threading
-            threading.Thread(target=self.git_commit_and_push, daemon=True).start()
+            # Hacer git commit y push (síncrono para ver errores)
+            self.git_commit_and_push()
             
+        except FileNotFoundError as e:
+            self.show_notification(f"Directory not found: {str(e)}", "error")
+        except PermissionError as e:
+            self.show_notification(f"Permission denied: {str(e)}", "error")
         except Exception as e:
             self.show_notification(f"Error saving: {str(e)}", "error")
     
@@ -1357,6 +1364,10 @@ class JSONEditor:
             # Verificar si hay cambios (usando cwd en lugar de chdir)
             result = subprocess.run(['git', 'status', '--porcelain'], 
                                   capture_output=True, text=True, cwd=self.project_root)
+            
+            if result.returncode != 0:
+                self.show_notification(f"Git status error: {result.stderr}", "error")
+                return
             
             if not result.stdout.strip():
                 self.show_notification("No changes to commit", "info")
@@ -1398,6 +1409,8 @@ class JSONEditor:
             else:
                 self.show_notification("No JSON files to commit", "info")
                 
+        except FileNotFoundError:
+            self.show_notification("Git not found", "error")
         except Exception as e:
             self.show_notification(f"Git error: {str(e)}", "error")
     
