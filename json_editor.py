@@ -309,6 +309,10 @@ class JSONEditor:
                                         relief=tk.FLAT, bd=1, wrap=tk.WORD)
         self.idea_content_text.pack(fill=tk.BOTH, expand=True)
         
+        # Auto-save al escribir
+        self.idea_content_text.bind('<KeyRelease>', self.on_idea_key_release)
+        self.idea_autosave_timer = None
+        
         # Campo para prompt (oculto, solo para compatibilidad)
         self.prompt_text = tk.Text(editor_frame, height=0, width=0, bg=self.colors['bg'], fg=self.colors['bg'])
         
@@ -1350,16 +1354,12 @@ class JSONEditor:
     def git_commit_and_push(self):
         """Hacer git commit y push seguro usando las credenciales ya configuradas"""
         try:
-            # Cambiar al directorio del proyecto
-            import os
-            os.chdir(self.project_root)
-            
-            # Verificar si hay cambios
+            # Verificar si hay cambios (usando cwd en lugar de chdir)
             result = subprocess.run(['git', 'status', '--porcelain'], 
-                                  capture_output=True, text=True)
+                                  capture_output=True, text=True, cwd=self.project_root)
             
             if not result.stdout.strip():
-                self.status_var.set("No hay cambios para commit")
+                self.show_notification("No changes to commit", "info")
                 return
             
             # Agregar solo archivos JSON seguros (excluyendo ideas.json que está en .gitignore)
@@ -1372,25 +1372,34 @@ class JSONEditor:
             
             if json_files_to_add:
                 # Agregar archivos específicos
-                subprocess.run(['git', 'add'] + json_files_to_add, check=True)
+                add_result = subprocess.run(['git', 'add'] + json_files_to_add, 
+                                          capture_output=True, text=True, cwd=self.project_root)
+                if add_result.returncode != 0:
+                    self.show_notification(f"Git add error: {add_result.stderr}", "error")
+                    return
                 
                 # Crear commit con mensaje descriptivo
                 timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 commit_message = f"Update {self.current_file} - {timestamp}"
-                subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+                commit_result = subprocess.run(['git', 'commit', '-m', commit_message], 
+                                             capture_output=True, text=True, cwd=self.project_root)
+                if commit_result.returncode != 0:
+                    self.show_notification(f"Git commit error: {commit_result.stderr}", "error")
+                    return
                 
                 # Push al remoto
-                subprocess.run(['git', 'push'], check=True)
+                push_result = subprocess.run(['git', 'push'], 
+                                           capture_output=True, text=True, cwd=self.project_root)
+                if push_result.returncode != 0:
+                    self.show_notification(f"Git push error: {push_result.stderr}", "error")
+                    return
                 
-                self.status_var.set("Cambios publicados a Git")
+                self.show_notification("Changes pushed to Git", "success")
             else:
-                self.status_var.set("No hay archivos JSON para commit")
+                self.show_notification("No JSON files to commit", "info")
                 
-        except subprocess.CalledProcessError as e:
-            self.status_var.set(f"Error en Git: {str(e)}")
-            # No mostrar messagebox para no interrumpir el flujo
         except Exception as e:
-            self.status_var.set(f"Error inesperado en Git: {str(e)}")
+            self.show_notification(f"Git error: {str(e)}", "error")
     
     def mark_unsaved(self):
         self.unsaved_changes = True
@@ -2011,7 +2020,7 @@ class JSONEditor:
             with open(self.ideas_file, 'w', encoding='utf-8') as f:
                 json.dump(self.ideas_data, f, indent=2, ensure_ascii=False)
         except Exception as e:
-            messagebox.showerror("Error", f"Error saving ideas: {str(e)}")
+            self.show_notification(f"Error saving ideas: {str(e)}", "error")
     
     def update_ideas_listbox(self):
         """Actualizar el listbox con las ideas guardadas - estilo terminal"""
@@ -2048,6 +2057,10 @@ class JSONEditor:
     
     def on_idea_selected(self, event):
         """Cuando se selecciona una idea de la lista"""
+        # Guardar la idea actual antes de cambiar
+        if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+            self.save_idea_silent()
+        
         selection = self.ideas_listbox.curselection()
         if not selection:
             return
@@ -2065,6 +2078,44 @@ class JSONEditor:
             self.prompt_text.delete(1.0, tk.END)
             if idea.get('generated_prompt'):
                 self.prompt_text.insert(1.0, idea['generated_prompt'])
+    
+    def on_idea_key_release(self, event):
+        """Auto-save al escribir en el editor de ideas"""
+        # Cancelar timer anterior
+        if self.idea_autosave_timer:
+            self.root.after_cancel(self.idea_autosave_timer)
+        
+        # Programar auto-save después de 2 segundos
+        self.idea_autosave_timer = self.root.after(2000, self.save_idea_silent)
+    
+    def save_idea_silent(self):
+        """Guardar idea sin notificaciones (auto-save)"""
+        content = self.idea_content_text.get(1.0, tk.END).strip()
+        
+        if not content:
+            return
+        
+        # Mantener el created_at original si existe
+        original_created_at = None
+        if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+            original_created_at = self.ideas_data[self.current_idea_id].get('created_at')
+        
+        idea_data = {
+            'content': content,
+            'generated_prompt': self.prompt_text.get(1.0, tk.END).strip(),
+            'created_at': original_created_at if original_created_at else datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        
+        if self.current_idea_id is not None and self.current_idea_id < len(self.ideas_data):
+            # Actualizar idea existente
+            self.ideas_data[self.current_idea_id] = idea_data
+        else:
+            # Crear nueva idea
+            self.ideas_data.append(idea_data)
+            self.current_idea_id = len(self.ideas_data) - 1
+        
+        self.save_ideas_to_file()
+        self.update_ideas_listbox()
     
     def save_idea(self):
         """Guardar la idea actual"""
