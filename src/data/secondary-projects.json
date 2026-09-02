@@ -24,5 +24,23 @@
       "category": "Web Platforms"
     }
   ],
-  "Programación": []
+  "Programación": [
+    {
+      "id": "",
+      "name": "PyRPG",
+      "description": "PyRPG es un RPG por turnos desarrollado en Python como proyecto de clase durante el ciclo de Sistemas Microinformáticos y Redes. El juego utiliza combates por rondas, mejoras de estadísticas, pociones, colores y arte ASCII, además de diferentes funciones y librerías para gestionar la experiencia de juego.",
+      "details": "Proyecto académico desarrollado principalmente de forma individual durante aproximadamente dos meses de clases, con la colaboración de un compañero. El proyecto evolucionó a partir de una versión anterior llamada kill-the-boss y posteriormente se publicó en GitHub como proyecto abierto a críticas y mejoras. Incluye combates contra jefes, mejoras de estadísticas, pociones de vida y maná, arte ASCII, caracteres Unicode y un sistema de traducción mediante Google Translator. El código conserva decisiones propias de una primera etapa de aprendizaje, incluyendo funciones, variables duplicadas y una estructura que podría refactorizarse considerablemente.",
+      "tech": [
+        "Python 3",
+        "Google Translator",
+        "librerías Python",
+        "terminal/consola",
+        "ASCII Art",
+        "Unicode"
+      ],
+      "link": "https://github.com/SoyNashi/PyRPG",
+      "relatedPostIds": [],
+      "category": "Programación"
+    }
+  ]
 }
