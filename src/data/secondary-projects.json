@@ -39,8 +39,9 @@
         "Unicode"
       ],
       "link": "https://github.com/SoyNashi/PyRPG",
-      "relatedPostIds": [],
-      "category": "Programación"
+      "relatedPostIds": [
+        ""
+      ]
     }
   ]
 }
