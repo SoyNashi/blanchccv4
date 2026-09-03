@@ -12,13 +12,13 @@
   },
   {
     "id": "2",
-    "name": "Desarollo de aplicaciones multiplataforma",
+    "name": "Desarrollo de aplicaciones multiplataforma",
     "icon": "dam",
     "order": 0,
     "issuer": "",
     "date": "",
     "credentialId": "",
-    "badge": "",
+    "badge": "dam",
     "relatedPostId": null
   },
   {
