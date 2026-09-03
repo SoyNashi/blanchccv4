@@ -20,5 +20,16 @@
     "credentialId": "",
     "badge": "",
     "relatedPostId": null
+  },
+  {
+    "id": "3",
+    "name": "Administracion de sistemas microinformáticos y redes",
+    "icon": "smx",
+    "order": 0,
+    "issuer": "",
+    "date": "2023",
+    "credentialId": "",
+    "badge": "smx",
+    "relatedPostId": null
   }
 ]
