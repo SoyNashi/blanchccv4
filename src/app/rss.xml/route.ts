@@ -6,7 +6,7 @@ import projects from '@/data/projects.json'
 import secondaryProjects from '@/data/secondary-projects.json'
 
 const BASE_URL = 'https://blanch.cc'
-const PLACEHOLDER_BASE = 'https://placehold.co/1200x630/111111/FFFFFF/png'
+const DEFAULT_FEED_IMAGE = `${BASE_URL}/images/bastet.png`
 
 function escapeXml(value: unknown) {
   return String(value ?? '')
@@ -21,8 +21,10 @@ function cdata(value: string) {
   return `<![CDATA[${value.replace(/\]\]>/g, ']]]]><![CDATA[>')}]]>`
 }
 
-function placeholderImage(title: string) {
-  return `${PLACEHOLDER_BASE}?text=${encodeURIComponent(`BLANCH.CC · ${title}`)}`
+function feedImage(path?: string) {
+  if (!path) return DEFAULT_FEED_IMAGE
+  if (/^https?:\\/\\//i.test(path)) return path
+  return `${BASE_URL}${path.startsWith('/') ? path : `/${path}`}`
 }
 
 async function markdownToHtml(markdown: string) {
@@ -49,7 +51,7 @@ function metadataHtml(post: (typeof posts)[number]) {
 }
 
 async function postToRssItem(post: (typeof posts)[number]) {
-  const image = placeholderImage(post.title)
+  const image = DEFAULT_FEED_IMAGE
   const articleHtml = await markdownToHtml(post.content)
   const fullContent = `
     <figure>
@@ -76,6 +78,7 @@ async function postToRssItem(post: (typeof posts)[number]) {
       <pubDate>${new Date(post.createdAt).toUTCString()}</pubDate>
       <dc:creator>Nil Blanch</dc:creator>
       <guid isPermaLink="true">${BASE_URL}/blog/${encodeURIComponent(post.slug)}</guid>
+      <enclosure url="${escapeXml(image)}" type="image/png" length="0" />
       <media:content url="${escapeXml(image)}" type="image/png" medium="image" width="1200" height="630" />
       <media:thumbnail url="${escapeXml(image)}" width="1200" height="630" />
       <media:title>${cdata(post.title)}</media:title>
@@ -104,7 +107,7 @@ async function projectToRssItem(project: Project, category = 'Proyecto') {
   const title = project.title || project.name || 'Proyecto'
   const description = project.description || project.details || ''
   const details = project.details && project.details !== description ? project.details : ''
-  const image = placeholderImage(title)
+  const image = feedImage(project.image)
   const tags = [
     category,
     ...(project.tags || []),
