@@ -23,7 +23,7 @@ function cdata(value: string) {
 
 function feedImage(path?: string) {
   if (!path) return DEFAULT_FEED_IMAGE
-  if (/^https?:\\/\\//i.test(path)) return path
+  if (/^https?:\/\//i.test(path)) return path
   return `${BASE_URL}${path.startsWith('/') ? path : `/${path}`}`
 }
 
