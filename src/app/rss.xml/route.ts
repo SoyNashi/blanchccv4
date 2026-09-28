@@ -60,8 +60,8 @@ async function postToRssItem(post: (typeof posts)[number]) {
     <item>
       <title>${cdata(post.title)}</title>
       <link>${BASE_URL}/blog/${encodeURIComponent(post.slug)}</link>
-      <description>${cdata(fullContent)}</description>
-      <content:encoded>${cdata(fullContent)}</content:encoded>
+      <description>${cdata(post.description)}</description>
+      <content:encoded>${cdata(articleHtml)}</content:encoded>
       ${categories}
       <pubDate>${new Date(post.createdAt).toUTCString()}</pubDate>
       <dc:creator>Nil Blanch</dc:creator>
