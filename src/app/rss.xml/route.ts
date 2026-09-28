@@ -2,8 +2,6 @@ import { remark } from 'remark'
 import remarkGfm from 'remark-gfm'
 import remarkHtml from 'remark-html'
 import posts from '@/data/posts.json'
-import projects from '@/data/projects.json'
-import secondaryProjects from '@/data/secondary-projects.json'
 
 const BASE_URL = 'https://blanch.cc'
 const DEFAULT_FEED_IMAGE = 'https://raw.githubusercontent.com/SoyNashi/blanchccv4/main/src/app/rss.xml/6Rd61.jpg'
@@ -85,73 +83,6 @@ async function postToRssItem(post: (typeof posts)[number]) {
     </item>`
 }
 
-type Project = {
-  id?: string
-  title?: string
-  name?: string
-  description?: string
-  details?: string
-  link?: string
-  image?: string
-  tags?: string[]
-  tech?: string[] | { label?: string; value?: string }[]
-}
-
-function flattenSecondaryProjects() {
-  return Object.entries(secondaryProjects).flatMap(([category, items]) =>
-    items.map((item) => ({ ...item, category }))
-  )
-}
-
-async function projectToRssItem(project: Project, category = 'Proyecto') {
-  const title = project.title || project.name || 'Proyecto'
-  const description = project.description || project.details || ''
-  const details = project.details && project.details !== description ? project.details : ''
-  const image = feedImage(project.image)
-  const tags = [
-    category,
-    ...(project.tags || []),
-    ...(project.tech || []).map((tech) =>
-      typeof tech === 'string' ? tech : tech.label || tech.value || ''
-    ),
-  ].filter(Boolean)
-  const projectUrl =
-    project.link ||
-    `${BASE_URL}/#${encodeURIComponent(title.toLowerCase().replace(/\s+/g, '-'))}`
-  const projectHtml = `
-    <figure>
-      <img src="${escapeXml(image)}" alt="${escapeXml(title)}" width="1200" height="630" />
-      <figcaption>${escapeXml(title)}</figcaption>
-    </figure>
-    <h2>${escapeXml(title)}</h2>
-    <p>${escapeXml(description)}</p>
-    ${details ? `<h3>Detalles</h3><p>${escapeXml(details)}</p>` : ''}
-    ${tags.length ? `<p><strong>Tags:</strong> ${tags.map((tag) => `#${escapeXml(tag)}`).join(' ')}</p>` : ''}
-    <p><a href="${escapeXml(projectUrl)}">Ver proyecto</a></p>
-  `
-  const categories = tags
-    .map((tag) => `<category>${cdata(String(tag))}</category>`)
-    .join('\n      ')
-  const guid = `${BASE_URL}/rss/projects/${encodeURIComponent(
-    String(project.id || title).toLowerCase().replace(/[^a-z0-9]+/g, '-')
-  )}`
-
-  return `
-    <item>
-      <title>${cdata(title)}</title>
-      <link>${escapeXml(projectUrl)}</link>
-      <description>${cdata(projectHtml)}</description>
-      <content:encoded>${cdata(projectHtml)}</content:encoded>
-      ${categories}
-      <dc:creator>Nil Blanch</dc:creator>
-      <guid isPermaLink="false">${escapeXml(guid)}</guid>
-      <enclosure url="${escapeXml(image)}" type="image/png" length="0" />
-      <media:content url="${escapeXml(image)}" type="image/png" medium="image" width="1200" height="630" />
-      <media:thumbnail url="${escapeXml(image)}" width="1200" height="630" />
-      <media:title>${cdata(title)}</media:title>
-    </item>`
-}
-
 export async function GET() {
   const publishedPosts = posts
     .filter((post) => post.published !== false)
@@ -160,16 +91,7 @@ export async function GET() {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
 
-  const primaryProjects = projects.map((project) => ({
-    ...project,
-    category: 'Proyecto principal',
-  }))
-  const allProjects = [...primaryProjects, ...flattenSecondaryProjects()]
-
   const postItems = await Promise.all(publishedPosts.map(postToRssItem))
-  const projectItems = await Promise.all(
-    allProjects.map((project) => projectToRssItem(project, project.category))
-  )
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"
@@ -188,7 +110,6 @@ export async function GET() {
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <generator>Next.js RSS</generator>
 ${postItems.join('\n')}
-${projectItems.join('\n')}
   </channel>
 </rss>`
 
