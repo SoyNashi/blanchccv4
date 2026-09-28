@@ -6,7 +6,7 @@ import projects from '@/data/projects.json'
 import secondaryProjects from '@/data/secondary-projects.json'
 
 const BASE_URL = 'https://blanch.cc'
-const DEFAULT_FEED_IMAGE = `${BASE_URL}/images/bastet.png`
+const DEFAULT_FEED_IMAGE = 'https://raw.githubusercontent.com/SoyNashi/blanchccv4/main/src/app/rss.xml/6Rd61.jpg'
 
 function escapeXml(value: unknown) {
   return String(value ?? '')
@@ -78,8 +78,8 @@ async function postToRssItem(post: (typeof posts)[number]) {
       <pubDate>${new Date(post.createdAt).toUTCString()}</pubDate>
       <dc:creator>Nil Blanch</dc:creator>
       <guid isPermaLink="true">${BASE_URL}/blog/${encodeURIComponent(post.slug)}</guid>
-      <enclosure url="${escapeXml(image)}" type="image/png" length="0" />
-      <media:content url="${escapeXml(image)}" type="image/png" medium="image" width="1200" height="630" />
+      <enclosure url="${escapeXml(image)}" type="${image === DEFAULT_FEED_IMAGE ? 'image/jpeg' : 'image/png'}" length="0" />
+      <media:content url="${escapeXml(image)}" type="${image === DEFAULT_FEED_IMAGE ? 'image/jpeg' : 'image/png'}" medium="image" width="1200" height="630" />
       <media:thumbnail url="${escapeXml(image)}" width="1200" height="630" />
       <media:title>${cdata(post.title)}</media:title>
     </item>`
