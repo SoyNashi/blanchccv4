@@ -145,6 +145,7 @@ async function projectToRssItem(project: Project, category = 'Proyecto') {
       ${categories}
       <dc:creator>Nil Blanch</dc:creator>
       <guid isPermaLink="false">${escapeXml(guid)}</guid>
+      <enclosure url="${escapeXml(image)}" type="image/png" length="0" />
       <media:content url="${escapeXml(image)}" type="image/png" medium="image" width="1200" height="630" />
       <media:thumbnail url="${escapeXml(image)}" width="1200" height="630" />
       <media:title>${cdata(title)}</media:title>
