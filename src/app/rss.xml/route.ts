@@ -51,16 +51,6 @@ function metadataHtml(post: (typeof posts)[number]) {
 async function postToRssItem(post: (typeof posts)[number]) {
   const image = DEFAULT_FEED_IMAGE
   const articleHtml = await markdownToHtml(post.content)
-  const fullContent = `
-    <figure>
-      <img src="${escapeXml(image)}" alt="${escapeXml(post.title)}" width="1200" height="630" />
-      <figcaption>${escapeXml(post.title)}</figcaption>
-    </figure>
-    <p>${escapeXml(post.description)}</p>
-    ${metadataHtml(post)}
-    <hr />
-    ${articleHtml}
-  `
   const categories = [post.category, ...(post.keywords || [])]
     .filter(Boolean)
     .map((tag) => `<category>${cdata(String(tag))}</category>`)
