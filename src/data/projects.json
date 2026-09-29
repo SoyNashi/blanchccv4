@@ -2,54 +2,71 @@
   {
     "id": "1",
     "title": "Blau360",
-    "description": "Plataforma integral de gestión empresarial con análisis de datos en tiempo real y dashboards personalizados.",
+    "description": "Sitio web desarrollado con Vite y desplegado sobre un servidor Apache, con diseño propio e integración de un feed RSS mediante MCP.",
     "image": "/images/blau360.png",
     "imageWidth": 1920,
     "imageHeight": 1080,
     "tags": [
-      "React",
-      "Node.js",
-      "TypeScript",
-      "Vite"
+      "Vite",
+      "Apache",
+      "RSS",
+      "MCP"
     ],
-    "tech": [],
+    "tech": [
+      {
+        "label": "Frontend",
+        "value": "Vite"
+      },
+      {
+        "label": "Servidor",
+        "value": "Apache"
+      },
+      {
+        "label": "Contenido",
+        "value": "RSS"
+      },
+      {
+        "label": "Integración",
+        "value": "MCP"
+      }
+    ],
     "color": "#3B82F6",
     "order": 1,
-    "relatedPostIds": [
-      ""
-    ]
+    "relatedPostIds": []
   },
   {
     "id": "2",
-    "title": "Bastet",
-    "description": "Sistema de automatización de procesos con IA para optimizar flujos de trabajo empresariales.",
+    "title": "Bastet Project",
+    "description": "Proyecto personal para construir una marca de ropa con una identidad propia y una propuesta orientada a romper con los planteamientos convencionales. El proyecto está actualmente en desarrollo.",
     "image": "/images/bastet.png",
     "imageWidth": 1920,
     "imageHeight": 1080,
     "tags": [
-      "Python",
-      "TensorFlow",
-      "FastAPI",
-      "Docker"
+      "Node.js",
+      "Next.js",
+      "E-commerce",
+      "Branding"
     ],
     "tech": [
       {
-        "label": "Python",
-        "value": "python"
+        "label": "Runtime",
+        "value": "Node.js"
       },
       {
-        "label": "TensorFlow",
-        "value": "tensorflow"
+        "label": "Web",
+        "value": "Next.js"
       },
       {
-        "label": "FastAPI",
-        "value": "fastapi"
+        "label": "Producto",
+        "value": "E-commerce"
+      },
+      {
+        "label": "Estado",
+        "value": "En desarrollo"
       }
     ],
     "color": "#10B981",
     "order": 2,
-    "relatedPostIds": [
-      ""
-    ]
+    "relatedPostIds": []
   }
 ]
