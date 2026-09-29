@@ -5,9 +5,7 @@
       "name": "Argentona Bocs Web",
       "description": "Página web para el equipo local",
       "details": "Sitio web desarrollado con WordPress para gestión de contenido y comunicación local.",
-      "tech": [
-        "WordPress"
-      ],
+      "tech": ["WordPress"],
       "link": "https://argentonabocs.cat",
       "relatedPostIds": []
     },
@@ -16,11 +14,19 @@
       "name": "Instint Global",
       "description": "Junto con Blau360 y sus servidores, Insint Global usa tecnologia Vite, un sistema mullti idioma i un diseño pensado en la elegancia del restaurante.",
       "details": "",
-      "tech": [
-        "Vite"
-      ],
+      "tech": ["Vite"],
       "link": "https://instintglobal.com",
       "relatedPostIds": [],
+      "category": "Web Platforms"
+    },
+    {
+      "id": "5",
+      "name": "aslo.es",
+      "description": "Web desarrollada con Node.js para el proyecto personal de un amigo dedicado a la grabación, edición y producción audiovisual, con una propuesta visual basada en el brutalismo web.",
+      "details": "La idea nació al ver que el proyecto tenía una web creada con ayuda de ChatGPT que, desde mi punto de vista, no representaba suficientemente la personalidad del trabajo audiovisual que había detrás. Decidí preparar una propuesta desde cero, planteando una dirección artística brutalista porque es un estilo de diseño que me interesa especialmente. La propuesta buscaba alejarse de la típica web corporativa y convertir la interfaz en parte de la identidad del proyecto. Fue presentada y gustó, aunque finalmente el proyecto quedó en pausa.",
+      "tech": ["Node.js", "Brutalismo web", "Diseño web", "Audiovisual"],
+      "link": "https://aslo.es",
+      "relatedPostIds": ["5"],
       "category": "Web Platforms"
     }
   ],
@@ -30,18 +36,9 @@
       "name": "PyRPG",
       "description": "PyRPG es un RPG por turnos desarrollado en Python como proyecto de clase durante el ciclo de Sistemas Microinformáticos y Redes. El juego utiliza combates por rondas, mejoras de estadísticas, pociones, colores y arte ASCII, además de diferentes funciones y librerías para gestionar la experiencia de juego.",
       "details": "Proyecto académico desarrollado principalmente de forma individual durante aproximadamente dos meses de clases, con la colaboración de un compañero. El proyecto evolucionó a partir de una versión anterior llamada kill-the-boss y posteriormente se publicó en GitHub como proyecto abierto a críticas y mejoras. Incluye combates contra jefes, mejoras de estadísticas, pociones de vida y maná, arte ASCII, caracteres Unicode y un sistema de traducción mediante Google Translator. El código conserva decisiones propias de una primera etapa de aprendizaje, incluyendo funciones, variables duplicadas y una estructura que podría refactorizarse considerablemente.",
-      "tech": [
-        "Python 3",
-        "Google Translator",
-        "librerías Python",
-        "terminal/consola",
-        "ASCII Art",
-        "Unicode"
-      ],
+      "tech": ["Python 3", "Google Translator", "librerías Python", "terminal/consola", "ASCII Art", "Unicode"],
       "link": "https://github.com/SoyNashi/PyRPG",
-      "relatedPostIds": [
-        ""
-      ]
+      "relatedPostIds": [""]
     }
   ]
 }
