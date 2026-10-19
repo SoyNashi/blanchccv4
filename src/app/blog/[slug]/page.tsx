@@ -114,7 +114,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         <div className="mx-auto max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
           {/* Sidebar izquierdo - Tabla de contenido (oculto en móvil/tablet) */}
-          <aside className="hidden lg:block lg:col-span-1 self-start sticky top-8 h-fit">
+          <aside className="hidden lg:block lg:col-span-1 relative">
             {headings.length > 0 && <TableOfContents headings={headings} />}
           </aside>
 
