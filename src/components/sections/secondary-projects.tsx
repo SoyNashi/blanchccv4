@@ -6,7 +6,7 @@ import Link from "next/link";
 import secondaryProjects from "@/data/secondary-projects.json";
 
 export const SecondaryProjects = ({ posts }: { posts?: any[] }) => {
-  const [openCategory, setOpenCategory] = useState<string | null>("Programación");
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
 
   return (
     <section id="other-projects" className="bg-background py-40 px-6">
