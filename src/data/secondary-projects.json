@@ -43,25 +43,7 @@
   ],
   "Programación": [
     {
-      "id": "",
-      "name": "PyRPG",
-      "description": "PyRPG es un RPG por turnos desarrollado en Python como proyecto de clase durante el ciclo de Sistemas Microinformáticos y Redes. El juego utiliza combates por rondas, mejoras de estadísticas, pociones, colores y arte ASCII, además de diferentes funciones y librerías para gestionar la experiencia de juego.",
-      "details": "Proyecto académico desarrollado principalmente de forma individual durante aproximadamente dos meses de clases, con la colaboración de un compañero. El proyecto evolucionó a partir de una versión anterior llamada kill-the-boss y posteriormente se publicó en GitHub como proyecto abierto a críticas y mejoras. Incluye combates contra jefes, mejoras de estadísticas, pociones de vida y maná, arte ASCII, caracteres Unicode y un sistema de traducción mediante Google Translator. El código conserva decisiones propias de una primera etapa de aprendizaje, incluyendo funciones, variables duplicadas y una estructura que podría refactorizarse considerablemente.",
-      "tech": [
-        "Python 3",
-        "Google Translator",
-        "librerías Python",
-        "terminal/consola",
-        "ASCII Art",
-        "Unicode"
-      ],
-      "link": "https://github.com/SoyNashi/PyRPG",
-      "relatedPostIds": [
-        ""
-      ]
-    },
-    {
-      "id": "6",
+      "id": "bastet-core",
       "name": "Bastet Core",
       "description": "Backend propio y modular para Bastet Project, centrado en la lógica de negocio de la tienda, los pedidos, los pagos y los envíos.",
       "details": "Bastet Core es la línea de desarrollo dedicada a construir una base de backend adaptada a las necesidades reales de Bastet Project. El objetivo es gestionar catálogo, clientes y pedidos; integrar los pagos con servicios adecuados; definir reglas de envío; y exponer una API clara para el frontend existente. La arquitectura se plantea de forma modular para poder añadir capacidades específicas sin tener que adaptar todo el proyecto a una plataforma genérica. Está en fase de definición y desarrollo: las funcionalidades descritas son objetivos, no características ya terminadas.",
@@ -78,6 +60,24 @@
         "7"
       ],
       "category": "Programación"
+    },
+    {
+      "id": "",
+      "name": "PyRPG",
+      "description": "PyRPG es un RPG por turnos desarrollado en Python como proyecto de clase durante el ciclo de Sistemas Microinformáticos y Redes. El juego utiliza combates por rondas, mejoras de estadísticas, pociones, colores y arte ASCII, además de diferentes funciones y librerías para gestionar la experiencia de juego.",
+      "details": "Proyecto académico desarrollado principalmente de forma individual durante aproximadamente dos meses de clases, con la colaboración de un compañero. El proyecto evolucionó a partir de una versión anterior llamada kill-the-boss y posteriormente se publicó en GitHub como proyecto abierto a críticas y mejoras. Incluye combates contra jefes, mejoras de estadísticas, pociones de vida y maná, arte ASCII, caracteres Unicode y un sistema de traducción mediante Google Translator. El código conserva decisiones propias de una primera etapa de aprendizaje, incluyendo funciones, variables duplicadas y una estructura que podría refactorizarse considerablemente.",
+      "tech": [
+        "Python 3",
+        "Google Translator",
+        "librerías Python",
+        "terminal/consola",
+        "ASCII Art",
+        "Unicode"
+      ],
+      "link": "https://github.com/SoyNashi/PyRPG",
+      "relatedPostIds": [
+        ""
+      ]
     }
   ]
 }
