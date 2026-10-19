@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import BlogNavbar from "@/components/blog-navbar";
 import BlogFooter from "@/components/blog-footer";
 import BlogAbout from "@/components/blog-about";
+import TableOfContents from "@/components/blog/table-of-contents";
 
 // Función para extraer headings del markdown
 function extractHeadings(markdown: string) {
@@ -32,6 +33,8 @@ function HeadingWithId({ level, children }: { level: number; children: React.Rea
   const text = typeof children === 'string' ? children : '';
   const id = text
     .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
@@ -105,36 +108,12 @@ export default async function BlogPostPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-background">
       <BlogNavbar />
-      <div className="px-4 py-12 md:px-6 md:py-20">
+      <div className="px-4 py-12 md:px-6 md:py-20" style={{ scrollMarginTop: "6rem" }}>
         <div className="mx-auto max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
           {/* Sidebar izquierdo - Tabla de contenido (oculto en móvil/tablet) */}
           <aside className="hidden lg:block lg:col-span-1">
-            <div className="bg-card border border-white/5 rounded-2xl p-6 sticky top-8">
-              <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
-                Contenido
-              </h3>
-              {headings.length > 0 && (
-                <nav className="space-y-2">
-                  {headings.map((heading, index) => (
-                    <a
-                      key={index}
-                      href={`#${heading.id}`}
-                      aria-label={`Ir a sección ${heading.text}`}
-                      className={`block text-sm hover:text-white transition-colors ${
-                        heading.level === 1 
-                          ? 'text-white font-bold' 
-                          : heading.level === 2 
-                            ? 'text-white/80 font-medium ml-2' 
-                            : 'text-white/60 ml-4'
-                      }`}
-                    >
-                      {heading.text}
-                    </a>
-                  ))}
-                </nav>
-              )}
-            </div>
+            {headings.length > 0 && <TableOfContents headings={headings} />}
           </aside>
 
           {/* Contenido principal - más ancho */}
@@ -162,7 +141,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               </p>
 
               <div className="border-t border-white/10 pt-8">
-                <div className="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-headings:font-bold prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-8 prose-h1:font-extrabold prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-6 prose-h2:font-bold prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-4 prose-h3:font-semibold prose-h4:text-xl prose-h4:mb-2 prose-h4:mt-3 prose-h4:font-semibold prose-h5:text-lg prose-h5:mb-2 prose-h5:mt-2 prose-h5:font-medium prose-h6:text-base prose-h6:mb-2 prose-h6:mt-2 prose-h6:font-medium prose-p:text-white/90 prose-p:leading-relaxed prose-p:mb-4 prose-p:text-base prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-strong:text-white prose-strong:font-bold prose-em:text-white/80 prose-em:italic prose-code:text-blue-400 prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:text-sm prose-pre:text-white/90 prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4 prose-ul:text-white/90 prose-ul:space-y-2 prose-li:mb-1 prose-li:text-white/90 prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4 prose-ol:text-white/90 prose-ol:space-y-2 prose-blockquote:border-l-4 prose-blockquote:border-white/20 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-white/70 prose-blockquote:my-4 prose-hr:border-white/10 prose-hr:my-8 prose-table:text-white/90 prose-table:border prose-table:border-white/10 prose-thead:border-b prose-thead:border-white/10 prose-th:text-white prose-th:font-semibold prose-th:p-3 prose-th:bg-white/5 prose-tr:border-b prose-tr:border-white/10 prose-td:p-3 prose-td:text-white/90 prose-img:rounded-lg prose-img:my-4">
+                <div className="prose prose-invert prose-lg max-w-none [&_h2]:scroll-mt-28 [&_h3]:scroll-mt-28 [&_h4]:scroll-mt-28 prose-headings:text-white prose-headings:font-bold prose-h1:text-4xl prose-h1:mb-6 prose-h1:mt-8 prose-h1:font-extrabold prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-6 prose-h2:font-bold prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-4 prose-h3:font-semibold prose-h4:text-xl prose-h4:mb-2 prose-h4:mt-3 prose-h4:font-semibold prose-h5:text-lg prose-h5:mb-2 prose-h5:mt-2 prose-h5:font-medium prose-h6:text-base prose-h6:mb-2 prose-h6:mt-2 prose-h6:font-medium prose-p:text-white/90 prose-p:leading-relaxed prose-p:mb-4 prose-p:text-base prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-strong:text-white prose-strong:font-bold prose-em:text-white/80 prose-em:italic prose-code:text-blue-400 prose-code:bg-white/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:text-sm prose-pre:text-white/90 prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4 prose-ul:text-white/90 prose-ul:space-y-2 prose-li:mb-1 prose-li:text-white/90 prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4 prose-ol:text-white/90 prose-ol:space-y-2 prose-blockquote:border-l-4 prose-blockquote:border-white/20 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-white/70 prose-blockquote:my-4 prose-hr:border-white/10 prose-hr:my-8 prose-table:text-white/90 prose-table:border prose-table:border-white/10 prose-thead:border-b prose-thead:border-white/10 prose-th:text-white prose-th:font-semibold prose-th:p-3 prose-th:bg-white/5 prose-tr:border-b prose-tr:border-white/10 prose-td:p-3 prose-td:text-white/90 prose-img:rounded-lg prose-img:my-4">
                   <ReactMarkdown 
                     remarkPlugins={[remarkGfm]}
                     components={{
