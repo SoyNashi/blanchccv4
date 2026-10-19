@@ -60,7 +60,7 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
   }, [headings]);
 
   return (
-    <div className="max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain bg-card border border-white/5 rounded-2xl p-5">
+    <div className="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain bg-card border border-white/5 rounded-2xl p-5">
       <h3 className="text-sm font-bold tracking-widest text-white uppercase mb-4">
         Contenido
       </h3>
