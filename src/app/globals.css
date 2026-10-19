@@ -62,14 +62,14 @@
   background: #333;
 }
 
-/* Smooth Scroll Container */
+/* Clip horizontal overflow without creating a scroll container that breaks position: sticky. */
 .smooth-scroll-container {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
-/* Prevent horizontal scroll on mobile */
+/* Prevent horizontal scroll without breaking sticky sidebars. */
 html, body {
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
 }
 
