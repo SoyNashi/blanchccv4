@@ -1,26 +1,38 @@
 [
   {
     "id": "1",
-    "title": "Desarrollo Web Full Stack",
-    "description": "Creación de aplicaciones web modernas y escalables utilizando las últimas tecnologías como Next.js, React, y Node.js.",
-    "order": 1
+    "title": "Desarrollo de producto",
+    "description": "Diseño y construcción de experiencias web y aplicaciones, desde la estructura y la interfaz hasta la integración de servicios y el despliegue."
+    ,"order": 1
   },
   {
     "id": "2",
-    "title": "Diseño UI/UX",
-    "description": "Diseño de interfaces intuitivas y experiencias de usuario optimizadas que convierten visitantes en clientes.",
-    "order": 2
+    "title": "Redes y sistemas",
+    "description": "Interés práctico por la arquitectura de redes, los servicios conectados, el funcionamiento de servidores y la comunicación entre sistemas."
+    ,"order": 2
   },
   {
     "id": "3",
-    "title": "Consultoría Técnica",
-    "description": "Asesoramiento experto en arquitectura de software, optimización de rendimiento y mejores prácticas de desarrollo.",
-    "order": 3
+    "title": "Seguridad desde el diseño",
+    "description": "Buenas prácticas de desarrollo, reducción de superficie de exposición, gestión responsable de datos y una mentalidad de seguridad aplicada desde las primeras decisiones."
+    ,"order": 3
   },
   {
     "id": "4",
-    "title": "Integración de APIs",
-    "description": "Conexión de sistemas y servicios mediante APIs RESTful y GraphQL para flujos de datos eficientes.",
-    "order": 4
+    "title": "Infraestructura y despliegue",
+    "description": "Configuración y evolución de entornos de publicación, servidores, automatizaciones y servicios que mantienen los productos disponibles."
+    ,"order": 4
+  },
+  {
+    "id": "5",
+    "title": "Privacidad y soberanía digital",
+    "description": "Exploración de alternativas más transparentes y autónomas, con especial atención a la privacidad, la dependencia tecnológica y el control sobre los datos."
+    ,"order": 5
+  },
+  {
+    "id": "6",
+    "title": "Integración y automatización",
+    "description": "Conexión de herramientas, APIs y fuentes de información para crear flujos de trabajo útiles, mantenibles y con sentido."
+    ,"order": 6
   }
 ]
