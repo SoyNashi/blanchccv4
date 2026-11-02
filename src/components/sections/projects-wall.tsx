@@ -1,144 +1,46 @@
 "use client";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { ArrowUpRight, Network, ShoppingBag, Workflow } from "lucide-react";
 
-export const ProjectsWall = ({ projects, posts }: { projects: any[]; posts?: any[] }) => {
-  return (
-    <section id="projects" className="bg-background py-20">
-      <div className="flex flex-col gap-40">
-        {projects.map((project, index) => (
-          <ProjectItem key={project.id} project={project} index={index} posts={posts} />
-        ))}
+const projectIcons = [Workflow, ShoppingBag, Network];
+
+export const ProjectsWall = ({ projects, posts }: { projects: any[]; posts?: any[] }) => (
+  <section id="projects" className="relative px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+    <div className="mx-auto max-w-7xl">
+      <div className="mb-12 flex flex-col justify-between gap-6 md:mb-16 md:flex-row md:items-end">
+        <div><p className="section-kicker mb-4">01 / Selected work</p><h2 className="text-5xl font-black tracking-[-.06em] text-white sm:text-7xl">PROJECT<span className="neon-text">_INDEX</span></h2></div>
+        <p className="max-w-sm text-sm leading-7 text-[#91a0a8]">Tres líneas de trabajo, tres problemas distintos. Proyectos propios y colaboraciones en diferentes fases de desarrollo.</p>
       </div>
-    </section>
-  );
-};
-
-const ProjectItem = ({ project, index, posts }: { project: any; index: number; posts?: any[] }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 0.9]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-
-  // Encontrar los posts asociados
-  const relatedPosts = posts?.filter((post: any) => project.relatedPostIds?.includes(post.id)) || [];
-  
-  // Agrupar posts por series
-  const postsBySeries = relatedPosts.reduce((acc: any, post: any) => {
-    if (post.series) {
-      if (!acc[post.series]) {
-        acc[post.series] = [];
-      }
-      acc[post.series].push(post);
-    } else {
-      if (!acc['individual']) {
-        acc['individual'] = [];
-      }
-      acc['individual'].push(post);
-    }
-    return acc;
-  }, {});
-
-  return (
-    <motion.div
-      ref={containerRef}
-      style={{ opacity }}
-      className="relative flex min-h-[80vh] w-full flex-col items-center justify-center px-6"
-    >
-      <div className="grid w-full max-w-7xl grid-cols-1 gap-12 md:grid-cols-2 lg:items-center">
-        <div className={`order-2 flex flex-col gap-6 ${index % 2 === 0 ? "lg:order-1" : "lg:order-2"}`}>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <span className="text-xs font-bold tracking-[0.2em] text-muted-foreground uppercase">
-              Case Study — 0{index + 1}
-            </span>
-            <h2 className="mt-4 text-6xl font-bold tracking-tighter text-white sm:text-7xl">
-              {project.title}
-            </h2>
-          </motion.div>
-          
-          <motion.p
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="max-w-md text-xl leading-relaxed text-muted-foreground"
-          >
-            {project.description}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid grid-cols-1 gap-6 border-t border-white/10 pt-8 sm:grid-cols-3"
-          >
-            {project.tech.map((item: any) => (
-              <div key={item.label} className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
-                  {item.label}
-                </span>
-                <span className="text-sm font-medium text-white/80">
-                  {item.value}
-                </span>
+      <div className="grid gap-5 lg:grid-cols-3">
+        {projects.map((project, index) => {
+          const Icon = projectIcons[index] || Network;
+          const isGhostnet = project.slug === "ghostnet";
+          const relatedPosts = posts?.filter((post: any) => project.relatedPostIds?.includes(post.id)) || [];
+          return (
+            <motion.article key={project.id} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .15 }} transition={{ duration: .55, delay: index * .08 }}
+              className="tech-card group relative flex min-h-[34rem] flex-col overflow-hidden rounded-xl">
+              <div className="relative h-64 overflow-hidden border-b border-white/10 bg-[#0b1217]">
+                {project.image ? <Image src={project.image} alt={project.title} fill sizes="(max-width: 1024px) 100vw, 33vw" className="object-cover opacity-70 transition duration-700 group-hover:scale-105 group-hover:opacity-90" /> :
+                  <div className="site-grid absolute inset-0 flex items-center justify-center"><div className="absolute h-48 w-48 rounded-full border border-dashed border-[#57e6e6]/25" /><div className="absolute h-36 w-36 rounded-full border border-[#b7ff3c]/30" /><div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-[#57e6e6]/50 bg-[#57e6e6]/10 text-[#57e6e6] shadow-[0_0_45px_rgba(87,230,230,.12)]"><Icon className="h-9 w-9" /></div><span className="absolute left-5 top-5 font-mono text-[9px] tracking-[.2em] text-[#57e6e6]/70">GHOSTNET // NODE MAP</span><span className="absolute bottom-5 right-5 font-mono text-[9px] text-white/35">NETWORK CONCEPT</span></div>}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0b1015] via-transparent to-black/10" />
+                <span className="absolute right-4 top-4 rounded border border-white/15 bg-black/50 px-3 py-1.5 font-mono text-[9px] uppercase tracking-widest text-white/70">0{index + 1} / {project.status || "Project"}</span>
               </div>
-            ))}
-          </motion.div>
-
-          {relatedPosts.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="mt-4 flex flex-wrap gap-2"
-            >
-              {Object.entries(postsBySeries).map(([seriesName, seriesPosts]: [string, any]) => (
-                <Link
-                  key={seriesName}
-                  href={seriesName === 'individual' ? `/blog/${seriesPosts[0].slug}` : `/blog/series/${seriesName.toLowerCase().replace(/\s+/g, '-')}`}
-                  aria-label={`Leer ${seriesName === 'individual' ? seriesPosts[0].title : `${seriesName} (${seriesPosts.length} posts)`}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors group"
-                >
-                  <BookOpen className="h-4 w-4 text-white/60 group-hover:text-white" />
-                  <span className="text-sm font-medium text-white/60 group-hover:text-white">
-                    {seriesName === 'individual' 
-                      ? seriesPosts[0].title 
-                      : `${seriesName} (${seriesPosts.length} posts)`}
-                  </span>
-                </Link>
-              ))}
-            </motion.div>
-          )}
-        </div>
-
-        <motion.div
-          style={{ y, scale }}
-          className={`order-1 flex aspect-[4/5] w-full overflow-hidden lg:aspect-square ${index % 2 === 0 ? "lg:order-2" : "lg:order-1"}`}
-        >
-          <div className="relative h-full w-full grayscale transition-all duration-700 hover:grayscale-0">
-            <Image
-              src={project.image}
-              alt={project.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"
-              width={project.imageWidth || 1920}
-              height={project.imageHeight || 1080}
-              className="object-cover transition-transform duration-700 hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/20" />
-          </div>
-        </motion.div>
+              <div className="flex flex-1 flex-col p-6 sm:p-7">
+                <div className="mb-4 flex items-center justify-between"><span className="section-kicker">{isGhostnet ? "Network / Privacy" : index === 0 ? "Digital platform" : "Independent brand"}</span><Icon className="h-5 w-5 text-[#b7ff3c]" /></div>
+                <h3 className="text-3xl font-black tracking-tight text-white">{project.title}</h3>
+                <p className="mt-4 flex-1 text-sm leading-7 text-[#a5b3b8]">{project.description}</p>
+                {project.details && <p className="mt-3 text-xs leading-6 text-white/45">{project.details}</p>}
+                <div className="mt-6 flex flex-wrap gap-2">{project.tags?.map((tag: string) => <span key={tag} className="rounded border border-white/10 bg-white/[0.03] px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-wider text-white/55">{tag}</span>)}</div>
+                <div className="mt-6 grid grid-cols-2 gap-3 border-t border-white/10 pt-5">{project.tech?.slice(0, 4).map((item: any) => <div key={item.label}><span className="block font-mono text-[8px] uppercase tracking-[.18em] text-white/35">{item.label}</span><span className="mt-1 block text-xs text-white/75">{item.value}</span></div>)}</div>
+                {relatedPosts.length > 0 && <Link href={`/blog/${relatedPosts[0].slug}`} className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#57e6e6] hover:text-white">Leer notas relacionadas <ArrowUpRight className="h-4 w-4" /></Link>}
+              </div>
+            </motion.article>
+          );
+        })}
       </div>
-    </motion.div>
-  );
-};
+    </div>
+  </section>
+);
