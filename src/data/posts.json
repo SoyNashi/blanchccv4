@@ -277,5 +277,31 @@
     "series": null,
     "seriesOrder": 0,
     "seriesPartTitle": ""
+  },
+  {
+    "id": "10",
+    "slug": "entre-redes-proyectos-y-ganas-de-hacerlo-a-mi-manera",
+    "title": "Entre redes, proyectos y ganas de hacer las cosas a mi manera",
+    "category": "Opinión",
+    "description": "Una pequeña actualización sobre la idea de una red más libre, los preparativos de la preventa de Bastet Project y las ganas de construir algo propio.",
+    "content": "# Entre redes, proyectos y ganas de hacer las cosas a mi manera\n\nHa pasado un tiempo desde que escribí sobre la idea de construir una red conectada sin un dueño. Sigo dándole vueltas al tema, aunque cada vez intento mirarlo con algo más de calma y menos desde la emoción de imaginar cómo podría ser todo.\n\nLa idea de fondo no ha cambiado demasiado: me gustaría que internet volviese a sentirse como un espacio donde las personas pueden comunicarse y crear sin depender constantemente de una empresa, de una plataforma cerrada o de entregar más información de la necesaria. Una red de nodos independientes, con herramientas útiles, privacidad y cierta capacidad para sostenerse por sí misma.\n\nPero una cosa es imaginarlo y otra muy distinta hacerlo funcionar. La descentralización no soluciona automáticamente los problemas de seguridad, responsabilidad o financiación. Tampoco basta con decir que un sistema es libre para que sea justo. Hay que pensar quién mantiene cada nodo, cómo se gana la confianza, cómo se gestionan los abusos y qué ocurre cuando algo sale mal. Sigo creyendo que merece la pena explorar ese camino, pero cada vez tengo más claro que necesitará mucho trabajo y decisiones bastante más concretas que una buena idea.\n\nMientras tanto, hay otro proyecto que sí está avanzando de una forma más tangible: **Bastet Project**.\n\nEstoy preparando todo lo necesario para su preventa, especialmente la parte legal y los detalles que tienen que estar resueltos antes de empezar a operar. Hay muchas piezas que parecen pequeñas por separado, pero que juntas requieren tiempo: revisar documentos, ordenar procesos, comprobar que cada cosa encaja y dejarlo todo preparado para que, cuando llegue el momento, no haya que improvisar lo importante.\n\nNo voy a fingir que es un camino sencillo. Detrás de cada avance hay horas de trabajo y gastos, y ahora mismo es más fácil ver lo que cuesta que imaginar los beneficios. Aun así, prefiero invertir ese esfuerzo en construir algo propio. No busco hacerme rico de un día para otro; quiero tener la posibilidad de vivir de lo que creo, aunque al principio toque ir con lo justo.\n\nSupongo que esa es una parte bastante menos vistosa de emprender: no hay una música épica de fondo mientras preparas papeles, corriges detalles o vuelves a revisar algo por quinta vez. Hay constancia, incertidumbre y días en los que parece que no avanzas. Pero también está la satisfacción de saber que cada paso, por pequeño que sea, forma parte de algo que has decidido levantar tú.\n\nNo sé exactamente hasta dónde llegarán Bastet Project ni las ideas que tengo alrededor de una red más abierta. Algunas cambiarán, otras seguramente no saldrán adelante y puede que dentro de unos meses lea esto y piense de otra manera. Tampoco pasa nada. Este blog está precisamente para dejar constancia de ese proceso, no para fingir que tengo un plan perfecto.\n\nDe momento toca seguir trabajando, cerrar lo que queda pendiente y convertir las ideas en cosas reales. Ya veremos qué sale de todo esto.",
+    "createdAt": "2026-11-02T00:00:00.000Z",
+    "keywords": [
+      "Bastet Project",
+      "redes distribuidas",
+      "privacidad digital",
+      "libertad en internet",
+      "emprendimiento",
+      "proyectos personales",
+      "preventa",
+      "actualización personal"
+    ],
+    "readingTime": 3,
+    "wordCount": 505,
+    "featured": false,
+    "published": true,
+    "series": null,
+    "seriesOrder": 0,
+    "seriesPartTitle": ""
   }
 ]
