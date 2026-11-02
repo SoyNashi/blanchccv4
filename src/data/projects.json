@@ -2,71 +2,59 @@
   {
     "id": "1",
     "title": "Blau360",
-    "description": "Sitio web desarrollado con Vite y desplegado sobre un servidor Apache, con diseño propio e integración de un feed RSS mediante MCP.",
+    "description": "Plataforma web desarrollada con Vite y desplegada sobre infraestructura Apache. Un proyecto donde conviven diseño a medida, publicación de contenido e integración de un feed RSS mediante MCP.",
+    "details": "La parte interesante no es únicamente la interfaz: también importa cómo se sirve, cómo se actualiza y cómo se conectan las distintas fuentes de información. Blau360 representa la vertiente de producto digital, despliegue y automatización.",
     "image": "/images/blau360.png",
     "imageWidth": 1920,
     "imageHeight": 1080,
-    "tags": [
-      "Vite",
-      "Apache",
-      "RSS",
-      "MCP"
-    ],
+    "tags": ["Vite", "Apache", "RSS", "MCP", "Web platform"],
     "tech": [
-      {
-        "label": "Frontend",
-        "value": "Vite"
-      },
-      {
-        "label": "Servidor",
-        "value": "Apache"
-      },
-      {
-        "label": "Contenido",
-        "value": "RSS"
-      },
-      {
-        "label": "Integración",
-        "value": "MCP"
-      }
+      { "label": "Frontend", "value": "Vite" },
+      { "label": "Servidor", "value": "Apache" },
+      { "label": "Contenido", "value": "RSS" },
+      { "label": "Integración", "value": "MCP" }
     ],
     "color": "#3B82F6",
     "order": 1,
+    "status": "En evolución",
     "relatedPostIds": []
   },
   {
     "id": "2",
     "title": "Bastet Project",
-    "description": "Proyecto personal para construir una marca de ropa con una identidad propia y una propuesta orientada a romper con los planteamientos convencionales. El proyecto está actualmente en desarrollo.",
+    "description": "Proyecto independiente para construir una marca de ropa con identidad propia, una comunidad alrededor de sus valores y una propuesta que no dependa de repetir fórmulas convencionales.",
+    "details": "El trabajo contempla marca, experiencia de compra y una base tecnológica propia. La preventa y sus preparativos legales y operativos forman parte del proceso; las funcionalidades y fechas se comunicarán cuando estén confirmadas.",
     "image": "/images/bastet.png",
     "imageWidth": 1920,
     "imageHeight": 1080,
-    "tags": [
-      "Node.js",
-      "Next.js",
-      "E-commerce",
-      "Branding"
-    ],
+    "tags": ["Branding", "E-commerce", "Node.js", "Next.js", "Producto"],
     "tech": [
-      {
-        "label": "Runtime",
-        "value": "Node.js"
-      },
-      {
-        "label": "Web",
-        "value": "Next.js"
-      },
-      {
-        "label": "Producto",
-        "value": "E-commerce"
-      },
-      {
-        "label": "Estado",
-        "value": "En desarrollo"
-      }
+      { "label": "Runtime", "value": "Node.js" },
+      { "label": "Web", "value": "Next.js" },
+      { "label": "Producto", "value": "E-commerce" },
+      { "label": "Estado", "value": "En desarrollo" }
     ],
     "color": "#10B981",
     "order": 2,
+    "status": "En desarrollo",
+    "relatedPostIds": []
+  },
+  {
+    "id": "3",
+    "title": "Ghostnet",
+    "slug": "ghostnet",
+    "description": "Línea de investigación y desarrollo centrada en redes distribuidas, privacidad digital e infraestructura independiente. Ghostnet nace de una pregunta: ¿cómo podemos construir espacios y servicios conectados con más autonomía y menos dependencia de plataformas centralizadas?",
+    "details": "El proyecto se presenta en fase de exploración. La dirección conceptual gira alrededor de arquitectura de red, comunicación entre nodos, seguridad desde el diseño y soberanía tecnológica. La implementación, los protocolos y las capacidades concretas se definirán y documentarán a medida que avance el desarrollo.",
+    "tags": ["Redes distribuidas", "Privacidad", "Infraestructura", "Seguridad", "Investigación"],
+    "tech": [
+      { "label": "Enfoque", "value": "Redes distribuidas" },
+      { "label": "Prioridad", "value": "Privacidad por diseño" },
+      { "label": "Arquitectura", "value": "Por definir" },
+      { "label": "Estado", "value": "Exploración" }
+    ],
+    "color": "#57E6E6",
+    "order": 3,
+    "status": "En exploración",
     "relatedPostIds": []
   }
 ]
