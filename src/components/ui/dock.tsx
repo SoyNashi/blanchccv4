@@ -1,38 +1,28 @@
 "use client";
+
 import { motion } from "framer-motion";
-import { Home, Briefcase, Award, PenTool, Mail } from "lucide-react";
+import { Home, Briefcase, Award, Radio, Mail } from "lucide-react";
 import Link from "next/link";
 
 const DOCK_ITEMS = [
-  { icon: <Home className="h-5 w-5" />, label: "Inicio", href: "#hero" },
-  { icon: <Briefcase className="h-5 w-5" />, label: "Proyectos", href: "#projects" },
-  { icon: <Award className="h-5 w-5" />, label: "Certificados", href: "#certifications" },
-  { icon: <PenTool className="h-5 w-5" />, label: "Blog", href: "#blog" },
-  { icon: <Mail className="h-5 w-5" />, label: "Contacto", href: "#contact" },
+  { icon: <Home className="h-4 w-4" />, label: "Inicio", href: "#hero" },
+  { icon: <Briefcase className="h-4 w-4" />, label: "Proyectos", href: "#projects" },
+  { icon: <Radio className="h-4 w-4" />, label: "Enfoque", href: "#about-focus" },
+  { icon: <Award className="h-4 w-4" />, label: "Certificados", href: "#certifications" },
+  { icon: <Mail className="h-4 w-4" />, label: "Contacto", href: "#contact" },
 ];
 
-export const Dock = () => {
-  return (
-    <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 w-full max-w-md px-4">
-      <motion.div
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="flex items-center justify-center gap-1 sm:gap-2 rounded-full border border-white/10 bg-black/50 p-1 sm:p-2 backdrop-blur-xl mx-auto"
-      >
-        {DOCK_ITEMS.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            aria-label={item.label}
-            className="group relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full text-white/50 transition-all hover:bg-white/10 hover:text-white flex-shrink-0"
-          >
-            {item.icon}
-            <span className="absolute -top-10 scale-0 rounded bg-white px-2 py-1 text-[10px] font-bold uppercase text-black transition-all group-hover:scale-100 whitespace-nowrap">
-              {item.label}
-            </span>
-          </Link>
-        ))}
-      </motion.div>
-    </div>
-  );
-};
+export const Dock = () => (
+  <div className="fixed bottom-4 left-1/2 z-50 w-full max-w-md -translate-x-1/2 px-4">
+    <motion.nav initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} aria-label="Navegación principal"
+      className="mx-auto flex items-center justify-center gap-1 rounded-xl border border-[#b7ff3c]/20 bg-[#080d11]/85 p-1.5 shadow-[0_12px_50px_rgba(0,0,0,.5)] backdrop-blur-2xl sm:gap-2 sm:p-2">
+      {DOCK_ITEMS.map(item => (
+        <Link key={item.label} href={item.href} aria-label={item.label}
+          className="group relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-white/55 transition hover:bg-[#b7ff3c]/10 hover:text-[#b7ff3c] sm:h-11 sm:w-11">
+          {item.icon}
+          <span className="pointer-events-none absolute -top-10 scale-0 whitespace-nowrap rounded border border-[#b7ff3c]/25 bg-[#0b1116] px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-widest text-[#d8fca5] opacity-0 transition group-hover:scale-100 group-hover:opacity-100">{item.label}</span>
+        </Link>
+      ))}
+    </motion.nav>
+  </div>
+);
