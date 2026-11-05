@@ -1,36 +1,16 @@
 [
   {
-    "id": "1",
-    "title": "Blau360",
-    "description": "Sitio web desarrollado con Vite y desplegado sobre un servidor Apache, con diseño propio e integración de un feed RSS mediante MCP.",
-    "image": "/images/blau360.png",
-    "imageWidth": 1920,
-    "imageHeight": 1080,
+    "id": "ghostnet",
+    "title": "GhostNet",
+    "description": "Una comunidad privada con su propio foro y un escritorio web que funciona como un sistema operativo. Una herramienta para que cada grupo pueda comunicarse y organizarse sin entregar sus datos a una plataforma ajena.",
+    "visual": "ghostnet",
+    "status": "Proyecto principal",
     "tags": [
-      "Vite",
-      "Apache",
-      "RSS",
-      "MCP"
+      "Foro privado",
+      "Escritorio web",
+      "Interfaz propia",
+      "Privacidad"
     ],
-    "tech": [
-      {
-        "label": "Frontend",
-        "value": "Vite"
-      },
-      {
-        "label": "Servidor",
-        "value": "Apache"
-      },
-      {
-        "label": "Contenido",
-        "value": "RSS"
-      },
-      {
-        "label": "Integración",
-        "value": "MCP"
-      }
-    ],
-    "color": "#3B82F6",
     "order": 1,
     "relatedPostIds": []
   },
@@ -67,6 +47,41 @@
     ],
     "color": "#10B981",
     "order": 2,
+    "relatedPostIds": []
+  },
+  {
+    "id": "1",
+    "title": "Blau360",
+    "description": "Sitio web desarrollado con Vite y desplegado sobre un servidor Apache, con diseño propio e integración de un feed RSS mediante MCP.",
+    "image": "/images/blau360.png",
+    "imageWidth": 1920,
+    "imageHeight": 1080,
+    "tags": [
+      "Vite",
+      "Apache",
+      "RSS",
+      "MCP"
+    ],
+    "tech": [
+      {
+        "label": "Frontend",
+        "value": "Vite"
+      },
+      {
+        "label": "Servidor",
+        "value": "Apache"
+      },
+      {
+        "label": "Contenido",
+        "value": "RSS"
+      },
+      {
+        "label": "Integración",
+        "value": "MCP"
+      }
+    ],
+    "color": "#3B82F6",
+    "order": 3,
     "relatedPostIds": []
   }
 ]
