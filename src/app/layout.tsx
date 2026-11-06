@@ -1,40 +1,56 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { CSSProperties } from "react";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { DockWrapper } from "@/components/ui/dock-wrapper";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const archivo = Archivo({
+  subsets: ["latin"],
+  variable: "--font-archivo",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-ibm-plex-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Nil Blanch | Digital Product Builder",
-  description: "Especialista en desarrollo web, ecommerce y SEO técnico. Construyendo productos digitales reales.",
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/favicon.ico",
-  },
+  title: "Nil Blanch | Desarrollo web y aplicaciones propias",
+  description:
+    "Desarrollo páginas web y aplicaciones a medida. Diseño brutalista, software propio y tecnología bajo tu control.",
+  icons: { icon: "/favicon.ico", apple: "/favicon.ico" },
   manifest: "/manifest.json",
-  alternates: {
-    canonical: "https://blanch.cc",
-  },
+  alternates: { canonical: "https://blanch.cc" },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const fontVariables = {
+    "--f": archivo.style.fontFamily,
+    "--m": ibmPlexMono.style.fontFamily,
+  } as CSSProperties;
+
   return (
-    <html lang="es" className="dark">
+    <html lang="es" className="js dark">
+      <head>
+        <meta name="theme-color" content="#0A0D10" />
+      </head>
       <body
         className={cn(
-          inter.variable,
-          "min-h-screen bg-background font-sans antialiased text-foreground"
+          archivo.variable,
+          ibmPlexMono.variable,
+          "min-h-screen antialiased",
         )}
+        style={fontVariables}
       >
-        <main className="relative flex min-h-screen flex-col">
-          {children}
-        </main>
+        <div className="relative min-h-screen">{children}</div>
         <DockWrapper />
       </body>
     </html>

@@ -1,34 +1,9 @@
-import { Hero } from "@/components/sections/hero";
-import { ProjectsWall } from "@/components/sections/projects-wall";
-import { EditorialServices } from "@/components/sections/editorial-services";
-import { CertificationsMarquee } from "@/components/sections/certifications-marquee";
-import { SecondaryProjects } from "@/components/sections/secondary-projects";
-import { BlogSlider } from "@/components/sections/blog-slider";
-import { Contact } from "@/components/sections/contact";
+import ReferenceHome from "@/components/sections/reference-home";
 import projectsData from "@/data/projects.json";
 import servicesData from "@/data/services.json";
 import certificationsData from "@/data/certifications.json";
+import secondaryProjects from "@/data/secondary-projects.json";
 import postsData from "@/data/posts.json";
-
-export default async function Home() {
-  // Recuperamos todos los datos de los archivos JSON
-  const certs = certificationsData.sort((a, b) => a.order - b.order);
-  const allProjects = projectsData.sort((a, b) => a.order - b.order);
-  const allServices = servicesData.sort((a, b) => a.order - b.order);
-
-  // Ordenar posts por fecha
-  const sortedPosts = postsData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  const latestPosts = sortedPosts.slice(0, 2);
-
-  return (
-    <div className="flex flex-col">
-      <Hero />
-      <ProjectsWall projects={allProjects} posts={postsData} />
-      <EditorialServices services={allServices} />
-      <CertificationsMarquee items={certs} posts={postsData} />
-      <SecondaryProjects posts={postsData} />
-      <BlogSlider posts={latestPosts} />
-      <Contact />
-    </div>
-  );
+export default function Home(){
+ return <ReferenceHome projects={[...projectsData].sort((a,b)=>a.order-b.order)} services={[...servicesData].sort((a,b)=>a.order-b.order)} certifications={[...certificationsData].sort((a,b)=>a.order-b.order)} secondaryProjects={secondaryProjects} posts={[...postsData].sort((a,b)=>new Date(b.createdAt).getTime()-new Date(a.createdAt).getTime())}/>;
 }
