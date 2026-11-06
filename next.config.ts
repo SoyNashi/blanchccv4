@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.unsplash.com; font-src 'self' data:; connect-src 'self' https://images.unsplash.com;",
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.unsplash.com; font-src 'self' data:; connect-src 'self' https://images.unsplash.com; frame-src 'self' https://bastetproject.com https://www.bastetproject.com https://blau360.com https://www.blau360.com;",
           },
           {
             key: 'X-Content-Type-Options',
