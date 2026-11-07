@@ -3,8 +3,8 @@
     {
       "id": "3",
       "name": "Argentona Bocs Web",
-      "description": "Página web para el equipo local",
-      "details": "Sitio web desarrollado con WordPress para gestión de contenido y comunicación local.",
+      "description": "Web del equipo local Argentona Bocs, desarrollada con WordPress para presentar el club y facilitar la comunicación de sus contenidos.",
+      "details": "Sitio web desarrollado con WordPress, con una estructura pensada para que el equipo pueda gestionar y actualizar la información.",
       "tech": [
         "WordPress"
       ],
@@ -14,8 +14,8 @@
     {
       "id": "4",
       "name": "Instint Global",
-      "description": "Junto con Blau360 y sus servidores, Insint Global usa tecnologia Vite, un sistema mullti idioma i un diseño pensado en la elegancia del restaurante.",
-      "details": "",
+      "description": "Sitio web para Instint Global, desarrollado con Vite y una estructura multidioma. El diseño busca presentar el proyecto de restauración con una imagen cuidada y coherente.",
+      "details": "Proyecto web desarrollado junto con el trabajo de Blau360 y su infraestructura de servidores. La propuesta combina una implementación ligera con contenido en varios idiomas y una presentación visual adaptada al restaurante.",
       "tech": [
         "Vite"
       ],
@@ -26,8 +26,8 @@
     {
       "id": "5",
       "name": "aslo.es",
-      "description": "Web desarrollada con Node.js para el proyecto personal de un amigo dedicado a la grabación, edición y producción audiovisual, con una propuesta visual basada en el brutalismo web.",
-      "details": "La idea nació al ver que el proyecto tenía una web creada con ayuda de ChatGPT que, desde mi punto de vista, no representaba suficientemente la personalidad del trabajo audiovisual que había detrás. Decidí preparar una propuesta desde cero, planteando una dirección artística brutalista porque es un estilo de diseño que me interesa especialmente. La propuesta buscaba alejarse de la típica web corporativa y convertir la interfaz en parte de la identidad del proyecto. Fue presentada y gustó, aunque finalmente el proyecto quedó en pausa.",
+      "description": "Propuesta de web para un proyecto audiovisual, desarrollada desde cero con Node.js y una dirección visual inspirada en el brutalismo web.",
+      "details": "La idea nació al ver que la web existente no transmitía suficientemente la personalidad del proyecto audiovisual. Preparé una propuesta desde cero, utilizando el diseño brutalista para alejarme de la típica web corporativa y convertir la propia interfaz en parte de su identidad. La propuesta fue presentada y gustó, aunque finalmente el proyecto quedó en pausa.",
       "tech": [
         "Node.js",
         "Brutalismo web",
@@ -64,7 +64,7 @@
     {
       "id": "",
       "name": "PyRPG",
-      "description": "PyRPG es un RPG por turnos desarrollado en Python como proyecto de clase durante el ciclo de Sistemas Microinformáticos y Redes. El juego utiliza combates por rondas, mejoras de estadísticas, pociones, colores y arte ASCII, además de diferentes funciones y librerías para gestionar la experiencia de juego.",
+      "description": "RPG por turnos desarrollado en Python como proyecto de clase durante el ciclo de Sistemas Microinformáticos y Redes. Incluye combates por rondas, mejoras de estadísticas, pociones y una interfaz de consola con arte ASCII y caracteres Unicode.",
       "details": "Proyecto académico desarrollado principalmente de forma individual durante aproximadamente dos meses de clases, con la colaboración de un compañero. El proyecto evolucionó a partir de una versión anterior llamada kill-the-boss y posteriormente se publicó en GitHub como proyecto abierto a críticas y mejoras. Incluye combates contra jefes, mejoras de estadísticas, pociones de vida y maná, arte ASCII, caracteres Unicode y un sistema de traducción mediante Google Translator. El código conserva decisiones propias de una primera etapa de aprendizaje, incluyendo funciones, variables duplicadas y una estructura que podría refactorizarse considerablemente.",
       "tech": [
         "Python 3",
