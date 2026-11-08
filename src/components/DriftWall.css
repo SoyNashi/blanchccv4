@@ -79,8 +79,8 @@
 .drift-wall__tile:focus-visible img { filter: grayscale(0) saturate(1.05); }
 .drift-wall__tile:focus-visible .drift-wall__inner { outline: 2px solid white; outline-offset: -2px; }
 @media (max-width: 760px) {
-  .drift-wall__col { width: calc(clamp(88px, 25vw, 124px) + var(--dw-gap)); }
-  .drift-wall__tile { height: calc(clamp(92px, 27vw, 124px) + var(--dw-gap)); }
+  .drift-wall__col { width: calc(var(--dw-tile-w) + var(--dw-gap)); }
+  .drift-wall__tile { height: calc(var(--dw-tile-h) + var(--dw-gap)); }
 }
 @media (prefers-reduced-motion: reduce) {
   .drift-wall__plane, .drift-wall__track { will-change: auto; }
