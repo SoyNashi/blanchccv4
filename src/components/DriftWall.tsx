@@ -76,7 +76,9 @@ export default function DriftWall({
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const compactLayout = containerWidth <= 760;
   const responsiveColumns = Math.max(1, Math.floor(columns));
-  const renderedTileWidth = compactLayout ? Math.min(tileWidth, 108) : tileWidth;
+  const renderedTileWidth = containerWidth <= 520
+    ? Math.max(64, Math.min(tileWidth, (containerWidth - 36) / 4 - 10))
+    : compactLayout ? Math.min(tileWidth, 108) : tileWidth;
   const renderedTileHeight = compactLayout ? Math.min(tileHeight, 104) : tileHeight;
   const renderedGap = compactLayout ? Math.min(gap, 10) : gap;
 
