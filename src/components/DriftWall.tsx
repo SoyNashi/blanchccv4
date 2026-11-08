@@ -63,9 +63,7 @@ export default function DriftWall({
   const planeRef = useRef<HTMLDivElement>(null);
   const trackRefs = useRef<(HTMLDivElement | null)[]>([]);
   const offsetsRef = useRef<number[]>([]);
-  const velocitiesRef = useRef<number[]>([]);
   const hoveredColRef = useRef(-1);
-  const wallHoveredRef = useRef(false);
   const pointerRef = useRef({ x: 0, y: 0 });
   const pointerDampedRef = useRef({ x: 0, y: 0 });
   const lastTsRef = useRef<number | null>(null);
@@ -74,9 +72,9 @@ export default function DriftWall({
   const [activeId, setActiveId] = useState<string | null>(null);
   const [reduced, setReduced] = useState(false);
 
-  // Cada columna contiene el conjunto completo de logos en un orden distinto.
-  // La semilla cambia al montar para mezclar la composición en cada recarga
-  // sin provocar diferencias de hidratación entre servidor y cliente.
+  // Deduplicamos por archivo de imagen: un logo solo puede entrar una vez en el conjunto.
+  // Después cada columna conserva un orden fijo y repite el ciclo completo sin reordenar
+  // tarjetas a mitad del movimiento, evitando saltos visuales.
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const responsiveColumns = containerWidth <= 520 ? Math.min(2, columns) : containerWidth <= 900 ? Math.min(3, columns) : columns;
 
@@ -95,9 +93,19 @@ export default function DriftWall({
     return result;
   };
 
+  const uniqueItems = useMemo(() => {
+    const seen = new Set<string>();
+    return items.filter((item) => {
+      const key = item.image.trim().toLowerCase() || item.href?.trim().toLowerCase() || item.title.trim().toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [items]);
+
   const columnItems = useMemo(() =>
-    Array.from({ length: responsiveColumns }, (_, column) => shuffle(items, shuffleSeed + (column + 1) * 7919)),
-  [items, responsiveColumns, shuffleSeed]);
+    Array.from({ length: responsiveColumns }, (_, column) => shuffle(uniqueItems, shuffleSeed + (column + 1) * 7919)),
+  [uniqueItems, responsiveColumns, shuffleSeed]);
 
   const columnMeta = useMemo(() => {
     const unit = tileHeight + gap;
@@ -107,18 +115,6 @@ export default function DriftWall({
       return { copyHeight, copies };
     });
   }, [columnItems, tileHeight, gap, containerHeight]);
-
-  const columnPasses = useMemo(() => columnItems.map((col, column) => {
-    let previous: DriftWallItem[] = [];
-    return Array.from({ length: columnMeta[column].copies }, (_, copy) => {
-      let next = shuffle(col, shuffleSeed + (column + 1) * 7919 + (copy + 1) * 15485863);
-      if (copy > 0 && next.length > 1 && next.every((item, index) => item === previous[index])) {
-        next = [...next.slice(1), next[0]];
-      }
-      previous = next;
-      return next;
-    });
-  }), [columnItems, columnMeta, shuffleSeed]);
 
   const baseVelocities = useMemo(() => columnItems.map((_, column) => {
     let value = (shuffleSeed + (column + 1) * 104729) >>> 0;
@@ -156,7 +152,6 @@ export default function DriftWall({
 
   useEffect(() => {
     offsetsRef.current = columnMeta.map((meta, column) => meta.copyHeight * (((shuffleSeed + column * 37) % 100) / 100));
-    velocitiesRef.current = columnItems.map(() => 0);
   }, [columnMeta, columnItems, shuffleSeed]);
 
   useEffect(() => {
@@ -179,9 +174,7 @@ export default function DriftWall({
         if (!el) return;
         if (!reduced) {
           const target = baseVelocities[column];
-          const ease = 1 - Math.exp(-dt / (target === 0 ? 0.16 : 0.28));
-          velocitiesRef.current[column] += (target - velocitiesRef.current[column]) * ease;
-          let next = (offsetsRef.current[column] ?? 0) + velocitiesRef.current[column] * dt;
+          let next = (offsetsRef.current[column] ?? 0) + target * dt;
           next = ((next % meta.copyHeight) + meta.copyHeight) % meta.copyHeight;
           offsetsRef.current[column] = next;
         }
@@ -236,9 +229,7 @@ export default function DriftWall({
         "--dw-edge": `${Math.max(0, (1 - fade) * 100)}%`
       } as React.CSSProperties}
       onPointerMove={handlePointerMove}
-      onPointerEnter={() => { wallHoveredRef.current = true; }}
       onPointerLeave={() => {
-        wallHoveredRef.current = false;
         pointerRef.current = { x: 0, y: 0 };
         release();
       }}
@@ -251,8 +242,8 @@ export default function DriftWall({
           return (
             <div className="drift-wall__col" key={`column-${column}`}>
               <div className="drift-wall__track" ref={(el) => { trackRefs.current[column] = el; }}>
-                {columnPasses[column].flatMap((pass, copy) =>
-                  pass.map((item, index) => {
+                {Array.from({ length: meta.copies }, (_, copy) =>
+                  col.map((item, index) => {
                     const id = `${column}-${copy}-${index}`;
                     const tile = (
                       <span className="drift-wall__inner">
