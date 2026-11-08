@@ -50,7 +50,6 @@ export default function DriftWall({
   perspective = 600,
   depth = 270,
   speed = 54,
-  direction = "up",
   variance = 0.5,
   parallax = 1,
   pauseOnHover = false,
@@ -101,6 +100,17 @@ export default function DriftWall({
     Array.from({ length: responsiveColumns }, (_, column) => shuffle(items, shuffleSeed + (column + 1) * 7919)),
   [items, responsiveColumns, shuffleSeed]);
 
+  const columnPasses = useMemo(() => columnItems.map((col, column) => {
+    let previous: DriftWallItem[] = [];
+    return Array.from({ length: columnMeta[column].copies }, (_, copy) => {
+      let next = shuffle(col, shuffleSeed + (column + 1) * 7919 + (copy + 1) * 15485863);
+      if (copy > 0 && next.length > 1 && next.every((item, index) => item === previous[index])) {
+        next = [...next.slice(1), next[0]];
+      }
+      previous = next;
+      return next;
+    });
+  }), [columnItems, columnMeta, shuffleSeed]);
   const columnMeta = useMemo(() => {
     const unit = tileHeight + gap;
     return columnItems.map((col) => {
@@ -242,8 +252,8 @@ export default function DriftWall({
           return (
             <div className="drift-wall__col" key={`column-${column}`}>
               <div className="drift-wall__track" ref={(el) => { trackRefs.current[column] = el; }}>
-                {Array.from({ length: meta.copies }).flatMap((_, copy) =>
-                  shuffle(col, shuffleSeed + (column + 1) * 7919 + (copy + 1) * 15485863).map((item, index) => {
+                {columnPasses[column].flatMap((pass, copy) =>
+                  pass.map((item, index) => {
                     const id = `${column}-${copy}-${index}`;
                     const tile = (
                       <span className="drift-wall__inner">
