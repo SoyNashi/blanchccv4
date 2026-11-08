@@ -83,5 +83,42 @@
     "color": "#3B82F6",
     "order": 3,
     "relatedPostIds": []
+  },
+  {
+    "id": "bitzeta",
+    "title": "BitZeta",
+    "description": "Portal de noticias desarrollado sobre WordPress y utilizado como entorno propio de experimentación SEO. Un proyecto para investigar búsquedas, probar estrategias de contenidos y observar cómo evoluciona el posicionamiento orgánico en un sitio editorial.",
+    "image": "/images/bitzeta.png",
+    "imageWidth": 1920,
+    "imageHeight": 1080,
+    "tags": [
+      "WordPress",
+      "Portal de noticias",
+      "SEO",
+      "Experimentación"
+    ],
+    "tech": [
+      {
+        "label": "Plataforma",
+        "value": "WordPress"
+      },
+      {
+        "label": "Tipo",
+        "value": "Portal de noticias"
+      },
+      {
+        "label": "Enfoque",
+        "value": "Experimentación SEO"
+      },
+      {
+        "label": "Estado",
+        "value": "Activo"
+      }
+    ],
+    "color": "#64748B",
+    "order": 4,
+    "relatedPostIds": [
+      "11"
+    ]
   }
 ]
