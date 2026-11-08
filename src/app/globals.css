@@ -1022,3 +1022,13 @@ html.ready .bh .ln:nth-child(2)>span{transition-delay:.1s}
 @media (max-width: 380px) {
   .hero-driftwall { left: 50%; width: 100%; top: 45%; height: 100%; }
 }
+
+
+/* Cierre de contacto: ASCII azul/cian integrado en el fondo */
+.end { position: relative; isolation: isolate; overflow: hidden; }
+.end-ascii { position: absolute; inset: 0; z-index: -1; height: 100%; min-height: 560px; opacity: .82; pointer-events: auto; }
+.end-ascii .gradient-ascii-container { position: absolute; inset: 0; }
+.end-content { position: relative; z-index: 1; }
+.end-content h2, .end-content .mail, .end-content .soc { text-shadow: 0 2px 24px rgba(0,0,0,.22); }
+.end .foot { position: relative; z-index: 1; }
+@media (max-width: 760px) { .end-ascii { min-height: 480px; opacity: .72; } }
