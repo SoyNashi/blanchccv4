@@ -3,7 +3,6 @@ import type { CSSProperties } from "react";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { DockWrapper } from "@/components/ui/dock-wrapper";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -51,7 +50,6 @@ export default function RootLayout({
         style={fontVariables}
       >
         <div className="relative min-h-screen">{children}</div>
-        <DockWrapper />
       </body>
     </html>
   );
