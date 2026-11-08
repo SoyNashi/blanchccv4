@@ -1031,3 +1031,11 @@ html.ready .bh .ln:nth-child(2)>span{transition-delay:.1s}
 .end-content, .end .foot { position: relative; z-index: 1; }
 .end-content h2, .end-content .mail, .end-content .soc { text-shadow: 0 2px 22px rgba(10,13,16,.55); }
 @media (max-width: 760px) { .end-ascii { min-height: 480px; opacity: .78; } }
+
+
+/* En móvil, el índice del artículo desaparece para dejar todo el ancho al contenido. */
+@media (max-width: 760px) {
+  .ref-article-layout > .toc {
+    display: none !important;
+  }
+}
