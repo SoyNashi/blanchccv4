@@ -103,9 +103,19 @@ export default function DriftWall({
     });
   }, [items]);
 
-  const columnItems = useMemo(() =>
-    Array.from({ length: responsiveColumns }, (_, column) => shuffle(uniqueItems, shuffleSeed + (column + 1) * 7919)),
-  [uniqueItems, responsiveColumns, shuffleSeed]);
+  const shuffledItems = useMemo(
+    () => shuffle(uniqueItems, shuffleSeed),
+    [uniqueItems, shuffleSeed]
+  );
+
+  // Cada logo pertenece a una sola columna. Repartimos el conjunto completo
+  // entre columnas, en lugar de copiar todos los logos en cada una.
+  const columnItems = useMemo(() => {
+    const count = Math.min(responsiveColumns, shuffledItems.length);
+    return Array.from({ length: count }, (_, column) =>
+      shuffledItems.filter((_, index) => index % count === column)
+    );
+  }, [shuffledItems, responsiveColumns]);
 
   const columnMeta = useMemo(() => {
     const unit = tileHeight + gap;
