@@ -39,7 +39,7 @@ const columnFactor = (index: number, variance: number) => {
 
 export default function DriftWall({
   items,
-  columns = 3,
+  columns = 4,
   tileWidth = 152,
   tileHeight = 150,
   gap = 16,
@@ -75,7 +75,7 @@ export default function DriftWall({
   // tarjetas a mitad del movimiento, evitando saltos visuales.
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const compactLayout = containerWidth <= 760;
-  const responsiveColumns = containerWidth <= 520 ? Math.min(3, columns) : containerWidth <= 900 ? Math.min(3, columns) : columns;
+  const responsiveColumns = Math.max(1, Math.floor(columns));
   const renderedTileWidth = compactLayout ? Math.min(tileWidth, 108) : tileWidth;
   const renderedTileHeight = compactLayout ? Math.min(tileHeight, 104) : tileHeight;
   const renderedGap = compactLayout ? Math.min(gap, 10) : gap;
@@ -110,25 +110,24 @@ export default function DriftWall({
     [uniqueItems, shuffleSeed]
   );
 
-  // Cada logo pertenece a una sola columna. Repartimos el conjunto completo
-  // entre columnas, en lugar de copiar todos los logos en cada una.
-  const columnItems = useMemo(() => {
-    // Evitamos columnas de un solo logo: con el catálogo actual de 6,
-    // se muestran 3 columnas de 2 logos; al haber 8 logos habrá 4 columnas.
-    const count = Math.min(responsiveColumns, Math.max(1, Math.floor(shuffledItems.length / 2)));
-    return Array.from({ length: count }, (_, column) =>
-      shuffledItems.filter((_, index) => index % count === column)
-    );
-  }, [shuffledItems, responsiveColumns]);
+  // Cada columna contiene el catálogo completo en un orden aleatorio independiente.
+  // Al repetir una permutación sin duplicados, nunca aparecen dos logos iguales seguidos,
+  // tampoco en el salto entre el final y el principio del ciclo.
+  const columnItems = useMemo(
+    () => Array.from({ length: responsiveColumns }, (_, column) =>
+      shuffle(uniqueItems, shuffleSeed + (column + 1) * 104729)
+    ),
+    [uniqueItems, responsiveColumns, shuffleSeed]
+  );
 
   const columnMeta = useMemo(() => {
-    const unit = tileHeight + gap;
+    const unit = renderedTileHeight + renderedGap;
     return columnItems.map((col) => {
       const copyHeight = Math.max(unit, col.length * unit);
       const copies = Math.max(2, Math.ceil((containerHeight * 1.6) / copyHeight) + 1);
       return { copyHeight, copies };
     });
-  }, [columnItems, tileHeight, gap, containerHeight]);
+  }, [columnItems, renderedTileHeight, renderedGap, containerHeight]);
 
   const baseVelocities = useMemo(() => columnItems.map((_, column) => {
     let value = (shuffleSeed + (column + 1) * 104729) >>> 0;
