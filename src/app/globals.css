@@ -969,3 +969,32 @@ html.ready .bh .ln:nth-child(2)>span{transition-delay:.1s}
     overflow: visible;
   }
 }
+
+/* DriftWall: muro de logotipos transparente integrado en el fondo del hero */
+.hero-driftwall {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: min(62%, 600px);
+  pointer-events: auto;
+  overflow: hidden;
+  background: transparent;
+}
+.hero-driftwall::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 55%, var(--paper) 100%);
+}
+.hero > .xv, .hero > .xh, .hero > .xl { z-index: 2; }
+.hero > h1, .hero > .hb { z-index: 1; }
+@media (max-width: 760px) {
+  .hero-driftwall { height: 48%; }
+  .hero-driftwall .drift-wall {
+    -webkit-mask-image: radial-gradient(ellipse 88% 80% at 50% 42%, #000 35%, transparent 100%);
+    mask-image: radial-gradient(ellipse 88% 80% at 50% 42%, #000 35%, transparent 100%);
+  }
+}
