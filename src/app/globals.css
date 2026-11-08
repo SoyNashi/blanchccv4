@@ -979,7 +979,7 @@ html.ready .bh .ln:nth-child(2)>span{transition-delay:.1s}
   position: absolute;
   z-index: 1;
   top: 47%;
-  left: 50%;
+  left: 68%;
   width: 100%;
   height: 112%;
   transform: translate(-50%, -50%);
