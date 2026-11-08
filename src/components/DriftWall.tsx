@@ -75,11 +75,33 @@ export default function DriftWall({
   const [activeId, setActiveId] = useState<string | null>(null);
   const [reduced, setReduced] = useState(false);
 
+  // Cada columna contiene el conjunto completo de logos en un orden distinto.
+  // La semilla cambia al montar para mezclar la composición en cada recarga
+  // sin provocar diferencias de hidratación entre servidor y cliente.
+  const [shuffleSeed, setShuffleSeed] = useState(0);
+
+  useEffect(() => {
+    setShuffleSeed(Math.floor(Math.random() * 1_000_000) + 1);
+  }, []);
+
   const columnItems = useMemo(() => {
-    const cols = Array.from({ length: columns }, () => [] as DriftWallItem[]);
-    items.forEach((item, index) => cols[index % columns].push(item));
-    return cols;
-  }, [items, columns]);
+    const seededShuffle = (source: DriftWallItem[], seed: number) => {
+      const result = [...source];
+      let value = seed >>> 0;
+      const random = () => {
+        value = (value * 1664525 + 1013904223) >>> 0;
+        return value / 4294967296;
+      };
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
+    };
+    return Array.from({ length: columns }, (_, column) =>
+      seededShuffle(items, shuffleSeed + (column + 1) * 7919)
+    );
+  }, [items, columns, shuffleSeed]);
 
   const columnMeta = useMemo(() => {
     const unit = tileHeight + gap;
