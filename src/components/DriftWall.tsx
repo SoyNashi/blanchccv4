@@ -74,7 +74,11 @@ export default function DriftWall({
   // Después cada columna conserva un orden fijo y repite el ciclo completo sin reordenar
   // tarjetas a mitad del movimiento, evitando saltos visuales.
   const [shuffleSeed, setShuffleSeed] = useState(0);
-  const responsiveColumns = containerWidth <= 520 ? Math.min(2, columns) : containerWidth <= 900 ? Math.min(3, columns) : columns;
+  const compactLayout = containerWidth <= 760;
+  const responsiveColumns = containerWidth <= 520 ? Math.min(3, columns) : containerWidth <= 900 ? Math.min(3, columns) : columns;
+  const renderedTileWidth = compactLayout ? Math.min(tileWidth, 108) : tileWidth;
+  const renderedTileHeight = compactLayout ? Math.min(tileHeight, 104) : tileHeight;
+  const renderedGap = compactLayout ? Math.min(gap, 10) : gap;
 
   useEffect(() => {
     setShuffleSeed(Math.floor(Math.random() * 1_000_000) + 1);
@@ -134,11 +138,12 @@ export default function DriftWall({
     return magnitude * (random > 0.5 ? 1 : -1);
   }), [columnItems, speed, variance, shuffleSeed]);
 
-  const applyPlaneTransform = useCallback((px: number, py: number) => {
+  const applyPlaneTransform = useCallback((px: number, py: number, compact: boolean) => {
     const plane = planeRef.current;
     if (!plane) return;
-    plane.style.transform =
-      `translate(-50%, -50%) scale(1.18) rotateX(${tilt + py}deg) rotateY(${turn + px}deg) rotateZ(${roll}deg) translateZ(${-depth}px)`;
+    plane.style.transform = compact
+      ? `translate(-50%, -50%) scale(.94) rotateX(0deg) rotateY(-7deg) rotateZ(0deg) translateZ(-35px)`
+      : `translate(-50%, -50%) scale(1.18) rotateX(${tilt + py}deg) rotateY(${turn + px}deg) rotateZ(${roll}deg) translateZ(${-depth}px)`;
   }, [tilt, turn, roll, depth]);
 
   useEffect(() => {
@@ -177,7 +182,7 @@ export default function DriftWall({
       const damp = 1 - Math.exp(-dt / 0.12);
       pointerDampedRef.current.x += (targetX - pointerDampedRef.current.x) * damp;
       pointerDampedRef.current.y += (targetY - pointerDampedRef.current.y) * damp;
-      applyPlaneTransform(pointerDampedRef.current.x, pointerDampedRef.current.y);
+      applyPlaneTransform(pointerDampedRef.current.x, pointerDampedRef.current.y, compactLayout);
 
       columnMeta.forEach((meta, column) => {
         const el = trackRefs.current[column];
@@ -197,7 +202,7 @@ export default function DriftWall({
       window.cancelAnimationFrame(raf);
       lastTsRef.current = null;
     };
-  }, [baseVelocities, columnMeta, parallax, reduced, applyPlaneTransform]);
+  }, [baseVelocities, columnMeta, parallax, reduced, compactLayout, applyPlaneTransform]);
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -225,9 +230,9 @@ export default function DriftWall({
       ref={containerRef}
       className={`drift-wall${reduced ? " drift-wall--reduced" : ""}`}
       style={{
-        "--dw-tile-w": `${tileWidth}px`,
-        "--dw-tile-h": `${tileHeight}px`,
-        "--dw-gap": `${gap}px`,
+        "--dw-tile-w": `${renderedTileWidth}px`,
+        "--dw-tile-h": `${renderedTileHeight}px`,
+        "--dw-gap": `${renderedGap}px`,
         "--dw-radius": `${radius}px`,
         "--dw-perspective": `${perspective}px`,
         "--dw-lift": `${lift}px`,
