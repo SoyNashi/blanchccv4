@@ -111,7 +111,9 @@ export default function DriftWall({
   // Cada logo pertenece a una sola columna. Repartimos el conjunto completo
   // entre columnas, en lugar de copiar todos los logos en cada una.
   const columnItems = useMemo(() => {
-    const count = Math.min(responsiveColumns, shuffledItems.length);
+    // Evitamos columnas de un solo logo: con el catálogo actual de 6,
+    // se muestran 3 columnas de 2 logos; al haber 8 logos habrá 4 columnas.
+    const count = Math.min(responsiveColumns, Math.max(1, Math.floor(shuffledItems.length / 2)));
     return Array.from({ length: count }, (_, column) =>
       shuffledItems.filter((_, index) => index % count === column)
     );
