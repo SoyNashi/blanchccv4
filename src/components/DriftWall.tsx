@@ -72,6 +72,7 @@ export default function DriftWall({
   const pointerDampedRef = useRef({ x: 0, y: 0 });
   const lastTsRef = useRef<number | null>(null);
   const [containerHeight, setContainerHeight] = useState(600);
+  const [containerWidth, setContainerWidth] = useState(1200);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [reduced, setReduced] = useState(false);
 
@@ -79,29 +80,26 @@ export default function DriftWall({
   // La semilla cambia al montar para mezclar la composición en cada recarga
   // sin provocar diferencias de hidratación entre servidor y cliente.
   const [shuffleSeed, setShuffleSeed] = useState(0);
+  const responsiveColumns = containerWidth <= 520 ? Math.min(2, columns) : containerWidth <= 900 ? Math.min(3, columns) : columns;
 
   useEffect(() => {
     setShuffleSeed(Math.floor(Math.random() * 1_000_000) + 1);
   }, []);
 
-  const columnItems = useMemo(() => {
-    const seededShuffle = (source: DriftWallItem[], seed: number) => {
-      const result = [...source];
-      let value = seed >>> 0;
-      const random = () => {
-        value = (value * 1664525 + 1013904223) >>> 0;
-        return value / 4294967296;
-      };
-      for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(random() * (i + 1));
-        [result[i], result[j]] = [result[j], result[i]];
-      }
-      return result;
-    };
-    return Array.from({ length: columns }, (_, column) =>
-      seededShuffle(items, shuffleSeed + (column + 1) * 7919)
-    );
-  }, [items, columns, shuffleSeed]);
+  const shuffle = (source: DriftWallItem[], seed: number) => {
+    const result = [...source];
+    let value = seed >>> 0;
+    const random = () => { value = (value * 1664525 + 1013904223) >>> 0; return value / 4294967296; };
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  };
+
+  const columnItems = useMemo(() =>
+    Array.from({ length: responsiveColumns }, (_, column) => shuffle(items, shuffleSeed + (column + 1) * 7919)),
+  [items, responsiveColumns, shuffleSeed]);
 
   const columnMeta = useMemo(() => {
     const unit = tileHeight + gap;
@@ -112,13 +110,13 @@ export default function DriftWall({
     });
   }, [columnItems, tileHeight, gap, containerHeight]);
 
-  const baseVelocities = useMemo(() => {
-    const dirSign = direction === "up" ? 1 : -1;
-    return columnItems.map((_, column) => {
-      const alternate = column % 2 === 0 ? 1 : -1;
-      return speed * columnFactor(column, variance) * dirSign * alternate;
-    });
-  }, [columnItems, speed, direction, variance]);
+  const baseVelocities = useMemo(() => columnItems.map((_, column) => {
+    let value = (shuffleSeed + (column + 1) * 104729) >>> 0;
+    value = (value * 1664525 + 1013904223) >>> 0;
+    const random = value / 4294967296;
+    const magnitude = speed * (0.58 + random * 0.82) * columnFactor(column, variance);
+    return magnitude * (random > 0.5 ? 1 : -1);
+  }), [columnItems, speed, variance, shuffleSeed]);
 
   const applyPlaneTransform = useCallback((px: number, py: number) => {
     const plane = planeRef.current;
@@ -138,15 +136,18 @@ export default function DriftWall({
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
-    const observer = new ResizeObserver(([entry]) => setContainerHeight(entry.contentRect.height || 600));
+    const observer = new ResizeObserver(([entry]) => {
+      setContainerHeight(entry.contentRect.height || 600);
+      setContainerWidth(entry.contentRect.width || 1200);
+    });
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    offsetsRef.current = columnMeta.map((meta, column) => meta.copyHeight * ((column * 0.37) % 1));
+    offsetsRef.current = columnMeta.map((meta, column) => meta.copyHeight * (((shuffleSeed + column * 37) % 100) / 100));
     velocitiesRef.current = columnItems.map(() => 0);
-  }, [columnMeta, columnItems]);
+  }, [columnMeta, columnItems, shuffleSeed]);
 
   useEffect(() => {
     let raf = 0;
@@ -242,7 +243,7 @@ export default function DriftWall({
             <div className="drift-wall__col" key={`column-${column}`}>
               <div className="drift-wall__track" ref={(el) => { trackRefs.current[column] = el; }}>
                 {Array.from({ length: meta.copies }).flatMap((_, copy) =>
-                  col.map((item, index) => {
+                  shuffle(col, shuffleSeed + (column + 1) * 7919 + (copy + 1) * 15485863).map((item, index) => {
                     const id = `${column}-${copy}-${index}`;
                     const tile = (
                       <span className="drift-wall__inner">
