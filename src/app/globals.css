@@ -1024,12 +1024,10 @@ html.ready .bh .ln:nth-child(2)>span{transition-delay:.1s}
 }
 
 
-/* Cierre de contacto: ASCII azul/cian integrado en el fondo */
+/* Cierre de contacto: fractura tipográfica binaria en la paleta del sitio */
 .end { position: relative; isolation: isolate; overflow: hidden; }
-.end-ascii { position: absolute; inset: 0; z-index: 0; height: 100%; min-height: 560px; opacity: .82; pointer-events: auto; }
+.end-ascii { position: absolute; inset: 0; z-index: 0; min-height: 560px; opacity: .9; pointer-events: none; }
 .end-ascii .gradient-ascii-container { position: absolute; inset: 0; }
-.end > div:first-child { position: relative; z-index: 1; }
-.end-content { position: relative; z-index: 1; }
-.end-content h2, .end-content .mail, .end-content .soc { text-shadow: 0 2px 24px rgba(0,0,0,.22); }
-.end .foot { position: relative; z-index: 1; }
-@media (max-width: 760px) { .end-ascii { min-height: 480px; opacity: .72; } }
+.end-content, .end .foot { position: relative; z-index: 1; }
+.end-content h2, .end-content .mail, .end-content .soc { text-shadow: 0 2px 22px rgba(10,13,16,.55); }
+@media (max-width: 760px) { .end-ascii { min-height: 480px; opacity: .78; } }
