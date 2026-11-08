@@ -29,7 +29,6 @@ type DriftWallProps = {
   overlayColor?: string;
   radius?: number;
   roll?: number;
-  pauseOnHover?: boolean;
   grayscale?: boolean;
 };
 
@@ -63,7 +62,6 @@ export default function DriftWall({
   const planeRef = useRef<HTMLDivElement>(null);
   const trackRefs = useRef<(HTMLDivElement | null)[]>([]);
   const offsetsRef = useRef<number[]>([]);
-  const hoveredColRef = useRef(-1);
   const pointerRef = useRef({ x: 0, y: 0 });
   const pointerDampedRef = useRef({ x: 0, y: 0 });
   const lastTsRef = useRef<number | null>(null);
@@ -213,12 +211,10 @@ export default function DriftWall({
     const tile = (event.target as HTMLElement).closest<HTMLElement>("[data-tile-id]");
     if (!tile) return;
     const column = Number(tile.dataset.col);
-    hoveredColRef.current = column;
     setActiveId(tile.dataset.tileId ?? null);
   };
 
   const release = () => {
-    hoveredColRef.current = -1;
     setActiveId(null);
   };
 
@@ -268,7 +264,7 @@ export default function DriftWall({
                       className: `drift-wall__tile${activeId === id ? " is-active" : ""}`,
                       "data-tile-id": id,
                       "data-col": column,
-                      onFocus: () => { hoveredColRef.current = column; setActiveId(id); },
+                      onFocus: () => { setActiveId(id); },
                       onBlur: release
                     };
                     return item.href ? (
