@@ -1,17 +1,27 @@
 [
   {
-    "image": "/logos/blau360.svg",
+    "image": "/logos/blau360.png",
     "title": "Blau360",
     "href": "https://blau360.com"
   },
   {
-    "image": "/logos/bastet-project.svg",
+    "image": "/logos/bastet.png",
     "title": "Bastet Project",
     "href": "https://bastetproject.com"
   },
   {
-    "image": "/logos/bitzeta.svg",
+    "image": "/logos/bitzeta.png",
     "title": "BitZeta",
     "href": "https://bitzeta.xyz"
+  },
+  {
+    "image": "/logos/aslo.png",
+    "title": "Aslo",
+    "href": "https://blanch.cc/blog/aslo-es-una-web-brutalista-para-un-proyecto-audiovisual"
+  },
+  {
+    "image": "/logos/gn.png",
+    "title": "GhostNet",
+    "href": ""
   }
 ]
