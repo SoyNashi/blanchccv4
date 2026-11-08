@@ -999,18 +999,19 @@ html.ready .bh .ln:nth-child(2)>span{transition-delay:.1s}
 .hero > .xv, .hero > .xh, .hero > .xl { z-index: 3; }
 @media (max-width: 760px) {
   .hero-driftwall {
-    top: 34%;
-    left: 12%;
-    width: 118%;
-    height: 66%;
+    top: 31%;
+    left: 0;
+    width: 100%;
+    height: 64%;
     transform: translateY(-50%);
+    opacity: .9;
   }
   .hero-driftwall .drift-wall {
-    --dw-tile-w: clamp(88px, 24vw, 116px);
-    --dw-tile-h: clamp(92px, 25vw, 120px);
-    --dw-gap: 10px;
-    -webkit-mask-image: radial-gradient(ellipse 88% 80% at 50% 42%, #000 35%, transparent 100%);
-    mask-image: radial-gradient(ellipse 88% 80% at 50% 42%, #000 35%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 96% 88% at 50% 43%, #000 52%, transparent 100%);
+    mask-image: radial-gradient(ellipse 96% 88% at 50% 43%, #000 52%, transparent 100%);
+  }
+  .hero-driftwall::after {
+    background: linear-gradient(to bottom, transparent 64%, var(--paper) 100%);
   }
 }
 
