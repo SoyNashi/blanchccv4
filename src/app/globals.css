@@ -280,6 +280,7 @@ header>*{pointer-events:auto}
 .idx i{display:block;width:26px;height:10px;border-top:2px solid currentColor;border-bottom:2px solid currentColor;transition:transform .4s var(--ease)}
 .idx[aria-expanded="true"] i{transform:scaleY(.01)}
 header.solid{mix-blend-mode:normal;background:rgba(228,232,236,.94);color:var(--ink);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1.5px solid var(--ink)}
+.ref-header:not(.solid){mix-blend-mode:normal;background:transparent!important;color:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom-color:transparent}
 #bar{position:fixed;top:0;left:0;height:3px;width:100%;background:var(--sig);transform:scaleX(0);transform-origin:left;z-index:150}
 .ov{position:fixed;inset:0;z-index:90;background:var(--ink);color:var(--paper);padding:calc(var(--hh) + 2rem) var(--pad) var(--pad);display:flex;flex-direction:column;justify-content:space-between;clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .7s var(--ease),visibility 0s .7s;overflow-y:auto}
 .ov.open{clip-path:inset(0);visibility:visible;transition:clip-path .7s var(--ease),visibility 0s}
@@ -571,6 +572,9 @@ html:not(.js) .mt .w{opacity:1}
 /* Ajustes de contenido dinámico y navegación */
 header.ref-header{position:fixed;inset:0 0 auto;height:var(--hh);z-index:100;color:#fff;mix-blend-mode:difference;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);pointer-events:none}
 header.ref-header>*{pointer-events:auto}
+/* En el inicio, la cabecera deja ver el hero y el DriftWall por detrás. */
+header.ref-header:not(.solid){background:transparent;border-bottom-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;}
+header.ref-header{transition:background-color .28s ease,color .28s ease,border-color .28s ease,backdrop-filter .28s ease;}
 .ref-project-visual img{width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:filter .5s,transform .7s}
 .ref-project-visual:hover img{filter:none;transform:scale(1.035)}
 .ref-project-visual{position:absolute;inset:0;overflow:hidden}
@@ -968,4 +972,53 @@ html.ready .bh .ln:nth-child(2)>span{transition-delay:.1s}
     max-height: none;
     overflow: visible;
   }
+}
+
+/* DriftWall: muro de logotipos transparente integrado en el fondo del hero */
+.hero-driftwall {
+  position: absolute;
+  z-index: 1;
+  top: 47%;
+  left: 68%;
+  width: 100%;
+  height: 112%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  overflow: visible;
+  background: transparent;
+}
+.hero-driftwall::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 55%, var(--paper) 100%);
+}
+.hero > .xv, .hero > .xh, .hero > .xl { z-index: 2; }
+.hero > h1, .hero > .hb { position: relative; z-index: 2; pointer-events: none; }
+.hero > .hb .btns, .hero > .hb .btns a { pointer-events: auto; }
+.hero > .xv, .hero > .xh, .hero > .xl { z-index: 3; }
+@media (max-width: 760px) {
+  .hero-driftwall {
+    top: 45%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    opacity: .92;
+  }
+  .hero-driftwall .drift-wall {
+    -webkit-mask-image: radial-gradient(ellipse 96% 88% at 50% 43%, #000 52%, transparent 100%);
+    mask-image: radial-gradient(ellipse 96% 88% at 50% 43%, #000 52%, transparent 100%);
+  }
+  .hero-driftwall::after {
+    background: linear-gradient(to bottom, transparent 64%, var(--paper) 100%);
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  .hero-driftwall { width: 100%; }
+}
+@media (max-width: 380px) {
+  .hero-driftwall { left: 50%; width: 100%; top: 45%; height: 100%; }
 }
