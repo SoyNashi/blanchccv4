@@ -75,9 +75,9 @@ export default function DriftWall({
   // tarjetas a mitad del movimiento, evitando saltos visuales.
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const compactLayout = containerWidth <= 760;
-  const responsiveColumns = Math.max(1, Math.floor(columns));
+  const responsiveColumns = compactLayout ? Math.min(3, Math.max(1, Math.floor(columns))) : Math.max(1, Math.floor(columns));
   const renderedTileWidth = containerWidth <= 520
-    ? Math.max(64, Math.min(tileWidth, (containerWidth - 36) / 4 - 10))
+    ? Math.max(64, Math.min(tileWidth, (containerWidth - 36) / 3 - 10))
     : compactLayout ? Math.min(tileWidth, 108) : tileWidth;
   const renderedTileHeight = compactLayout ? Math.min(tileHeight, 104) : tileHeight;
   const renderedGap = compactLayout ? Math.min(gap, 10) : gap;
@@ -131,19 +131,26 @@ export default function DriftWall({
     });
   }, [columnItems, renderedTileHeight, renderedGap, containerHeight]);
 
-  const baseVelocities = useMemo(() => columnItems.map((_, column) => {
-    let value = (shuffleSeed + (column + 1) * 104729) >>> 0;
-    value = (value * 1664525 + 1013904223) >>> 0;
-    const random = value / 4294967296;
-    const magnitude = speed * (0.58 + random * 0.82) * columnFactor(column, variance);
-    return magnitude * (random > 0.5 ? 1 : -1);
-  }), [columnItems, speed, variance, shuffleSeed]);
+  const baseVelocities = useMemo(() => {
+    // Reparte sentidos de movimiento de forma aleatoria e independiente por columna.
+    const directions = shuffle(
+      Array.from({ length: columnItems.length }, (_, column) => column % 2 === 0 ? 1 : -1),
+      shuffleSeed + 7919
+    );
+    return columnItems.map((_, column) => {
+      let value = (shuffleSeed + (column + 1) * 104729) >>> 0;
+      value = (value * 1664525 + 1013904223) >>> 0;
+      const random = value / 4294967296;
+      const magnitude = speed * (0.58 + random * 0.82) * columnFactor(column, variance);
+      return magnitude * directions[column];
+    });
+  }, [columnItems, speed, variance, shuffleSeed]);
 
   const applyPlaneTransform = useCallback((px: number, py: number, compact: boolean) => {
     const plane = planeRef.current;
     if (!plane) return;
     plane.style.transform = compact
-      ? `translate(-50%, -50%) scale(.94) rotateX(0deg) rotateY(-7deg) rotateZ(0deg) translateZ(-35px)`
+      ? `translate(-50%, -50%) scale(.94) rotateX(0deg) rotateY(-17deg) rotateZ(-8deg) translateZ(-35px)`
       : `translate(-50%, -50%) scale(1.18) rotateX(${tilt + py}deg) rotateY(${turn + px}deg) rotateZ(${roll}deg) translateZ(${-depth}px)`;
   }, [tilt, turn, roll, depth]);
 
