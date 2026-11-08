@@ -52,7 +52,6 @@ export default function DriftWall({
   speed = 54,
   variance = 0.5,
   parallax = 1,
-  pauseOnHover = false,
   lift = 64,
   fade = 0.45,
   dim = 1,
@@ -179,8 +178,7 @@ export default function DriftWall({
         const el = trackRefs.current[column];
         if (!el) return;
         if (!reduced) {
-          const paused = (wallHoveredRef.current && pauseOnHover) || hoveredColRef.current === column;
-          const target = baseVelocities[column] * (paused ? 0 : 1);
+          const target = baseVelocities[column];
           const ease = 1 - Math.exp(-dt / (target === 0 ? 0.16 : 0.28));
           velocitiesRef.current[column] += (target - velocitiesRef.current[column]) * ease;
           let next = (offsetsRef.current[column] ?? 0) + velocitiesRef.current[column] * dt;
@@ -196,7 +194,7 @@ export default function DriftWall({
       window.cancelAnimationFrame(raf);
       lastTsRef.current = null;
     };
-  }, [baseVelocities, columnMeta, pauseOnHover, parallax, reduced, applyPlaneTransform]);
+  }, [baseVelocities, columnMeta, parallax, reduced, applyPlaneTransform]);
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const rect = containerRef.current?.getBoundingClientRect();
