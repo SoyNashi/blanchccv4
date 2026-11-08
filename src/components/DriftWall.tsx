@@ -100,6 +100,15 @@ export default function DriftWall({
     Array.from({ length: responsiveColumns }, (_, column) => shuffle(items, shuffleSeed + (column + 1) * 7919)),
   [items, responsiveColumns, shuffleSeed]);
 
+  const columnMeta = useMemo(() => {
+    const unit = tileHeight + gap;
+    return columnItems.map((col) => {
+      const copyHeight = Math.max(unit, col.length * unit);
+      const copies = Math.max(2, Math.ceil((containerHeight * 1.6) / copyHeight) + 1);
+      return { copyHeight, copies };
+    });
+  }, [columnItems, tileHeight, gap, containerHeight]);
+
   const columnPasses = useMemo(() => columnItems.map((col, column) => {
     let previous: DriftWallItem[] = [];
     return Array.from({ length: columnMeta[column].copies }, (_, copy) => {
@@ -111,14 +120,6 @@ export default function DriftWall({
       return next;
     });
   }), [columnItems, columnMeta, shuffleSeed]);
-  const columnMeta = useMemo(() => {
-    const unit = tileHeight + gap;
-    return columnItems.map((col) => {
-      const copyHeight = Math.max(unit, col.length * unit);
-      const copies = Math.max(2, Math.ceil((containerHeight * 1.6) / copyHeight) + 1);
-      return { copyHeight, copies };
-    });
-  }, [columnItems, tileHeight, gap, containerHeight]);
 
   const baseVelocities = useMemo(() => columnItems.map((_, column) => {
     let value = (shuffleSeed + (column + 1) * 104729) >>> 0;
