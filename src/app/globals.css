@@ -973,13 +973,14 @@ html.ready .bh .ln:nth-child(2)>span{transition-delay:.1s}
 /* DriftWall: muro de logotipos transparente integrado en el fondo del hero */
 .hero-driftwall {
   position: absolute;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: min(62%, 600px);
+  z-index: 1;
+  top: 43%;
+  left: 39%;
+  width: 76%;
+  height: min(88%, 760px);
+  transform: translateY(-50%);
   pointer-events: auto;
-  overflow: hidden;
+  overflow: visible;
   background: transparent;
 }
 .hero-driftwall::after {
@@ -990,9 +991,17 @@ html.ready .bh .ln:nth-child(2)>span{transition-delay:.1s}
   background: linear-gradient(to bottom, transparent 55%, var(--paper) 100%);
 }
 .hero > .xv, .hero > .xh, .hero > .xl { z-index: 2; }
-.hero > h1, .hero > .hb { position: relative; z-index: 1; }
+.hero > h1, .hero > .hb { position: relative; z-index: 2; pointer-events: none; }
+.hero > .hb .btns, .hero > .hb .btns a { pointer-events: auto; }
+.hero > .xv, .hero > .xh, .hero > .xl { z-index: 3; }
 @media (max-width: 760px) {
-  .hero-driftwall { height: 48%; }
+  .hero-driftwall {
+    top: 34%;
+    left: 18%;
+    width: 112%;
+    height: 68%;
+    transform: translateY(-50%);
+  }
   .hero-driftwall .drift-wall {
     -webkit-mask-image: radial-gradient(ellipse 88% 80% at 50% 42%, #000 35%, transparent 100%);
     mask-image: radial-gradient(ellipse 88% 80% at 50% 42%, #000 35%, transparent 100%);
