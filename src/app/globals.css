@@ -571,6 +571,9 @@ html:not(.js) .mt .w{opacity:1}
 /* Ajustes de contenido dinámico y navegación */
 header.ref-header{position:fixed;inset:0 0 auto;height:var(--hh);z-index:100;color:#fff;mix-blend-mode:difference;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);pointer-events:none}
 header.ref-header>*{pointer-events:auto}
+/* En el inicio, la cabecera deja ver el hero y el DriftWall por detrás. */
+header.ref-header:not(.solid){background:transparent;border-bottom-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;}
+header.ref-header{transition:background-color .28s ease,color .28s ease,border-color .28s ease,backdrop-filter .28s ease;}
 .ref-project-visual img{width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:filter .5s,transform .7s}
 .ref-project-visual:hover img{filter:none;transform:scale(1.035)}
 .ref-project-visual{position:absolute;inset:0;overflow:hidden}
