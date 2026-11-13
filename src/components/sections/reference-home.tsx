@@ -29,7 +29,7 @@ export default function ReferenceHome({projects,services,certifications,secondar
 
  const principles=[["Diseño con intención","Cada interfaz tiene una personalidad. No trabajo desde plantillas que podrían pertenecer a cualquiera."],["Software a medida","La herramienta se adapta a tu forma de trabajar, no al revés."],["Tus datos, tus reglas","Si puede vivir en tu servidor y bajo tu control, esa es la opción que prefiero."],["Transparencia demostrable","No basta con prometer privacidad: hay que explicar qué se guarda, dónde y por qué."]];
  const projectUrls:Record<string,string>={"2":"https://bastetproject.com","1":"https://blau360.com","bitzeta":"https://bitzeta.xyz"};
- const projectRelatedPosts:Record<string,string[]>={ghostnet:["9","10"],"2":["7","10"],"1":["2","6"]};
+ const projectRelatedPosts:Record<string,string[]>={ghostnet:["13","9","10"],"2":["7","10"],"1":["2","6"]};
  const displayedServices=[...services,{id:"security",title:"Seguridad y privacidad digital",description:"Revisión de buenas prácticas para aplicaciones y webs: control de accesos, protección de datos, configuración segura, actualizaciones y reducción de superficies de exposición. Un enfoque práctico, sin vender auditorías ni certificaciones que no correspondan.",tags:["Seguridad web","Privacidad","Control de accesos","Hardening básico"],order:5}];
  return <div data-view="home"><div id="pre" style={{visibility:"hidden"}}><span className="mono">Cargando recursos necesarios</span><button id="pre-skip" type="button" aria-label="Saltar precarga">SALTAR ↗</button><b>{preCount}</b></div><div id="bar"/><div className="cur" aria-hidden="true"/><div className="wipe" aria-hidden="true"/><ReferenceNav/>
  <main id="main" tabIndex={-1}>
