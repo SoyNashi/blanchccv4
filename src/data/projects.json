@@ -2,17 +2,21 @@
   {
     "id": "ghostnet",
     "title": "GhostNet",
-    "description": "Una comunidad privada con su propio foro y un escritorio web que funciona como un sistema operativo. Una herramienta para que cada grupo pueda comunicarse y organizarse sin entregar sus datos a una plataforma ajena.",
+    "description": "Infraestructura digital independiente en desarrollo para conectar servicios, personas y organizaciones mediante una red de nodos colaborativos. La visión va más allá de una red social: comunicaciones y publicación distribuida, almacenamiento P2P, servicios privados y enrutamiento de APIs. Cada participante podrá decidir si aporta recursos desde un servidor, ordenador o dispositivo, con límites y condiciones transparentes. GhostNet será también la base experimental para explorar una nueva arquitectura distribuida de BitZeta.",
     "visual": "ghostnet",
-    "status": "Proyecto principal",
+    "status": "Proyecto principal · En desarrollo",
     "tags": [
-      "Foro privado",
-      "Escritorio web",
-      "Interfaz propia",
+      "Infraestructura P2P",
+      "Nodos colaborativos",
+      "Comunicaciones",
+      "Almacenamiento distribuido",
+      "APIs",
       "Privacidad"
     ],
     "order": 1,
-    "relatedPostIds": []
+    "relatedPostIds": [
+      "13"
+    ]
   },
   {
     "id": "2",
