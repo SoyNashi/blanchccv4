@@ -1,5 +1,5 @@
 import Link from "next/link";
-import posts from "@/data/posts.json";
+import posts from "@/data/posts";
 import {notFound} from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";

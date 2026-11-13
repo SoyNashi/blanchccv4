@@ -1,7 +1,7 @@
 import { remark } from 'remark'
 import remarkGfm from 'remark-gfm'
 import remarkHtml from 'remark-html'
-import posts from '@/data/posts.json'
+import posts from '@/data/posts'
 
 const BASE_URL = 'https://blanch.cc'
 const DEFAULT_FEED_IMAGE = 'https://raw.githubusercontent.com/SoyNashi/blanchccv4/main/src/app/rss.xml/6Rd61.jpg'

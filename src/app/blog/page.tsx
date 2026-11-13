@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import {useEffect,useMemo,useState} from "react";
-import posts from "@/data/posts.json";
+import posts from "@/data/posts";
 import ReferenceNav from "@/components/reference-nav";
 import ReferenceFooter from "@/components/reference-footer";
 export default function BlogPage(){

@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import posts from '@/data/posts.json'
+import posts from '@/data/posts'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://blanch.cc'
