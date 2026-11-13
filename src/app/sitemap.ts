@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import posts from '@/data/posts.json'
+import posts from '@/data/posts'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://blanch.cc'
@@ -31,19 +31,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: baseUrl,
       lastModified: new Date('2024-01-01'),
-      changeFrequency: 'weekly' as const,
+      changeFrequency: 'weekly',
       priority: 1,
     },
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date('2024-06-12'),
-      changeFrequency: 'weekly' as const,
+      changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/certifications`,
       lastModified: new Date('2024-01-01'),
-      changeFrequency: 'monthly' as const,
+      changeFrequency: 'monthly',
       priority: 0.7,
     },
     ...postUrls,
